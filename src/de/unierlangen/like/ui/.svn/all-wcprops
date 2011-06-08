@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/19/trunk/android-serialport-api/project/src/android/serialport/sample
+END
+ConsoleActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/!svn/ver/19/trunk/android-serialport-api/project/src/android/serialport/sample/ConsoleActivity.java
+END
+SerialPortActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/!svn/ver/19/trunk/android-serialport-api/project/src/android/serialport/sample/SerialPortActivity.java
+END
+Application.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/!svn/ver/19/trunk/android-serialport-api/project/src/android/serialport/sample/Application.java
+END
+SerialPortPreferences.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/!svn/ver/19/trunk/android-serialport-api/project/src/android/serialport/sample/SerialPortPreferences.java
+END
+LoopbackActivity.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/19/trunk/android-serialport-api/project/src/android/serialport/sample/LoopbackActivity.java
+END
+MainMenu.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/19/trunk/android-serialport-api/project/src/android/serialport/sample/MainMenu.java
+END

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:title="Serial port setup">
+
+	<ListPreference 
+		android:key="DEVICE" 
+		android:title="Device" 
+		android:persistent="true">
+	</ListPreference>
+
+	<ListPreference 
+		android:entries="@array/baudrates_name" 
+		android:entryValues="@array/baudrates_value" 
+		android:key="BAUDRATE" 
+		android:persistent="true" 
+		android:title="Baud rate">
+	</ListPreference>
+	
+	<EditTextPreference
+		android:name="EditText Preference"
+		android:summary="This allows you to enter a string"
+		android:defaultValue="Nothing"
+		android:title="Edit This Text"
+		android:key="GREETING" />
+		
+	<CheckBoxPreference
+		android:title="On/Off USB Host"
+		android:defaultValue="true"
+		android:key="USBhost" 
+		android:summaryOn="USB Host enabled" 
+		android:summaryOff="USB Host disabled"/>
+	
+</PreferenceScreen>

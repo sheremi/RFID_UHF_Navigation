@@ -1,0 +1,48 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item 
+		android:title = "Your location"
+		android:id = "@+id/your_location"
+		android:icon="@drawable/your_location" />
+	<item 
+		android:title = "Test mode"
+		android:id = "@+id/test_mode"
+		android:icon="@drawable/test_mode" />
+	<item 
+		android:title = "Find room"
+		android:id = "@+id/find_room"
+		android:icon="@drawable/find_room" />
+	<item 
+		android:title = "Info"
+		android:id = "@+id/info"
+		android:icon="@drawable/info" >
+		
+		<menu>
+			<item 
+				android:title = "About this application"
+				android:id = "@+id/about_submenu" />
+			<item 
+				android:title = "How to use the application"
+				android:id = "@+id/help_submenu" />
+		</menu>
+	
+	</item>
+	<item 
+		android:title="Preferences"
+		android:id = "@+id/prefs" 
+		android:icon="@drawable/prefs" >
+		<menu>
+			<item 
+				android:title = "User"
+				android:id = "@+id/user_prefs" />
+			<item 
+				android:title = "Serial port configuration"
+				android:id = "@+id/serial_submenu" />
+			<item 
+				android:title = "Reader settings"
+				android:id = "@+id/readerset_submenu" />
+			<item 
+				android:title = "Tags settings"
+				android:id = "@+id/tags_submenu" />
+		</menu>
+	</item>
+</menu>

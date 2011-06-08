@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"	
+	android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+	android:background="#c8ebff"
+	android:padding="8dp"
+	android:scrollbars="vertical"
+	android:isScrollContainer="true" >
+
+	<TableLayout 
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+ 		android:padding="8dp" >
+	
+		<TableRow
+			android:gravity="center"> 
+		
+			<TextView  
+    			android:textColor="#000000"
+    			android:textStyle="bold"
+    			android:textSize="24sp"
+    			android:text="@string/readerreg_label" />
+		
+		</TableRow>
+	
+		<TableRow>
+			
+			<TextView
+        		android:textColor="#000000"
+    			android:textStyle="bold"
+    			android:textSize="18sp"
+    			android:padding="12dp"
+    			android:text="@string/maincontrollabel"/>
+    	
+    	</TableRow>			
+    
+    	<TableRow>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+        		android:text="@string/R00label"
+    			android:id="@+id/R00"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R00contentlabel"
+    			android:id="@+id/R00content"/>
+		</TableRow>
+		
+		<TableRow>	
+    		<TextView
+          		android:textColor="#000000"
+        		android:textSize="16sp"
+    			android:text="@string/R01label"
+    			android:id="@+id/R01"/>
+    		<TextView
+	    		android:textColor="#000000"
+        		android:textSize="16sp"
+    			android:text="@string/R01contentlabel"
+    			android:id="@+id/R01content"/>
+    	</TableRow>
+    	
+    	<TableRow>	
+    		<TextView
+    			android:textColor="#000000"
+    			android:textStyle="bold"
+    			android:textSize="18sp"
+    			android:padding="12dp"
+    			android:text="@string/protocolsetlabel"/>	
+    	</TableRow>
+    	
+    	<TableRow>	
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R02label"
+    			android:id="@+id/R02"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R02contentlabel"
+    			android:id="@+id/R02content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R03label"
+    			android:id="@+id/R03"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R03contentlabel"
+    			android:id="@+id/R03content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R04label"
+    			android:id="@+id/R04"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R04contentlabel"
+    			android:id="@+id/R04content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+        		android:textSize="16sp"
+    			android:text="@string/R05label"
+    			android:id="@+id/R05"/>
+    		<TextView
+        		android:textColor="#000000"
+        		android:textSize="16sp"
+    			android:text="@string/R05contentlabel"
+    			android:id="@+id/R05content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R06label"
+    			android:id="@+id/R06"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R06contentlabel"
+    			android:id="@+id/R06content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R07label"
+    			android:id="@+id/R07"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R07contentlabel"
+    			android:id="@+id/R07content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+     			android:textSize="16sp"
+    			android:text="@string/R08label"
+    			android:id="@+id/R08"/>
+    		<TextView
+        		android:textColor="#000000"
+     			android:textSize="16sp"
+    			android:text="@string/R08contentlabel"
+    			android:id="@+id/R08content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R09label"
+    			android:id="@+id/R09"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R09contentlabel"
+    			android:id="@+id/R09content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R0Alabel"
+    			android:id="@+id/R0A"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R0Acontentlabel"
+    			android:id="@+id/R0Acontent"/>
+		</TableRow>
+		
+		<TableRow>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R0Blabel"
+    			android:id="@+id/R0B"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R0Bcontentlabel"
+    			android:id="@+id/R0Bcontent"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R14label1"
+    			android:id="@+id/R14_1"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R14contentlabel1"
+    			android:id="@+id/R14_1content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R14label2"
+    			android:id="@+id/R14_2"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R14contentlabel2"
+    			android:id="@+id/R14_2content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R14label3"
+    			android:id="@+id/R14_3"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R14contentlabel3"
+    			android:id="@+id/R14_3content"/>
+    	</TableRow>
+    	
+    	<TableRow>		
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R15label1"
+    			android:id="@+id/R15_1"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R15contentlabel1"
+    			android:id="@+id/R15_1content"/>
+		</TableRow>
+		
+		<TableRow>	
+			<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R15label2"
+    			android:id="@+id/R15_2"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R15contentlabel2"
+    			android:id="@+id/R15_2content"/>
+		</TableRow>
+		
+		<TableRow>
+			<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R15label3"
+    			android:id="@+id/R15_3"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R15contentlabel3"
+    			android:id="@+id/R15_3content"/>
+    	</TableRow>
+    	
+    	<TableRow>		    			
+    		<TextView
+	       		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R16label1"
+    			android:id="@+id/R16_1"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R16contentlabel1"
+    			android:id="@+id/R16_1content"/>
+		</TableRow>
+		
+		<TableRow>	
+			<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R16label2"
+    			android:id="@+id/R16_2"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R16contentlabel2"
+    			android:id="@+id/R16_2content"/>
+		</TableRow>
+		
+		<TableRow>
+			<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R16label3"
+    			android:id="@+id/R16_3"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R16contentlabel3"
+    			android:id="@+id/R16_3content"/>
+    	</TableRow>
+    	
+    	<TableRow>	
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R17label1"
+    			android:id="@+id/R17_1"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R17contentlabel1"
+    			android:id="@+id/R17_1content"/>
+		</TableRow>
+		
+		<TableRow>	
+			<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R17label2"
+    			android:id="@+id/R17_2"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R17contentlabel2"
+    			android:id="@+id/R17_2content"/>
+		</TableRow>
+		
+		<TableRow>
+			<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R17label3"
+    			android:id="@+id/R17_3"/>	
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R17contentlabel3"
+    			android:id="@+id/R17_3content"/>	
+		</TableRow>
+		
+		<TableRow>
+			<TextView
+        		android:textColor="#000000"
+    			android:textStyle="bold"
+    			android:textSize="18sp"
+    			android:padding="12dp"
+    			android:text="@string/statusreglabel"/>
+    	</TableRow>			
+    
+    	<TableRow>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+        		android:text="@string/R0Flabel"
+    			android:id="@+id/R0F"/>
+    		<TextView
+        		android:textColor="#000000"
+    			android:textSize="16sp"
+    			android:text="@string/R0Fcontentlabel"
+    			android:id="@+id/R0Fcontent"/>
+		</TableRow>
+		
+		
+	</TableLayout>
+
+</ScrollView>

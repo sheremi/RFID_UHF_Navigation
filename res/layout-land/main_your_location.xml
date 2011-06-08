@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+	android:background="#003838"
+	android:gravity="center">
+	
+	<de.unierlangen.like.customviews.MapView 
+		android:layout_width="fill_parent"
+		android:layout_height="380dip"
+		android:layout_alignParentTop="true"
+		android:paddingBottom="10dip"
+		android:id="@+id/mapView" />
+	
+	<ZoomControls 
+		android:layout_below="@+id/mapView"
+		android:id="@+id/zoomcontrols"
+		android:gravity="center_horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+
+<!-- <TextView  
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:gravity="center"
+    	android:textStyle="bold"
+    	android:textSize="18sp"
+    	android:textColor="#ffffff"
+    	android:text="@string/tagAmount_label" /> -->	
+    	
+<!--     <TextView  
+    	android:gravity="center"
+    	android:textStyle="bold"
+    	android:textSize="18sp"
+    	android:textColor="#ffffff"
+    	android:hint="hint"
+    	android:layout_width="wrap_content" 
+    	android:layout_height="fill_parent"
+    	android:id="@+id/tag_amount" /> -->
+	
+
+</RelativeLayout>    
+	
+
+ 
+

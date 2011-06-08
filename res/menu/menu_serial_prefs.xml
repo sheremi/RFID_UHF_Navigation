@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item 
+		android:title = "Your location"
+		android:id = "@+id/your_location"
+		android:icon="@drawable/your_location" />
+	<item 
+		android:title = "Console"
+		android:id = "@+id/console"
+		android:icon="@drawable/console" />
+	
+</menu>
