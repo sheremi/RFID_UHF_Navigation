@@ -143,7 +143,7 @@ public class MapView extends View {
 		/** Draw doors */
 		for (Door door: doors){
 			float startAngle = door.getStartAngle();
-			if ((door.getLength())<0) {
+			if (door.getLength()<0) {
 				startAngle = startAngle + 180;
 			}
 			canvas.drawArc(door.getRectF(), startAngle, door.getSweepAngle(), true, doorsPaint);

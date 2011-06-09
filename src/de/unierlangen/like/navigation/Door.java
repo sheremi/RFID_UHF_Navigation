@@ -11,7 +11,9 @@ public class Door extends Obstacle {
 	private float startAngle;
 	private float sweepAngle;
 	
-	//Constructor
+	
+	//Constructors 
+	// for any single door
 	public Door(float xAxle, float yAxle, float length, float startAngle, float sweepAngle) {
 		super();
 		this.xAxle = xAxle;
@@ -20,7 +22,18 @@ public class Door extends Obstacle {
 		this.startAngle = startAngle;
 		this.sweepAngle = sweepAngle;
 	}
-		
+	
+	// for a door in a wall
+	public Door(float distanceToAxle, float length, float sweepAngle, float wallX1, float wallY1, double alpha) {
+		super();
+		this.length = length;
+		this.sweepAngle = sweepAngle;
+		this.xAxle = (float)(Math.cos(alpha)) * distanceToAxle + wallX1;
+		this.yAxle = (float)(Math.sin(alpha)) * distanceToAxle + wallY1;
+		this.startAngle = (float)(alpha) * 57.2974f;
+	}
+
+
 	//Getters and setters
 	public float get_xAxle() {
 		return xAxle;

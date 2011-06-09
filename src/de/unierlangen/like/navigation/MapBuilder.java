@@ -17,12 +17,6 @@ public class MapBuilder {
 	private float wallY1;
 	private float wallX2;
 	private float wallY2;
-	private float distanceToAxle;
-	private float length;
-	private float sweepAngle;
-	private float startAngle;
-	private float doorAxleX;
-	private float doorAxleY;
 	private double alpha;
 	
 	public MapBuilder(String path) throws IOException {
@@ -74,14 +68,10 @@ public class MapBuilder {
 	    		Log.d(TAG, "Created "+door.toString());
 	    		doors.add(door);
 	    	} else {
-	    		distanceToAxle = Float.parseFloat(singlenumber[0]);
-	    		length = Float.parseFloat(singlenumber[1]);
-	    		sweepAngle = Float.parseFloat(singlenumber[2]);
-	    		this.addDoor(distanceToAxle, length, sweepAngle);
-	    		/* Door door = new Door(distanceToAxle, length, sweepAngle);
-	    		 * Log.d(TAG, "Created "+door.toString());
-	    		 * doors.add(door);
-	    		 */
+	    		Door door = new Door(Float.parseFloat(singlenumber[0]), Float.parseFloat(singlenumber[1]), Float.parseFloat(singlenumber[2]), wallX1, wallY1, alpha);
+	    		Log.d(TAG, "Created "+door.toString());
+	    		doors.add(door);
+	    		 
 	    	}
 	    }
 	}
@@ -92,14 +82,6 @@ public class MapBuilder {
 	public ArrayList<Door> getDoors() {
 		return doors;
 	}
-	//@Deprecated
-	public void addDoor(float distanceToAxle, float length, float sweepAngle){
-		doorAxleX = (float)(Math.cos(alpha)) * distanceToAxle + wallX1;
-		doorAxleY = (float)(Math.sin(alpha)) * distanceToAxle + wallY1;
-		startAngle = (float)(alpha) * 57.2974f;
-		Door door = new Door(doorAxleX, doorAxleY, length, startAngle, sweepAngle);
-		Log.d(TAG, "Created "+door.toString());
-		doors.add(door);
-	}
+	
 }
 
