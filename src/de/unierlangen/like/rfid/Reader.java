@@ -58,7 +58,7 @@ public class Reader {
 		//Tell reader MCU to start inventory round
 		//readerSerialPort.writeString("z");
 		//XXX read the entire message from serialport
-		String tagsString = "tags:3 EBA123 14 FA894 1 BEEF666 30 endtags";//readerSerialPort.readString();
+		String tagsString = "tags:3;EBA123,14;FA894,1;BEEF666,30;endtags";//readerSerialPort.readString();
 		if (tagsString.contains("error")) {
 			throw new IOException("Reader MCU reported error:" + tagsString);
 		}
