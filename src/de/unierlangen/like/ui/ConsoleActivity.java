@@ -92,6 +92,7 @@ public class ConsoleActivity extends OptionsMenuActivity
 	}
 	public void onClick(View v) {
 		// XXX((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(100);
+		//FIXME change this string
 		SharedPreferences sp = getSharedPreferences("de.unierlangen.like.navigation_preferences", MODE_PRIVATE);
 		String MessageString = sp.getString("GREETING", "");
 		new AsyncTaskSendAndRead().execute(MessageString);
