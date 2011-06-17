@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright 2009 Cedric Priscal
  * 
