@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -92,7 +93,7 @@ public class ConsoleActivity extends OptionsMenuActivity
 	}
 	public void onClick(View v) {
 		// XXX((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(100);
-		SharedPreferences sp = getSharedPreferences("de.unierlangen.like.navigation_preferences", MODE_PRIVATE);
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String MessageString = sp.getString("GREETING", "");
 		new AsyncTaskSendAndRead().execute(MessageString);
 	}
