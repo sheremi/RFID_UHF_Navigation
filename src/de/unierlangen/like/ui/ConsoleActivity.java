@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -37,9 +36,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import de.unierlangen.like.serialport.ConsoleThreadListener;
-import de.unierlangen.like.serialport.ReceivingThread;
-import de.unierlangen.like.serialport.SendingThread;
+import de.unierlangen.like.serialport.OnStringReceivedListener;
 import de.unierlangen.like.serialport.SerialPort;
 /**
  * 
@@ -47,7 +44,7 @@ import de.unierlangen.like.serialport.SerialPort;
  *
  */
 public class ConsoleActivity extends OptionsMenuActivity
-	implements OnClickListener, OnEditorActionListener, OnCheckedChangeListener, ConsoleThreadListener, OnLongClickListener {
+	implements OnClickListener, OnEditorActionListener, OnCheckedChangeListener, OnStringReceivedListener, OnLongClickListener {
 	
 	/** Fields */
 	private static final String TAG = "ConsoleActivity";
@@ -59,14 +56,12 @@ public class ConsoleActivity extends OptionsMenuActivity
 	private TextView textViewOutgoing;
 	private TextView textViewIncoming;
 	private TextView textViewReception;
-	private TextView textViewReceivedOnDemand;
 	private Button buttonSend;
 	private EditText editTextEmission;
 	private CheckBox checkBoxSendingThread;
 	/** Concurrency - AsyncTasks, Threads and Handlers*/
 	Handler handler;
 	private SendingThread sendingThread;
-	private ReceivingThread receivingThread;
 	/** Interfaces */
 	
 	/** This method could be called from another thread.
@@ -79,23 +74,18 @@ public class ConsoleActivity extends OptionsMenuActivity
 			}
 		});
 	}
-	/** This method could be called from another thread.
-	* Use the handler to make sure the code runs in the UI thread*/
-	public void handleSymbolsReceived(final String receivedString) {
-		incoming+=receivedString.length();
-		handler.post(new Runnable() {
-			public void run() {
-				textViewIncoming.setText(incoming.toString());
-				textViewReception.append(receivedString);
-			}
-		});
-		
-	}
+
 	public void onClick(View v) {
+
 		// XXX((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(100);
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		String MessageString = sp.getString("GREETING", "");
-		new AsyncTaskSendAndRead().execute(MessageString);
+		String messageString = sp.getString("GREETING", "");
+		try {
+			serialPort.writeString(messageString);
+		} catch (IOException e) {
+			Log.d(TAG,"Opps",e);
+		}
+
 	}
 	
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -113,7 +103,7 @@ public class ConsoleActivity extends OptionsMenuActivity
 		Log.d(TAG, "isChecked ="+isChecked);
 		if (isChecked)
 		{
-			sendingThread = new SendingThread(this, serialPort);
+			sendingThread = new SendingThread();
 			sendingThread.start();
 		} else {
 			sendingThread.interrupt();
@@ -123,51 +113,37 @@ public class ConsoleActivity extends OptionsMenuActivity
 	public boolean onLongClick(View v) {
 		textViewReception.setText("Reception cleaned");
 		return false;
+
 	}
 	
-	/** AsyncTasks */
+	public void onStringReceived(final String string) {
+		incoming+=string.length();
+		handler.post(new Runnable() {
+			public void run() {
+				textViewIncoming.setText(incoming.toString());
+				textViewReception.append(string);
+			}
+		});
+	}
 	
-	private class AsyncTaskSendAndRead extends AsyncTask<String, Integer, String> {
-		/**
-		 * Executed on a thread from AsyncTask thread pool. In Android 1.5 size of this pool is
-		 * only one. AsyncTasks are put into queue and executed. Since 1.6 pool size is 5.
-		 */
+	private class SendingThread extends Thread {
+		private static final String TAG = "SendingThread";
 		@Override
-		protected String doInBackground(String... params) {
-			String readString="";
+		public void run() {
+		
+			String loopbackString = "Hi!";
 			try {
-				receivingThread.interrupt();
-				serialPort.writeString(params[0]);
-				publishProgress(new Integer(params[0].length()));
-				readString = serialPort.readString();
-				
-			} catch (IOException e) {Log.d(TAG, "Serial port access failed",e);
-			}// catch (InterruptedException e) {Log.d(TAG, "Thread was interrupted",e);}
-			
-			return readString;
+				while (!isInterrupted()){
+					serialPort.writeString(loopbackString);
+					handleSymbolsSent(loopbackString);
+					Thread.sleep(1000);
+				}
+			} catch (IOException e) {Log.e (TAG, "IOException in SendingThread",e);
+			} catch (InterruptedException e) {Log.e (TAG, "InterruptedException in SendingThread",e);
+			}
+			super.run();
 		}
-		/**
-		 * Executed on UI thread
-		 */
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			outgoing += values[0];
-			textViewOutgoing.setText(outgoing.toString());
-			textViewReceivedOnDemand.setText("Waiting for response...");
-			super.onProgressUpdate(values);
-		}
-		/**
-		 * Executed on UI thread
-		 */
-		@Override
-		protected void onPostExecute(String result) {
-	   		incoming += result.length();
-    		textViewIncoming.setText(incoming.toString());
-    		textViewReceivedOnDemand.setText(result);
-			receivingThread = new ReceivingThread(ConsoleActivity.this, serialPort);
-			receivingThread.start();
-			super.onPostExecute(result);
-		}
+		
 		
 	}
 	
@@ -181,7 +157,6 @@ public class ConsoleActivity extends OptionsMenuActivity
 		textViewReception = (TextView)findViewById(R.id.textViewConsoleReception);
 		textViewOutgoing = (TextView)findViewById(R.id.textViewOutgoingValue);
 		textViewIncoming = (TextView)findViewById(R.id.textViewIncomingValue);
-		textViewReceivedOnDemand = (TextView)findViewById(R.id.textViewReceivedOnDemand);
 		editTextEmission = (EditText)findViewById(R.id.editTextConsoleEmission);
 		buttonSend = (Button)findViewById(R.id.buttonSend);
 		checkBoxSendingThread = (CheckBox) findViewById(R.id.checkBoxSendingThread);
@@ -190,7 +165,7 @@ public class ConsoleActivity extends OptionsMenuActivity
 		buttonSend.setOnClickListener(this);
 		checkBoxSendingThread.setOnCheckedChangeListener(this);
 		textViewReception.setOnLongClickListener(this);
-		
+				
 		outgoing=0;
 		incoming=0;
         /** Create the Handler. It will implicitly bind to the Looper that is
@@ -208,11 +183,11 @@ public class ConsoleActivity extends OptionsMenuActivity
 			String path = sp.getString("DEVICE", "");
 			int baudrate = Integer.decode(sp.getString("BAUDRATE", "-1"));
 			serialPort = new SerialPort(path, baudrate);
+			serialPort.setOnStringReceivedListener(this);
 			/** Create threads */
-			sendingThread = new SendingThread(this, serialPort);//started in onCheckedChangeListener
+			//sendingThread = new SendingThread(this, serialPort);//started in onCheckedChangeListener
 			
-			receivingThread = new ReceivingThread(this, serialPort);
-			receivingThread.start();
+			
 		} catch (SecurityException e) {
 			UserMessages.displayAlertDialog(R.string.error_security,this);
 		} catch (IOException e) {
@@ -226,15 +201,10 @@ public class ConsoleActivity extends OptionsMenuActivity
 		
 	@Override
 	protected void onPause() {
-		receivingThread.interrupt();
 		sendingThread.interrupt();
 		try {
 			serialPort.closePort();
 		} catch (IOException e) {Log.e(TAG, "IOException in onPause()",e);}
 		super.onPause();
 	}
-
-
-
-
 }

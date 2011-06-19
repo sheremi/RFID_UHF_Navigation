@@ -40,6 +40,36 @@ public class SerialPort {
 	ByteBuffer buffer;
 	FileChannel serialInputChannel;
 	FileChannel serialOutputChannel;
+	
+	private ReceivingThread receivingThread;
+	private OnStringReceivedListener onStringReceivedListener;
+	
+	public void setOnStringReceivedListener(OnStringReceivedListener onStringReceivedListener) {
+		this.onStringReceivedListener = onStringReceivedListener;
+		if (receivingThread==null){
+			receivingThread = new ReceivingThread();
+			receivingThread.start();
+		}
+	}
+	
+	private class ReceivingThread extends Thread {
+		private static final String TAG = "ReceivingThread";
+		@Override
+		public void run() {
+			try {
+				while (!isInterrupted()){
+					String readString = readString();
+					onStringReceivedListener.onStringReceived(readString);
+					Thread.yield();
+				}
+			} catch (IOException e) {Log.e (TAG, "IOException in SendingThread",e);
+			} /*catch (InterruptedException e) {Log.e (TAG, "InterruptedException in SendingThread",e);
+			}*/
+			super.run();
+		}
+		
+	}
+
 	/**
 	 * Serial port constructor
 	 * @param driverFile
@@ -49,9 +79,6 @@ public class SerialPort {
 	 * @throws InterruptedException 
 	 */
 	public SerialPort(String pathToDriver, int baudrateToUse) throws SecurityException, IOException, InvalidParameterException, InterruptedException {
-		
-		
-		
 		/** Check parameters */
 		if ( (pathToDriver.length() == 0) || (baudrateToUse == -1)) {
 			throw new InvalidParameterException();
@@ -108,7 +135,7 @@ public class SerialPort {
 		serialOutputChannel.close();
 		if (mFd != null) close(); else throw new IOException("Port is not opened");
 	}
-	
+	//TODO
 	/** JNI methods declaration */
 	private native static FileDescriptor open(String path, int baudrate);
 	private native void close();
