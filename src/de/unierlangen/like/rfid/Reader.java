@@ -3,6 +3,7 @@ package de.unierlangen.like.rfid;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import android.content.SharedPreferences;
 import de.unierlangen.like.serialport.SerialPort;
@@ -10,6 +11,8 @@ import de.unierlangen.like.serialport.SerialPort;
 public class Reader {
 
 	SerialPort readerSerialPort;
+	private String amountOfTags;
+	
 	public static enum Configuration {DEFAULT, LOW_POWER, HIGH_POWER};
 	/**
 	 * Constructor opens serial port and performs handshake
@@ -63,7 +66,16 @@ public class Reader {
 			throw new IOException("Reader MCU reported error:" + tagsString);
 		}
 		//TODO do something to this string to get tags from it
-	
+		Pattern pairs = Pattern.compile(";");
+		Pattern oneElement = Pattern.compile(",");
+		String[] allTags = pairs.split(tagsString);
+		String[] amountOfTagsString = allTags[0].split(":");
+		amountOfTags = amountOfTagsString[1];
+		
+		 for (String entry: allTags){
+			 String[] singleElement = oneElement.split(entry);
+			 //singleElement.
+		 }
 		
 		return tags;
 	}
@@ -74,4 +86,9 @@ public class Reader {
 		String registersString = readerSerialPort.readString();
 		return registersString;
 	}
+	
+	public String getAmountOfTags() {
+		return amountOfTags;
+	}
+
 }

@@ -17,8 +17,8 @@ public class Tag extends GenericTag {
 	public static final float minRSSI = -90;
 	
 	/** Debug constructor */
-	public Tag(int rssi, boolean isRead, float x, float y) {
-		super(rssi, isRead);
+	public Tag(String epc, int rssi, boolean isRead, float x, float y) {
+		super(epc, rssi, isRead);
 		this.x = x;
 		this.y = y;
 	}
@@ -30,7 +30,7 @@ public class Tag extends GenericTag {
 	 * @param y
 	 */
 	public Tag(GenericTag tag, float x, float y) {
-		super(tag.getRssi(), tag.isRead());
+		super(tag.getEpc(), tag.getRssi(), tag.isRead());
 		this.x = x;
 		this.y = y;
 	}

@@ -64,16 +64,16 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		arrayOfTags.add(new Tag(-22, true, 46.94f,	0.45f));
 		arrayOfTags.add(new Tag(-90, true, 56.70f,	7.03f));
 		arrayOfTags.add(new Tag(-200, true, 18.37f, 5.89f));*/
-		arrayOfTags.add(new Tag(-20, true, 18.37f, 5.89f));
-		arrayOfTags.add(new Tag(-28, true, 14.74f, 0.45f));
-		arrayOfTags.add(new Tag(-25, true, 14.74f, 7.03f));
-		arrayOfTags.add(new Tag(-200, true, 22.00f, 5.89f));
+		arrayOfTags.add(new Tag("HJHVJH7865", -20, true, 18.37f, 5.89f));
+		arrayOfTags.add(new Tag("DSTRUJ6789", -28, true, 14.74f, 0.45f));
+		arrayOfTags.add(new Tag("EFJKHG5790", -25, true, 14.74f, 7.03f));
+		arrayOfTags.add(new Tag("GFGHGN0458", -200, true, 22.00f, 5.89f));
 		
 		
 		try {
 			mapBuilder = new MapBuilder("/sdcard/like/map.txt");
 		} catch (IOException e) {
-			Toast.makeText(getApplicationContext(),"Sorry, current file is not readable ",Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(),"Sorry, current file is not readable or not found",Toast.LENGTH_SHORT).show();
 			mapBuilder = new MapBuilder("1,1,2,2;2,2,3,3;", true);
 			Log.e("TAG", "oops",e);
 		}
