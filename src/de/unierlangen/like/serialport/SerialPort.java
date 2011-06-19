@@ -28,6 +28,7 @@ import java.security.InvalidParameterException;
 
 import android.util.Log;
 
+/** Describes serial port */
 public class SerialPort {
 
 	private static final String TAG = "SerialPort";
@@ -44,6 +45,7 @@ public class SerialPort {
 	private ReceivingThread receivingThread;
 	private OnStringReceivedListener onStringReceivedListener;
 	
+	/** Set interface to handle szmbols received by serial port */
 	public void setOnStringReceivedListener(OnStringReceivedListener onStringReceivedListener) {
 		this.onStringReceivedListener = onStringReceivedListener;
 		if (receivingThread==null){
@@ -52,6 +54,11 @@ public class SerialPort {
 		}
 	}
 	
+	/** Thread reads data from port and calls onStringReceived from 
+	 * given {@link de.unierlangen.like.serialport.OnStringReceivedListener OnStringReceivedListener}
+	 * @author Kate
+	 *
+	 */
 	private class ReceivingThread extends Thread {
 		private static final String TAG = "ReceivingThread";
 		@Override
@@ -71,7 +78,7 @@ public class SerialPort {
 	}
 
 	/**
-	 * Serial port constructor
+	 * Serial port constructor. To receive data use {@link de.unierlangen.like.serialport.SerialPort#setOnStringReceivedListener setOnStringReceivedListener}
 	 * @param driverFile
 	 * @param baudrateToUse
 	 * @throws SecurityException
@@ -118,10 +125,12 @@ public class SerialPort {
 		serialOutputChannel = serialOutputStream.getChannel();
 	}
 
+	/** Writes single string from serial port */
 	public void writeString (String stringToWrite) throws IOException {
 		serialOutputChannel.write(ByteBuffer.wrap(stringToWrite.getBytes()));
 	}
-	
+	/** Private, because can never return. Use {@link setOnStringReceivedListener} 
+	 * to receive */
 	public String readString () throws IOException{
 		/** Here exception could be generated */
 		int size = serialInputChannel.read(buffer);
@@ -129,15 +138,16 @@ public class SerialPort {
 		buffer.flip();
 		return new String(buffer.array(),0,size);
 	}
-	
+	/** Closes serial port and channels */
 	public void closePort() throws IOException{
 		serialInputChannel.close();
 		serialOutputChannel.close();
 		if (mFd != null) close(); else throw new IOException("Port is not opened");
 	}
-	//TODO
-	/** JNI methods declaration */
+
+	/** Configures and opens serial port */
 	private native static FileDescriptor open(String path, int baudrate);
+	/** Closes serial port */
 	private native void close();
 	/** Load library with open() and close() */
 	static {

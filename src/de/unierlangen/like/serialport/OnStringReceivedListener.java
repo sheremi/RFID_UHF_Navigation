@@ -1,6 +1,8 @@
 package de.unierlangen.like.serialport;
 /**
- * @author Yuriy
+ * Interface used to get symbols received by serial port's internal thread.
+ * Use with {@link setOnStringReceivedListener}
+ * @author Kate
  *
  */
 public interface OnStringReceivedListener {

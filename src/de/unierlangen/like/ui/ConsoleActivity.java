@@ -46,27 +46,37 @@ import de.unierlangen.like.serialport.SerialPort;
 public class ConsoleActivity extends OptionsMenuActivity
 	implements OnClickListener, OnEditorActionListener, OnCheckedChangeListener, OnStringReceivedListener, OnLongClickListener {
 	
-	/** Fields */
+
 	private static final String TAG = "ConsoleActivity";
+	/** Serial port used by console */
 	private SerialPort serialPort;
 	/** Symbol counters */
 	private Integer incoming;
+	/** Amount of symbols sent*/
 	private Integer outgoing;
-	/** Views */	
+	/** Displays outgoing count */	
 	private TextView textViewOutgoing;
+	/** Displays incoming count */	
 	private TextView textViewIncoming;
+	/** Displays symbols received */	
 	private TextView textViewReception;
+	/** Button to send string from settings */	
 	private Button buttonSend;
+	/** EditText to send custom strings */
 	private EditText editTextEmission;
+	/** Enables or disables sending thread */	
 	private CheckBox checkBoxSendingThread;
-	/** Concurrency - AsyncTasks, Threads and Handlers*/
+	/* Concurrency - AsyncTasks, Threads and Handlers*/
+	/** UI thread handler, use it to post runnables on UI thread */
 	Handler handler;
+	/** Thread which continuously sends symbols */
 	private SendingThread sendingThread;
-	/** Interfaces */
 	
-	/** This method could be called from another thread.
-	* Use the handler to make sure the code runs in the UI thread*/
-	public void handleSymbolsSent(String sentString) {
+	/** Add length of the string to the outgoing counter
+	 * and text view */
+	public void onStringSent(String sentString) {
+		/** This method could be called from another thread.
+		* Use the handler to make sure the code runs in the UI thread*/
 		outgoing+=sentString.length();
 		handler.post(new Runnable() {
 			public void run() {
@@ -74,14 +84,26 @@ public class ConsoleActivity extends OptionsMenuActivity
 			}
 		});
 	}
-
+	/** Add length of the string to the incoming counter
+	 * and text view of this counter and add received string 
+	 * on reception*/
+	public void onStringReceived(final String string) {
+		incoming+=string.length();
+		handler.post(new Runnable() {
+			public void run() {
+				textViewIncoming.setText(incoming.toString());
+				textViewReception.append(string);
+			}
+		});
+	}
+	/** Describe what to do when button "Send" is pressed */
 	public void onClick(View v) {
-
 		// XXX((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(100);
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String messageString = sp.getString("GREETING", "");
 		try {
 			serialPort.writeString(messageString);
+			onStringSent(messageString);
 		} catch (IOException e) {
 			Log.d(TAG,"Opps",e);
 		}
@@ -91,8 +113,7 @@ public class ConsoleActivity extends OptionsMenuActivity
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		try {
 			serialPort.writeString(v.getText().toString());//+"\n");
-			outgoing+=v.getText().length();
-			textViewIncoming.setText(outgoing.toString());
+			onStringSent(v.getText().toString());
 		} catch (IOException e) {
 			Log.e(TAG, "Catched IOException from writeString() in onEditorAction()",e);
 		}			
@@ -116,16 +137,9 @@ public class ConsoleActivity extends OptionsMenuActivity
 
 	}
 	
-	public void onStringReceived(final String string) {
-		incoming+=string.length();
-		handler.post(new Runnable() {
-			public void run() {
-				textViewIncoming.setText(incoming.toString());
-				textViewReception.append(string);
-			}
-		});
-	}
 	
+	
+	/** Thread send symbols to serial port */
 	private class SendingThread extends Thread {
 		private static final String TAG = "SendingThread";
 		@Override
@@ -135,7 +149,7 @@ public class ConsoleActivity extends OptionsMenuActivity
 			try {
 				while (!isInterrupted()){
 					serialPort.writeString(loopbackString);
-					handleSymbolsSent(loopbackString);
+					onStringSent(loopbackString);
 					Thread.sleep(1000);
 				}
 			} catch (IOException e) {Log.e (TAG, "IOException in SendingThread",e);
@@ -147,12 +161,11 @@ public class ConsoleActivity extends OptionsMenuActivity
 		
 	}
 	
-	/** Override lifecycle methods */
+	/* Override lifecycle methods */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.console);
-		this.setTitle("Serial port test");
 		
 		textViewReception = (TextView)findViewById(R.id.textViewConsoleReception);
 		textViewOutgoing = (TextView)findViewById(R.id.textViewOutgoingValue);

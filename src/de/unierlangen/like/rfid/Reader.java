@@ -70,6 +70,7 @@ public class Reader {
 	
 	public String displayRegisters() throws IOException, InterruptedException{
 		readerSerialPort.writeString("q");
+		//FIXME this is not the way it should be done, use listener
 		String registersString = readerSerialPort.readString();
 		return registersString;
 	}
