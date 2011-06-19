@@ -204,7 +204,7 @@ public class ConsoleActivity extends OptionsMenuActivity
 		Log.d(TAG,"onResume() called");
 		try {
 			/** Read serial port parameters and open it */
-			SharedPreferences sp = getSharedPreferences("de.unierlangen.like.navigation_preferences", MODE_PRIVATE);
+			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			String path = sp.getString("DEVICE", "");
 			int baudrate = Integer.decode(sp.getString("BAUDRATE", "-1"));
 			serialPort = new SerialPort(path, baudrate);
