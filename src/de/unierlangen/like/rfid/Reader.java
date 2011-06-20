@@ -27,7 +27,7 @@ public class Reader {
 		int baudrate = Integer.decode(sp.getString("BAUDRATE", "-1"));
 		readerSerialPort = new SerialPort(path, baudrate);
 		readerSerialPort.writeString("PREVED");
-		String response = readerSerialPort.readString();
+		/*String response = readerSerialPort.readString();
 		
 		if (response.contains("MEDVED")){
 			//everything is fine
@@ -38,7 +38,7 @@ public class Reader {
 			throw new IOException("Reader MCU behaves odd, check baudrate: " + response);
 		} else {
 			throw new IOException("No response from reader");
-		}
+		}*/
 	}
 	
 	public void initialize(Configuration configuration) throws IOException{
