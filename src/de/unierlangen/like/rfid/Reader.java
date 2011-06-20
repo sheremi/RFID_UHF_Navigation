@@ -1,8 +1,11 @@
 package de.unierlangen.like.rfid;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import android.content.SharedPreferences;
@@ -61,21 +64,25 @@ public class Reader {
 		//Tell reader MCU to start inventory round
 		//readerSerialPort.writeString("z");
 		//XXX read the entire message from serialport
-		String tagsString = "tags:3;EBA123,14;FA894,1;BEEF666,30;endtags";//readerSerialPort.readString();
+		String tagsString = "tags,3,EBA123,14,FA894,1,BEEF666,30";//readerSerialPort.readString();
 		if (tagsString.contains("error")) {
 			throw new IOException("Reader MCU reported error:" + tagsString);
 		}
 		//TODO do something to this string to get tags from it
-		Pattern pairs = Pattern.compile(";");
+		//Pattern pairs = Pattern.compile(";");
 		Pattern oneElement = Pattern.compile(",");
-		String[] allTags = pairs.split(tagsString);
-		String[] amountOfTagsString = allTags[0].split(":");
-		amountOfTags = amountOfTagsString[1];
+		//String[] allTags = pairs.split(tagsString);
+		//ArrayList<String> 
+		ArrayList<String> strings = new ArrayList<String>(Arrays.asList(oneElement.split(tagsString)));
 		
-		 for (String entry: allTags){
-			 String[] singleElement = oneElement.split(entry);
-			 //singleElement.
-		 }
+		Iterator<String> iterator = strings.iterator();
+		//skip first element
+		iterator.next();
+		//skip second element
+		amountOfTags = iterator.next();
+		while (iterator.hasNext()){
+			tags.add(new GenericTag(iterator.next(),Integer.parseInt(iterator.next()), true));
+		}
 		
 		return tags;
 	}
