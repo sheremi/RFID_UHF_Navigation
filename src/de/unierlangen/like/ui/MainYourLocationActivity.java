@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +17,8 @@ import de.unierlangen.like.navigation.MapBuilder;
 import de.unierlangen.like.navigation.Navigation;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.Wall;
+import de.unierlangen.like.rfid.GenericTag;
+import de.unierlangen.like.rfid.Reader;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*implements OnClickListener, OnLongClickListener */{
 	private static final String TAG = "MainYourLocationActivity";
@@ -64,11 +67,19 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		arrayOfTags.add(new Tag(-22, true, 46.94f,	0.45f));
 		arrayOfTags.add(new Tag(-90, true, 56.70f,	7.03f));
 		arrayOfTags.add(new Tag(-200, true, 18.37f, 5.89f));*/
-		arrayOfTags.add(new Tag("HJHVJH7865", -20, true, 18.37f, 5.89f));
-		arrayOfTags.add(new Tag("DSTRUJ6789", -28, true, 14.74f, 0.45f));
-		arrayOfTags.add(new Tag("EFJKHG5790", -25, true, 14.74f, 7.03f));
-		arrayOfTags.add(new Tag("GFGHGN0458", -200, true, 22.00f, 5.89f));
-		
+		try {
+			Reader reader = new Reader(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+			
+			for (GenericTag genericTag: reader.performRound()){
+				arrayOfTags.add(new Tag(genericTag,(float)Math.random()*20f, (float)Math.random()*20f));
+			}
+		} catch (Exception e1) {
+			Log.d(TAG,"reader constructor failed", e1);
+			arrayOfTags.add(new Tag("HJHVJH7865", -20, true, 18.37f, 5.89f));
+			arrayOfTags.add(new Tag("DSTRUJ6789", -28, true, 14.74f, 0.45f));
+			arrayOfTags.add(new Tag("EFJKHG5790", -25, true, 14.74f, 7.03f));
+			arrayOfTags.add(new Tag("GFGHGN0458", -200, true, 22.00f, 5.89f));
+		} 
 		
 		try {
 			mapBuilder = new MapBuilder("/sdcard/like/map.txt");
