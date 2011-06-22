@@ -2,13 +2,13 @@ package de.unierlangen.like.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 import de.unierlangen.like.customviews.MapView;
@@ -16,6 +16,7 @@ import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.MapBuilder;
 import de.unierlangen.like.navigation.Navigation;
 import de.unierlangen.like.navigation.Tag;
+import de.unierlangen.like.navigation.TagsDatabase;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.rfid.GenericTag;
 import de.unierlangen.like.rfid.Reader;
@@ -54,11 +55,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	                }
 	        });
 		
-		/*Button plus = (Button)findViewById(R.id.plus);
-		plus.setOnClickListener(this);
-		Button minus = (Button)findViewById(R.id.minus);
-		minus.setOnClickListener(this);
-		*/
 		ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
 		/*arrayOfTags.add(new Tag(-15, true, 42.63f,	6.35f));
 		arrayOfTags.add(new Tag(-30, true, 47.85f,	6.12f));
@@ -69,9 +65,15 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		arrayOfTags.add(new Tag(-200, true, 18.37f, 5.89f));*/
 		try {
 			Reader reader = new Reader(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
-			
+			//arrayOfTags.add(new Tag(genericTag,(float)Math.random()*20f, (float)Math.random()*20f));
+			TagsDatabase tagsDatabase = new TagsDatabase();
+			HashMap<String, Float[]> tagsHashMap = tagsDatabase.createTagsHashMap();
 			for (GenericTag genericTag: reader.performRound()){
-				arrayOfTags.add(new Tag(genericTag,(float)Math.random()*20f, (float)Math.random()*20f));
+				if (tagsHashMap.containsKey(genericTag.getEpc())){
+					Float[] coordinates = tagsHashMap.get(genericTag.getEpc());
+					arrayOfTags.add(new Tag(genericTag, coordinates[0], coordinates[1]));
+				}
+				
 			}
 		} catch (Exception e1) {
 			Log.d(TAG,"reader constructor failed", e1);
