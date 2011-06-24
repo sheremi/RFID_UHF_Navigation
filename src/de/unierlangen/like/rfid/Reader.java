@@ -63,18 +63,12 @@ public class Reader {
 		ArrayList<GenericTag> tags = new ArrayList<GenericTag>();
 		//Tell reader MCU to start inventory round
 		//readerSerialPort.writeString("z");
-		//XXX read the entire message from serialport
 		String tagsString = "tags,3,EBA123,14,FA894,1,BEEF666,30";//readerSerialPort.readString();
 		if (tagsString.contains("error")) {
 			throw new IOException("Reader MCU reported error:" + tagsString);
 		}
-		//TODO do something to this string to get tags from it
-		//Pattern pairs = Pattern.compile(";");
 		Pattern oneElement = Pattern.compile(",");
-		//String[] allTags = pairs.split(tagsString);
-		//ArrayList<String> 
 		ArrayList<String> strings = new ArrayList<String>(Arrays.asList(oneElement.split(tagsString)));
-		
 		Iterator<String> iterator = strings.iterator();
 		//skip first element
 		iterator.next();

@@ -56,8 +56,6 @@ public class SerialPort {
 	
 	/** Thread reads data from port and calls onStringReceived from 
 	 * given {@link de.unierlangen.like.serialport.OnStringReceivedListener OnStringReceivedListener}
-	 * @author Kate
-	 *
 	 */
 	private class ReceivingThread extends Thread {
 		private static final String TAG = "ReceivingThread";
