@@ -2,12 +2,14 @@ package de.unierlangen.like.navigation;
 
 import java.util.HashMap;
 
+import de.unierlangen.like.rfid.GenericTag;
+
 public class TagsDatabase {
 	
 	public TagsDatabase() {
 		super();
 	}
-	
+	//TODO change to private
 	public HashMap<String, Float[]> createTagsHashMap(){
 		//Map keys (EPC values) to objects of tags for navigation with specific coordinates
 		HashMap<String, Float[]> hashMap = new HashMap<String, Float[]>();
@@ -23,6 +25,12 @@ public class TagsDatabase {
 
 		return hashMap;
 		
+	}
+	
+	public Tag makeTag(GenericTag genericTag) {
+		//TODO implement
+		return new Tag(genericTag, 1, 1);
+	
 	}
 
 }
