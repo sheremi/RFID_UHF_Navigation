@@ -1,12 +1,14 @@
 package de.unierlangen.like.ui;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -23,6 +25,7 @@ import de.unierlangen.like.navigation.TagsDatabase;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.rfid.GenericTag;
 import de.unierlangen.like.rfid.Reader;
+import de.unierlangen.like.serialport.SerialPort;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*implements OnClickListener, OnLongClickListener */{
 	private static final String TAG = "MainYourLocationActivity";
@@ -30,6 +33,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private Navigation navigation;
 	private MapBuilder mapBuilder;
 	private ZoomControls zoomControls;
+	private SerialPort readerSerialPort;
+	private SharedPreferences sharedPreferences;
 				
 	//TODO make something nice with long click on the view
 	/*public boolean onLongClick(View v) {
@@ -57,9 +62,27 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		});
 		
 		ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
+		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		String path = sharedPreferences.getString("DEVICE", "");
+		int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "-1"));
+		try {
+			readerSerialPort = new SerialPort(path, baudrate);
+		} catch (InvalidParameterException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (SecurityException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (InterruptedException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		
 		try {
-			Reader reader = new Reader(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+			Reader reader = new Reader(readerSerialPort);
 			//arrayOfTags.add(new Tag(genericTag,(float)Math.random()*20f, (float)Math.random()*20f));
 			TagsDatabase tagsDatabase = new TagsDatabase();
 			HashMap<String, Float[]> tagsHashMap = tagsDatabase.createTagsHashMap();

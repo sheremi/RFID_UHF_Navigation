@@ -21,6 +21,11 @@ public class Reader implements OnStringReceivedListener{
 	//private Lock mLock;
 	
 	public static enum Configuration {DEFAULT, LOW_POWER, HIGH_POWER};
+	public class ReaderException extends Exception{
+		private static final long serialVersionUID = 1L;
+	}
+	
+	
 	/**
 	 * Constructor opens serial port and performs handshake
 	 * @param sp
@@ -29,10 +34,8 @@ public class Reader implements OnStringReceivedListener{
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public Reader(SharedPreferences sp) throws InvalidParameterException, SecurityException, IOException, InterruptedException{
-		String path = sp.getString("DEVICE", "");
-		int baudrate = Integer.decode(sp.getString("BAUDRATE", "-1"));
-		readerSerialPort = new SerialPort(path, baudrate);
+	public Reader(SerialPort serialPort) throws InvalidParameterException, SecurityException, IOException, InterruptedException{
+		readerSerialPort = serialPort;
 		readerSerialPort.setOnStringReceivedListener(this);
 		synchronized (this) {
 			readerSerialPort.writeString("preved");
