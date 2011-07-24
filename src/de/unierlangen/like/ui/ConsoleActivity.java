@@ -191,11 +191,7 @@ public class ConsoleActivity extends OptionsMenuActivity
 		super.onResume();
 		Log.d(TAG,"onResume() called");
 		try {
-			/** Read serial port parameters and open it */
-			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			String path = sp.getString("DEVICE", "");
-			int baudrate = Integer.decode(sp.getString("BAUDRATE", "-1"));
-			serialPort = new SerialPort(path, baudrate);
+			serialPort = SerialPort.getSerialPort(this);
 			serialPort.setOnStringReceivedListener(this);
 			/** Create threads */
 			//sendingThread = new SendingThread(this, serialPort);//started in onCheckedChangeListener
@@ -215,9 +211,6 @@ public class ConsoleActivity extends OptionsMenuActivity
 	@Override
 	protected void onPause() {
 		sendingThread.interrupt();
-		try {
-			serialPort.closePort();
-		} catch (IOException e) {Log.e(TAG, "IOException in onPause()",e);}
 		super.onPause();
 	}
 }

@@ -8,9 +8,7 @@ import java.util.HashMap;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +32,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private MapBuilder mapBuilder;
 	private ZoomControls zoomControls;
 	private SerialPort readerSerialPort;
-	private SharedPreferences sharedPreferences;
 				
 	//TODO make something nice with long click on the view
 	/*public boolean onLongClick(View v) {
@@ -62,11 +59,44 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		});
 		
 		ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
-		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		String path = sharedPreferences.getString("DEVICE", "");
-		int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "-1"));
+		
 		try {
-			readerSerialPort = new SerialPort(path, baudrate);
+			readerSerialPort = SerialPort.getSerialPort(this);
+			
+			for (int i=0; i<5; i++){
+				try {
+					Reader reader = new Reader(readerSerialPort);
+					//arrayOfTags.add(new Tag(genericTag,(float)Math.random()*20f, (float)Math.random()*20f));
+					TagsDatabase tagsDatabase = new TagsDatabase();
+					HashMap<String, Float[]> tagsHashMap = tagsDatabase.createTagsHashMap();
+					for (GenericTag genericTag: reader.performRound()){
+						if (tagsHashMap.containsKey(genericTag.getEpc())){
+							Float[] coordinates = tagsHashMap.get(genericTag.getEpc());
+							arrayOfTags.add(new Tag(genericTag, coordinates[0], coordinates[1]));
+						}
+					}
+				break;
+				} catch (Exception e1) {
+					Log.d(TAG,"reader constructor failed", e1);
+					// Build the dialog
+					AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					// Set title of the dialog
+					builder.setTitle("Achtung!");
+					// The message that is displayed in the dialog
+					builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
+					// Set behavior of positive button
+					builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
+						}
+					});
+					// Create and assign the dialog
+					AlertDialog alert = builder.create();
+					// Show the dialog
+					alert.show();
+				} 
+			}
+			
 		} catch (InvalidParameterException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -80,37 +110,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		
-		try {
-			Reader reader = new Reader(readerSerialPort);
-			//arrayOfTags.add(new Tag(genericTag,(float)Math.random()*20f, (float)Math.random()*20f));
-			TagsDatabase tagsDatabase = new TagsDatabase();
-			HashMap<String, Float[]> tagsHashMap = tagsDatabase.createTagsHashMap();
-			for (GenericTag genericTag: reader.performRound()){
-				if (tagsHashMap.containsKey(genericTag.getEpc())){
-					Float[] coordinates = tagsHashMap.get(genericTag.getEpc());
-					arrayOfTags.add(new Tag(genericTag, coordinates[0], coordinates[1]));
-				}
-			}
-		} catch (Exception e1) {
-			Log.d(TAG,"reader constructor failed", e1);
-			// Build the dialog
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			// Set title of the dialog
-			builder.setTitle("Achtung!");
-			// The message that is displayed in the dialog
-			builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
-			// Set behavior of positive button
-			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
-				}
-			});
-			// Create and assign the dialog
-			AlertDialog alert = builder.create();
-			// Show the dialog
-			alert.show();
-		} 
 		
 		try {
 			mapBuilder = new MapBuilder("/sdcard/like/map.txt");

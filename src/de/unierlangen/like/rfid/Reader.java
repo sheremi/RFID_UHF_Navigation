@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.regex.Pattern;
-
-import android.content.SharedPreferences;
 import android.util.Log;
 import de.unierlangen.like.serialport.OnStringReceivedListener;
 import de.unierlangen.like.serialport.SerialPort;
@@ -24,8 +22,7 @@ public class Reader implements OnStringReceivedListener{
 	public class ReaderException extends Exception{
 		private static final long serialVersionUID = 1L;
 	}
-	
-	
+		
 	/**
 	 * Constructor opens serial port and performs handshake
 	 * @param sp

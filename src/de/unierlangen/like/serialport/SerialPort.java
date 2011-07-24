@@ -17,7 +17,6 @@
 
 package de.unierlangen.like.serialport;
 
-import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,6 +25,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.InvalidParameterException;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 /** Describes serial port */
@@ -33,9 +35,6 @@ public class SerialPort {
 
 	private static final String TAG = "SerialPort";
 
-	private int baudrate;
-	private String path;
-	
 	/** mFd is used in native method close() as a reference. */
 	private FileDescriptor mFd;
 	ByteBuffer buffer;
@@ -44,6 +43,8 @@ public class SerialPort {
 	
 	private ReceivingThread receivingThread;
 	private OnStringReceivedListener onStringReceivedListener;
+
+	private static SerialPort instance;
 	
 	/** Set interface to handle symbols received by serial port */
 	public void setOnStringReceivedListener(OnStringReceivedListener onStringReceivedListener) {
@@ -67,45 +68,31 @@ public class SerialPort {
 					onStringReceivedListener.onStringReceived(readString);
 					Thread.yield();
 				}
-			} catch (IOException e) {Log.e (TAG, "IOException in SendingThread",e);
+			} catch (IOException e) {
+				Log.e (TAG, "IOException in SendingThread",e);
 			} /*catch (InterruptedException e) {Log.e (TAG, "InterruptedException in SendingThread",e);
 			}*/
 			super.run();
 		}
-		
 	}
-
 	/**
 	 * Serial port constructor. To receive data use {@link de.unierlangen.like.serialport.SerialPort#setOnStringReceivedListener setOnStringReceivedListener}
-	 * @param driverFile
-	 * @param baudrateToUse
+	 * @param context
+	 * @throws InvalidParameterException
 	 * @throws SecurityException
 	 * @throws IOException
-	 * @throws InterruptedException 
 	 */
-	public SerialPort(String pathToDriver, int baudrateToUse) throws SecurityException, IOException, InvalidParameterException, InterruptedException {
+	private SerialPort(Context context) throws InvalidParameterException, SecurityException, IOException {
+		
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+		String path = sharedPreferences.getString("DEVICE", "");
+		int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "-1"));
+		
 		/** Check parameters */
-		if ( (pathToDriver.length() == 0) || (baudrateToUse == -1)) {
+		if ( (path.length() == 0) || (baudrate == -1)) {
 			throw new InvalidParameterException();
 		}
-		/** initialize fields */
-		baudrate = baudrateToUse;
-		path = pathToDriver;
-		
-		/** create an object representing selected driver */
-		File driverFile = new File(path);
-		/** Check access permission to driver file */
-		if (!driverFile.canRead() || !driverFile.canWrite()) {
-				/* Missing read/write permission, trying to chmod the file */
-				Process su;
-				su = Runtime.getRuntime().exec("/system/bin/su");
-				String cmd = "chmod 666 " + driverFile.getAbsolutePath() + "\n"	+ "exit\n";
-				su.getOutputStream().write(cmd.getBytes());
-				if ((su.waitFor() != 0) || !driverFile.canRead()|| !driverFile.canWrite()) {
-					throw new SecurityException();
-				}
-		}
-
+	
 		/** Use native opener which has some specific flags, see C code */
 		mFd = open(path, baudrate);
 		if (mFd == null) {
@@ -122,7 +109,14 @@ public class SerialPort {
 		FileOutputStream serialOutputStream = new FileOutputStream(mFd);
 		serialOutputChannel = serialOutputStream.getChannel();
 	}
-
+	
+	public static SerialPort getSerialPort(Context context) throws InvalidParameterException, SecurityException, IOException, InterruptedException{
+		if (instance==null){
+			instance = new SerialPort(context);
+		}
+		return instance;
+	}
+	
 	/** Writes single string from serial port */
 	public void writeString (String stringToWrite) throws IOException {
 		serialOutputChannel.write(ByteBuffer.wrap(stringToWrite.getBytes()));
@@ -135,12 +129,6 @@ public class SerialPort {
 	
 		buffer.flip();
 		return new String(buffer.array(),0,size);
-	}
-	/** Closes serial port and channels */
-	public void closePort() throws IOException{
-		serialInputChannel.close();
-		serialOutputChannel.close();
-		if (mFd != null) close(); else throw new IOException("Port is not opened");
 	}
 
 	/** Configures and opens serial port */
