@@ -94,6 +94,10 @@ public class Reader implements OnStringReceivedListener{
 		}
 		Pattern oneElement = Pattern.compile(",");
 		ArrayList<String> strings = new ArrayList<String>(Arrays.asList(oneElement.split(response)));
+		int lastElementIndex = strings.size() - 1;
+		String lastElement = strings.get(lastElementIndex).replace("\n", " ").trim();
+		strings.remove(lastElementIndex);
+		strings.add(lastElementIndex, lastElement);
 		Iterator<String> iterator = strings.iterator();
 		// Check if string header is correct
 		if (iterator.next().equals("resp r tags")==false){
@@ -103,7 +107,6 @@ public class Reader implements OnStringReceivedListener{
 		amountOfTags = iterator.next();
 		Log.d(TAG, "amountOfTags = " + amountOfTags);
 		while (iterator.hasNext()){
-			//Log.d(TAG, iterator.next());
 			tags.add(new GenericTag(iterator.next(),Integer.parseInt(iterator.next()), true));
 		}
 		return tags;

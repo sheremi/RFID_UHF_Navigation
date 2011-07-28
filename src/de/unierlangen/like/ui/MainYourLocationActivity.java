@@ -69,22 +69,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 					break;
 				} catch (Exception e1) {
 					Log.d(TAG,"reader constructor failed", e1);
-					// Build the dialog
-					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					// Set title of the dialog
-					builder.setTitle("Achtung!");
-					// The message that is displayed in the dialog
-					builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
-					// Set behavior of positive button
-					builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
-						}
-					});
-					// Create and assign the dialog
-					AlertDialog alert = builder.create();
-					// Show the dialog
-					alert.show();
+					
 				}
 			}
 			//arrayOfTags.add(new Tag(genericTag,(float)Math.random()*20f, (float)Math.random()*20f));
@@ -98,7 +83,23 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			}
 				
 		} catch (InvalidParameterException e2) {
-			// TODO Auto-generated catch block
+			Log.d(TAG,"Unable to get SerialPort. It has to be configured first", e2);
+			// Build the dialog
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			// Set title of the dialog
+			builder.setTitle("Achtung!");
+			// The message that is displayed in the dialog
+			builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
+			// Set behavior of positive button
+			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
+				}
+			});
+			// Create and assign the dialog
+			AlertDialog alert = builder.create();
+			// Show the dialog
+			alert.show();
 			e2.printStackTrace();
 		} catch (SecurityException e2) {
 			// TODO Auto-generated catch block
