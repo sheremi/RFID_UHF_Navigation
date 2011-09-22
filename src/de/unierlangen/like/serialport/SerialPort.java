@@ -45,7 +45,7 @@ public class SerialPort {
 	private ReceivingThread receivingThread;
 	private OnStringReceivedListener onStringReceivedListener;
 	
-	/** Set interface to handle szmbols received by serial port */
+	/** Set interface to handle symbols received by serial port */
 	public void setOnStringReceivedListener(OnStringReceivedListener onStringReceivedListener) {
 		this.onStringReceivedListener = onStringReceivedListener;
 		if (receivingThread==null){
@@ -129,7 +129,7 @@ public class SerialPort {
 	}
 	/** Private, because can never return. Use {@link setOnStringReceivedListener} 
 	 * to receive */
-	public String readString () throws IOException{
+	private String readString () throws IOException{
 		/** Here exception could be generated */
 		int size = serialInputChannel.read(buffer);
 	
