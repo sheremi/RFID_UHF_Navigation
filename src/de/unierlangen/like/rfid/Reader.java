@@ -40,6 +40,7 @@ public class Reader implements OnStringReceivedListener{
 		}
 		
 		if (response.contains("medved")){
+			Log.d(TAG, "Reader successfully connected");
 			//everything is fine
 			return;
 		} else if (response.contains("error")){
@@ -93,7 +94,9 @@ public class Reader implements OnStringReceivedListener{
 			throw new IOException("response should start with 'resp r tags'");
 		// TODO use amountOfTags where it should be used
 		amountOfTags = iterator.next();
+		Log.d(TAG, amountOfTags);
 		while (iterator.hasNext()){
+			Log.d(TAG, iterator.next());
 			tags.add(new GenericTag(iterator.next(),Integer.parseInt(iterator.next()), true));
 		}
 		
