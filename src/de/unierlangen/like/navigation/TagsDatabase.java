@@ -13,24 +13,17 @@ public class TagsDatabase {
 	public HashMap<String, Float[]> createTagsHashMap(){
 		//Map keys (EPC values) to objects of tags for navigation with specific coordinates
 		HashMap<String, Float[]> hashMap = new HashMap<String, Float[]>();
-		//
-		Float[] coordinates1 = {18.37f,5.89f};
-		hashMap.put("EBA123", coordinates1);
-		//
-		Float[] coordinates2 = {14.74f,7.03f};
-		hashMap.put("FA894", coordinates2);
-		//
-		Float[] coordinates3 = {22.00f,5.89f};
-		hashMap.put("BEEF666", coordinates3);
+
+		hashMap.put("EBA123", new Float[]{18.37f,5.89f});
+		hashMap.put("FA894", new Float[]{14.74f,7.03f});
+		hashMap.put("BEEB111", new Float[]{22.00f,5.89f});
+		hashMap.put("DEFFA321", new Float[]{26.00f,9.89f});
 
 		return hashMap;
-		
 	}
-	
+
 	public Tag makeTag(GenericTag genericTag) {
 		//TODO implement
 		return new Tag(genericTag, 1, 1);
-	
 	}
-
 }
