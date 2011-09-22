@@ -25,6 +25,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.InvalidParameterException;
 
+import de.unierlangen.like.rfid.Reader.ReaderException;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
