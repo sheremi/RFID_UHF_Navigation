@@ -27,11 +27,12 @@ import java.security.InvalidParameterException;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 /** Describes serial port */
-public class SerialPort {
+public class SerialPort implements OnSharedPreferenceChangeListener {
 
 	private static final String TAG = "SerialPort";
 
@@ -43,6 +44,8 @@ public class SerialPort {
 	
 	private ReceivingThread receivingThread;
 	private OnStringReceivedListener onStringReceivedListener;
+
+	private static Context mContext;
 
 	private static SerialPort instance;
 	
@@ -86,6 +89,7 @@ public class SerialPort {
 		
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 		String path = sharedPreferences.getString("DEVICE", "");
+		sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 		int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "-1"));
 		
 		/** Check parameters */
@@ -114,6 +118,7 @@ public class SerialPort {
 		if (instance==null){
 			instance = new SerialPort(context);
 		}
+		mContext=context;
 		return instance;
 	}
 	
@@ -138,6 +143,17 @@ public class SerialPort {
 	/** Load library with open() and close() */
 	static {
 		System.loadLibrary("serial_port");
+	}
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if (key.equals("baudrate")||key.equals("path")){
+			try {
+				instance = new SerialPort(mContext);
+			} catch (IOException e) {
+				// TODO make a toast
+				Log.d(TAG, "Settings are not correct");
+			}
+		}
 	}
 }
 
