@@ -20,6 +20,10 @@ public class Reader implements OnStringReceivedListener{
 	
 	public static enum Configuration {DEFAULT, LOW_POWER, HIGH_POWER};
 	public class ReaderException extends Exception{
+		public ReaderException(String string) {
+			super(string);
+		}
+
 		private static final long serialVersionUID = 1L;
 	}
 		
@@ -36,7 +40,7 @@ public class Reader implements OnStringReceivedListener{
 		readerSerialPort.setOnStringReceivedListener(this);
 		synchronized (this) {
 			readerSerialPort.writeString("preved");
-			this.wait(700);		
+			this.wait(1000);		
 		}
 		
 		if (response.contains("medved")){
@@ -77,7 +81,10 @@ public class Reader implements OnStringReceivedListener{
 			readerSerialPort.writeString("req r tags");
 			//mLock.wait();
 			try {
-				this.wait(700);
+				for (int i=0;i<=5;i++){
+					this.wait(700);
+					if (response.endsWith("\n")==true) break;
+				}
 			} catch (InterruptedException e) {
 				Log.e(TAG, "Unexpected interrupt",e);
 			}
@@ -85,21 +92,20 @@ public class Reader implements OnStringReceivedListener{
 				throw new IOException("Reader MCU reported error:" + response);
 			}	
 		}
-
 		Pattern oneElement = Pattern.compile(",");
 		ArrayList<String> strings = new ArrayList<String>(Arrays.asList(oneElement.split(response)));
 		Iterator<String> iterator = strings.iterator();
 		// Check if string header is correct
-		if (iterator.next()!="resp r tags")
+		if (iterator.next().equals("resp r tags")==false){
 			throw new IOException("response should start with 'resp r tags'");
+		}
 		// TODO use amountOfTags where it should be used
 		amountOfTags = iterator.next();
-		Log.d(TAG, amountOfTags);
+		Log.d(TAG, "amountOfTags = " + amountOfTags);
 		while (iterator.hasNext()){
-			Log.d(TAG, iterator.next());
+			//Log.d(TAG, iterator.next());
 			tags.add(new GenericTag(iterator.next(),Integer.parseInt(iterator.next()), true));
 		}
-		
 		return tags;
 	}
 	
@@ -115,14 +121,14 @@ public class Reader implements OnStringReceivedListener{
 			}
 		}
 		if (response.contains("error")) {
+			//TODO replace exceptions in this file with ReaderExceptions (with mapping)
 			throw new IOException("Reader MCU reported error:" + response);
 		}
 		Pattern oneElement = Pattern.compile(",");
 		ArrayList<String> strings = new ArrayList<String>(Arrays.asList(oneElement.split(response)));
 		// Check if string header is correct
-		if (strings.remove(0)!="resp r regs")
+		if (strings.remove(0).equals("resp r regs")==false)
 			throw new IOException("response should start with 'resp r regs'");
-		
 		return strings;
 	}
 	
@@ -139,7 +145,7 @@ public class Reader implements OnStringReceivedListener{
 			response = response.concat(string);
 			if (response.contains("\n")){
 				Log.d(TAG, "Response: "+response);
-				this.notify();	
+				this.notify();
 			}
 		}
 	}

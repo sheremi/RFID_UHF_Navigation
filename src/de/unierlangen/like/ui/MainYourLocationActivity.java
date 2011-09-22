@@ -32,7 +32,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private MapBuilder mapBuilder;
 	private ZoomControls zoomControls;
 	private SerialPort readerSerialPort;
-				
+	private Reader reader;
+					
 	//TODO make something nice with long click on the view
 	/*public boolean onLongClick(View v) {
 		return false;
@@ -59,23 +60,13 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		});
 		
 		ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
-		
+		//TODO remove retry, add dialog for retry, move that stuff to onResume
 		try {
 			readerSerialPort = SerialPort.getSerialPort(this);
-			
-			for (int i=0; i<5; i++){
+			for (int i=0; i<3; i++){
 				try {
-					Reader reader = new Reader(readerSerialPort);
-					//arrayOfTags.add(new Tag(genericTag,(float)Math.random()*20f, (float)Math.random()*20f));
-					TagsDatabase tagsDatabase = new TagsDatabase();
-					HashMap<String, Float[]> tagsHashMap = tagsDatabase.createTagsHashMap();
-					for (GenericTag genericTag: reader.performRound()){
-						if (tagsHashMap.containsKey(genericTag.getEpc())){
-							Float[] coordinates = tagsHashMap.get(genericTag.getEpc());
-							arrayOfTags.add(new Tag(genericTag, coordinates[0], coordinates[1]));
-						}
-					}
-				break;
+					reader = new Reader(readerSerialPort);
+					break;
 				} catch (Exception e1) {
 					Log.d(TAG,"reader constructor failed", e1);
 					// Build the dialog
@@ -94,9 +85,18 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 					AlertDialog alert = builder.create();
 					// Show the dialog
 					alert.show();
-				} 
+				}
 			}
-			
+			//arrayOfTags.add(new Tag(genericTag,(float)Math.random()*20f, (float)Math.random()*20f));
+			TagsDatabase tagsDatabase = new TagsDatabase();
+			HashMap<String, Float[]> tagsHashMap = tagsDatabase.createTagsHashMap();
+			for (GenericTag genericTag: reader.performRound()){
+				if (tagsHashMap.containsKey(genericTag.getEpc())){
+					Float[] coordinates = tagsHashMap.get(genericTag.getEpc());
+					arrayOfTags.add(new Tag(genericTag, coordinates[0], coordinates[1]));
+				}
+			}
+				
 		} catch (InvalidParameterException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
