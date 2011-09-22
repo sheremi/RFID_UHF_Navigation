@@ -17,7 +17,7 @@ public class Reader implements OnStringReceivedListener{
 	private static final String TAG = "Reader";
 	SerialPort readerSerialPort;	
 	private String amountOfTags;
-	private String response;
+	private String response = "";
 	//private Lock mLock;
 	
 	public static enum Configuration {DEFAULT, LOW_POWER, HIGH_POWER};
@@ -35,11 +35,11 @@ public class Reader implements OnStringReceivedListener{
 		readerSerialPort = new SerialPort(path, baudrate);
 		readerSerialPort.setOnStringReceivedListener(this);
 		synchronized (this) {
-			readerSerialPort.writeString("PREVED");
+			readerSerialPort.writeString("preved");
 			this.wait(700);		
 		}
 		
-		if (response.contains("MEDVED")){
+		if (response.contains("medved")){
 			//everything is fine
 			return;
 		} else if (response.contains("error")){
