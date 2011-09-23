@@ -36,7 +36,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private Reader reader;
 	private ReadingTagsThread readingTagsThread;
 	private TagsDatabase tagsDatabase = new TagsDatabase();
-	private HashMap<String, Float[]> tagsHashMap = tagsDatabase.createTagsHashMap();
 	private ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();				
 	//TODO make something nice with long click on the view
 	/*public boolean onLongClick(View v) {
@@ -47,27 +46,25 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		private static final String TAG = "SendingThread";
 		@Override
 		public void run() {
-			try {
-				while (!isInterrupted()){
-					for (GenericTag genericTag: reader.performRound()){
-						if (tagsHashMap.containsKey(genericTag.getEpc())){
-							Float[] coordinates = tagsHashMap.get(genericTag.getEpc());
-							arrayOfTags.add(new Tag(genericTag, coordinates[0], coordinates[1]));
-						}
-					}
-					Thread.sleep(3000);
-				}
+			while (!isInterrupted()){
+				try {
+					arrayOfTags.addAll(tagsDatabase.getReadTags(reader));
 				} catch (IOException e) {
 					Log.e (TAG, "IOException in ReadingTagsThread",e);
 					e.printStackTrace();
 				} catch (ReaderException e) {
 					Log.e (TAG, "ReaderException in ReadingTagsThread",e);
 					e.printStackTrace();
-				} catch (InterruptedException e) {
-					Log.e (TAG, "InterruptedException in ReadingTagsThread",e);
-					e.printStackTrace();
 				}
-			super.run();
+						
+			}
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				Log.e (TAG, "InterruptedException in ReadingTagsThread",e);
+				e.printStackTrace();
+			}
+				super.run();
 		}
 	}
 	//** Called when the activity is first created. *//
