@@ -36,7 +36,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private Reader reader;
 	private ReadingTagsThread readingTagsThread;
 	private TagsDatabase tagsDatabase = new TagsDatabase();
-	private ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();				
+	private ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
+	private ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
 	//TODO make something nice with long click on the view
 	/*public boolean onLongClick(View v) {
 		return false;
@@ -48,7 +49,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		public void run() {
 			while (!isInterrupted()){
 				try {
-					arrayOfTags.addAll(tagsDatabase.getReadTags(reader));
+					readTagsFromReader = reader.performRound();
+					arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
 				} catch (IOException e) {
 					Log.e (TAG, "IOException in ReadingTagsThread",e);
 					e.printStackTrace();
