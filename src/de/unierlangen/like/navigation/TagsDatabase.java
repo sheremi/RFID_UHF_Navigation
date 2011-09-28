@@ -1,18 +1,20 @@
 package de.unierlangen.like.navigation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.unierlangen.like.rfid.GenericTag;
 
 public class TagsDatabase {
 	
+	HashMap<String, Float[]> hashMap = new HashMap<String, Float[]>();
+	
 	public TagsDatabase() {
 		super();
 	}
-	//TODO change to private
-	public HashMap<String, Float[]> createTagsHashMap(){
+	
+	private HashMap<String, Float[]> createTagsHashMap(){
 		//Map keys (EPC values) to objects of tags for navigation with specific coordinates
-		HashMap<String, Float[]> hashMap = new HashMap<String, Float[]>();
 
 		hashMap.put("EBA123", new Float[]{18.37f,5.89f});
 		hashMap.put("FA894", new Float[]{14.74f,7.03f});
@@ -26,4 +28,17 @@ public class TagsDatabase {
 		//TODO implement
 		return new Tag(genericTag, 1, 1);
 	}
+	
+	public ArrayList<Tag> getTags(ArrayList<GenericTag> genericTags) {
+		hashMap = createTagsHashMap();
+		ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
+		for (GenericTag genericTag: genericTags){
+			if (hashMap.containsKey(genericTag.getEpc())){
+				Float[] coordinates = hashMap.get(genericTag.getEpc());
+				arrayOfTags.add(new Tag(genericTag, coordinates[0], coordinates[1]));
+			}
+		}	
+		return arrayOfTags;
+	}
+
 }
