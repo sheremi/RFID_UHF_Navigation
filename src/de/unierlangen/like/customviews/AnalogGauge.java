@@ -82,7 +82,7 @@ public final class AnalogGauge extends View {
 	}
 	public AnalogGauge(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		//XXX get values from XML
+		//XXX get values from XML (AnalogGauge)
 		nicksPerTag=attrs.getAttributeIntValue("de.unierlangen.like.customviews.AnalogGauge", "nicks", 10);
 		
 		init();
@@ -379,7 +379,7 @@ public final class AnalogGauge extends View {
 	protected void onDraw(Canvas canvas) {
 		drawBackground(canvas);
 		
-		canvas.save(Canvas.MATRIX_SAVE_FLAG);//XXX peek what is it
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);//XXX peek what is it (AnalogGauge)
 		canvas.scale(getWidth(), getHeight());
 		
 		drawLogo(canvas);

@@ -25,7 +25,7 @@ public class TagsDatabase {
 	}
 
 	public Tag makeTag(GenericTag genericTag) {
-		//TODO implement
+		//TODO implement makeTag in tagsdatabase
 		return new Tag(genericTag, 1, 1);
 	}
 	

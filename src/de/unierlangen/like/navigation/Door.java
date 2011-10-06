@@ -59,7 +59,7 @@ public class Door extends Obstacle {
 	}
 	@Override
 	public boolean isBetween(Tag tag, float x, float y) {
-		// TODO Implement some math
+		// TODO Implement math (isBetween, Door)
 		return false;
 	}
 

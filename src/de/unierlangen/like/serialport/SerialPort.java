@@ -152,7 +152,7 @@ public class SerialPort implements OnSharedPreferenceChangeListener {
 			try {
 				instance = new SerialPort(mContext);
 			} catch (IOException e) {
-				// TODO make a toast
+				// FIXME make a toast
 				Log.d(TAG, "Settings are not correct");
 			}
 		}

@@ -49,7 +49,7 @@ public class Wall extends Obstacle {
 	}
 	
 	public boolean isBetween (Tag tag, float x, float y){
-		//TODO implement math here
+		//TODO implement math (isBetween, Wall)
 		
 		return false;
 	}

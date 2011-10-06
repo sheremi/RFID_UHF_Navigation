@@ -70,7 +70,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		}
 	}
 	//** Called when the activity is first created. *//
-	@SuppressWarnings("unused")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
