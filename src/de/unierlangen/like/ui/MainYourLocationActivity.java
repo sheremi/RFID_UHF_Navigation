@@ -9,6 +9,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +30,8 @@ import de.unierlangen.like.serialport.SerialPort;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*implements OnClickListener, OnLongClickListener */{
 	private static final String TAG = "MainYourLocationActivity";
+	public static final int THREAD_EVENT_READ_TAGS = 4;
+	private static final int READ_TAGS_INTERVAL = 3000;
 	private MapView mapView;
 	private Navigation navigation;
 	private MapBuilder mapBuilder;
@@ -35,12 +39,43 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private SerialPort readerSerialPort;
 	private Reader reader;
 	private TagsDatabase tagsDatabase = new TagsDatabase();
-	private ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
 	private ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
 	//TODO make something nice with long click on the view
 	/*public boolean onLongClick(View v) {
 		return false;
 	}*/
+
+	private Handler handler = new Handler() {
+		@SuppressWarnings("unchecked")
+		@Override
+		public void handleMessage(Message msg) {
+			Log.d (TAG, "handleMessage(" + msg.what + ")");
+			switch (msg.what) {
+			case Reader.RESPONSE_TAGS:
+			case Reader.EVENT_TAGS:
+				readTagsFromReader = (ArrayList<GenericTag>) msg.obj;
+				// FIXME replace fields with local variables
+				ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
+				arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
+				navigation = new Navigation(arrayOfTags);
+				mapView.setRectFTags(navigation.getAreaWithTags());
+				mapView.setTags(arrayOfTags);
+				break;
+			case Reader.RESPONSE_REGS:
+				//TODO implement analysis of RESPONSE_REGS
+				break;
+			case Reader.ERROR:
+				Toast.makeText(getApplicationContext(),"Reader MCU reported error: check the connection",Toast.LENGTH_SHORT).show();
+				break;
+			case THREAD_EVENT_READ_TAGS:
+				reader.performRound();
+				sendMessageDelayed(obtainMessage(THREAD_EVENT_READ_TAGS), READ_TAGS_INTERVAL);
+				break;
+			default:
+				break;
+			}
+		};
+	};
 
 	//** Called when the activity is first created. *//
 	@Override
@@ -63,11 +98,11 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			}
 		});
 		
-		//TODO remove retry, add dialog for retry, move that stuff to onResume
+		//FIXME move that stuff to onResume
 		try {
 			readerSerialPort = SerialPort.getSerialPort(this);
 				try {
-					reader = new Reader(readerSerialPort);
+					reader = new Reader(readerSerialPort, handler);
 				} catch (Exception e1) {
 					Log.d(TAG,"reader constructor failed", e1);
 					AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -128,6 +163,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		ArrayList<Door> doors = mapBuilder.getDoors();
 		mapView.setWalls(walls);
 		mapView.setDoors(doors);
+		
 				
         //Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
 	}
@@ -136,16 +172,13 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	protected void onResume() {
 		super.onResume();
 		Log.d(TAG,"onResume() in MainYourLocationActivity called");
-		//readingTagsThread.start();
-		navigation = new Navigation(arrayOfTags);
-		mapView.setRectFTags(navigation.getAreaWithTags());
-		mapView.setTags(arrayOfTags);
+		handler.obtainMessage(THREAD_EVENT_READ_TAGS).sendToTarget();
 	}
 	
 	@Override
     protected void onPause(){
 		super.onPause();
-		//readingTagsThread.stop();
+		handler.removeMessages(THREAD_EVENT_READ_TAGS);
 	}
 
 }
