@@ -34,7 +34,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private ZoomControls zoomControls;
 	private SerialPort readerSerialPort;
 	private Reader reader;
-	private ReadingTagsThread readingTagsThread;
 	private TagsDatabase tagsDatabase = new TagsDatabase();
 	private ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
 	private ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
@@ -42,33 +41,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	/*public boolean onLongClick(View v) {
 		return false;
 	}*/
-	/** Thread makes an inventory round every 3 seconds */
-	private class ReadingTagsThread extends Thread {
-		private static final String TAG = "SendingThread";
-		@Override
-		public void run() {
-			while (!isInterrupted()){
-				try {
-					readTagsFromReader = reader.performRound();
-					arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
-				} catch (IOException e) {
-					Log.e (TAG, "IOException in ReadingTagsThread",e);
-					e.printStackTrace();
-				} catch (ReaderException e) {
-					Log.e (TAG, "ReaderException in ReadingTagsThread",e);
-					e.printStackTrace();
-				}
-						
-			}
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				Log.e (TAG, "InterruptedException in ReadingTagsThread",e);
-				e.printStackTrace();
-			}
-				super.run();
-		}
-	}
+
 	//** Called when the activity is first created. *//
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -163,7 +136,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	protected void onResume() {
 		super.onResume();
 		Log.d(TAG,"onResume() in MainYourLocationActivity called");
-		readingTagsThread.start();
+		//readingTagsThread.start();
 		navigation = new Navigation(arrayOfTags);
 		mapView.setRectFTags(navigation.getAreaWithTags());
 		mapView.setTags(arrayOfTags);
@@ -172,7 +145,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	@Override
     protected void onPause(){
 		super.onPause();
-		readingTagsThread.stop();
+		//readingTagsThread.stop();
 	}
 
 }
