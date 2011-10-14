@@ -69,12 +69,7 @@ public class Reader implements OnStringReceivedListener{
 
 	public void performRound() {
 		//Tell reader MCU to start inventory round
-		try {
-			readerSerialPort.writeString("rdr get tags");
-		} catch (IOException e) {
-			Log.e(TAG, "IOException in Reader class, when trying to send req r tags command by serial port");
-			e.printStackTrace();
-		}
+		readerSerialPort.writeString("rdr get tags");
 	}
 
 	public void displayRegisters() throws IOException {

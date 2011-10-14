@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -98,59 +99,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			}
 		});
 		
-		//FIXME move that stuff to onResume
-		try {
-			readerSerialPort = SerialPort.getSerialPort(this);
-				try {
-					reader = new Reader(readerSerialPort, handler);
-				} catch (Exception e1) {
-					Log.d(TAG,"reader constructor failed", e1);
-					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setTitle("Achtung!");
-					builder.setMessage("Oops! Reader constructor failed. " +
-							"The reader is missing or connected is wrong. " +
-							"Check the connection between phone and reader. " +
-							"Do you wanna try to communicate with reader again?");
-					builder.setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							getApplication().stopService(getIntent()); 
-						}
-					});
-					builder.setPositiveButton("Go ahead", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface arg0, int arg1) {
-							startActivity(new Intent(getApplicationContext(), MainYourLocationActivity.class));
-						}
-					});
-					AlertDialog alert = builder.create();
-					alert.show();
-					return;
-				}
-			
-				
-		} catch (InvalidParameterException e2) {
-			Log.d(TAG,"Unable to get SerialPort. It has to be configured first", e2);
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Achtung!");
-			builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
-			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
-				}
-			});
-			AlertDialog alert = builder.create();
-			alert.show();
-			e2.printStackTrace();
-		} catch (SecurityException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (InterruptedException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} 
-		
 		try {
 			mapBuilder = new MapBuilder("/sdcard/like/map.txt");
 		} catch (IOException e) {
@@ -164,7 +112,48 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		mapView.setWalls(walls);
 		mapView.setDoors(doors);
 		
-				
+		try {
+			readerSerialPort = SerialPort.getSerialPort();
+			readerSerialPort.setSharedPreferences(PreferenceManager.getDefaultSharedPreferences(this));
+		} catch (InvalidParameterException e) {
+			Log.w(TAG,"SerialPort has to be configured first", e);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Achtung!");
+			builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
+			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
+			e.printStackTrace();
+		}
+		try {
+			reader = new Reader(readerSerialPort, handler);
+			Log.d(TAG,"Reader and serial port were created succesfully");
+		} catch (Exception e) {
+			Log.d(TAG,"reader constructor failed", e);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Achtung!");
+			builder.setMessage("Oops! Reader constructor failed. " +
+					"The reader is missing or connected is wrong. " +
+					"Check the connection between phone and reader. " +
+					"Do you wanna try to communicate with reader again?");
+			builder.setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					getApplication().stopService(getIntent()); 
+				}
+			});
+			builder.setPositiveButton("Go ahead", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface arg0, int arg1) {
+					startActivity(new Intent(getApplicationContext(), MainYourLocationActivity.class));
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
+			return;
+		}
         //Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
 	}
 	
@@ -178,6 +167,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	@Override
     protected void onPause(){
 		super.onPause();
+		Log.d(TAG,"onPause() in MainYourLocationActivity called");
 		handler.removeMessages(THREAD_EVENT_READ_TAGS);
 	}
 
