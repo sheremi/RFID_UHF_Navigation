@@ -65,7 +65,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 				//TODO implement analysis of RESPONSE_REGS
 				break;
 			case Reader.ERROR:
-				Toast.makeText(getApplicationContext(),"Reader MCU reported error: check the connection",Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),"Reader MCU reported error: check the connection",Toast.LENGTH_LONG).show();
 				break;
 			case THREAD_EVENT_READ_TAGS:
 				reader.performRound();
@@ -108,7 +108,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 					AlertDialog.Builder builder = new AlertDialog.Builder(this);
 					builder.setTitle("Achtung!");
 					builder.setMessage("Oops! Reader constructor failed. " +
-							"The reader is missing or connected wrong. " +
+							"The reader is missing or connected is wrong. " +
 							"Check the connection between phone and reader. " +
 							"Do you wanna try to communicate with reader again?");
 					builder.setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {

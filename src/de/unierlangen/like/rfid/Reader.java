@@ -160,7 +160,7 @@ public class Reader implements OnStringReceivedListener{
 		return tags;
 	}
 	/**
-	 * Analyzes the data, which is contained in the registers of the reader
+	 * Analyzes the data, which is contained in the reader's registers
 	 * @return
 	 */
 	private ArrayList<String> analyzeRegsString(Iterator<String> iterator){
