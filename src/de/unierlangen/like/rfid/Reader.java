@@ -46,7 +46,7 @@ public class Reader implements OnStringReceivedListener{
 	 * @throws InterruptedException
 	 * @throws ReaderException 
 	 */
-	public Reader(SerialPort serialPort, Handler handler) throws InvalidParameterException, SecurityException, IOException, InterruptedException, ReaderException{
+	public Reader(SerialPort serialPort, Handler handler){
 		readerSerialPort = serialPort;
 		this.handler = handler;
 		readerSerialPort.setOnStringReceivedListener(this);
@@ -129,7 +129,7 @@ public class Reader implements OnStringReceivedListener{
 				msg.obj = analyzeTagsString(iterator);
 			}
 		} else if (strings.get(0).contains("error")){
-			msg.what = ERROR;
+			msg.what = WARNING;
 			msg.obj = new ReaderException("Reader MCU reported error:" + response);
 		} else {
 			msg.what = WARNING;

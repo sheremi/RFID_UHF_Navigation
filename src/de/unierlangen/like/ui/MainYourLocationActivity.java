@@ -65,9 +65,32 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			case Reader.RESPONSE_REGS:
 				//TODO implement analysis of RESPONSE_REGS
 				break;
-			case Reader.ERROR:
-				Toast.makeText(getApplicationContext(),"Reader MCU reported error: check the connection",Toast.LENGTH_LONG).show();
+			case Reader.WARNING:
+				ReaderException e = (ReaderException) msg.obj;
+				Toast.makeText(getApplicationContext(),"Warning: " + e.getMessage(), Toast.LENGTH_LONG).show();
 				break;
+			case Reader.ERROR:
+				ReaderException e1 = (ReaderException) msg.obj;
+				Log.d(TAG,"Reader repoted error", e1);
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainYourLocationActivity.this);
+				builder.setTitle("Achtung!");
+				builder.setMessage("Oops! " +
+						"The reader is missing or connected is wrong. " +
+						"Check the connection between phone and reader. " +
+						"Do you wanna try to communicate with reader again?");
+				builder.setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						getApplication().stopService(getIntent()); 
+					}
+				});
+				builder.setPositiveButton("Go ahead", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface arg0, int arg1) {
+						startActivity(new Intent(getApplicationContext(), MainYourLocationActivity.class));
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+				return;
 			case THREAD_EVENT_READ_TAGS:
 				reader.performRound();
 				sendMessageDelayed(obtainMessage(THREAD_EVENT_READ_TAGS), READ_TAGS_INTERVAL);
@@ -129,31 +152,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			alert.show();
 			e.printStackTrace();
 		}
-		try {
-			reader = new Reader(readerSerialPort, handler);
-			Log.d(TAG,"Reader and serial port were created succesfully");
-		} catch (Exception e) {
-			Log.d(TAG,"reader constructor failed", e);
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Achtung!");
-			builder.setMessage("Oops! Reader constructor failed. " +
-					"The reader is missing or connected is wrong. " +
-					"Check the connection between phone and reader. " +
-					"Do you wanna try to communicate with reader again?");
-			builder.setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					getApplication().stopService(getIntent()); 
-				}
-			});
-			builder.setPositiveButton("Go ahead", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface arg0, int arg1) {
-					startActivity(new Intent(getApplicationContext(), MainYourLocationActivity.class));
-				}
-			});
-			AlertDialog alert = builder.create();
-			alert.show();
-			return;
-		}
+		reader = new Reader(readerSerialPort, handler);
+		Log.d(TAG,"Reader and serial port were created succesfully");
         //Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
 	}
 	
