@@ -17,7 +17,6 @@
 
 package de.unierlangen.like.ui;
 
-import java.io.IOException;
 import java.security.InvalidParameterException;
 
 import android.content.SharedPreferences;
@@ -101,22 +100,13 @@ public class ConsoleActivity extends OptionsMenuActivity
 		// XXX((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(100);
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String messageString = sp.getString("GREETING", "");
-		try {
-			serialPort.writeString(messageString);
-			onStringSent(messageString);
-		} catch (IOException e) {
-			Log.d(TAG,"Opps",e);
-		}
-
+		serialPort.writeString(messageString);
+		onStringSent(messageString);
 	}
 	
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		try {
-			serialPort.writeString(v.getText().toString());//+"\n");
-			onStringSent(v.getText().toString());
-		} catch (IOException e) {
-			Log.e(TAG, "Catched IOException from writeString() in onEditorAction()",e);
-		}			
+		serialPort.writeString(v.getText().toString());//+"\n");
+		onStringSent(v.getText().toString());
 		return false;
 	}
 	
@@ -152,7 +142,6 @@ public class ConsoleActivity extends OptionsMenuActivity
 					onStringSent(loopbackString);
 					Thread.sleep(1000);
 				}
-			} catch (IOException e) {Log.e (TAG, "IOException in SendingThread",e);
 			} catch (InterruptedException e) {Log.e (TAG, "InterruptedException in SendingThread",e);
 			}
 			super.run();
@@ -191,20 +180,15 @@ public class ConsoleActivity extends OptionsMenuActivity
 		super.onResume();
 		Log.d(TAG,"onResume() called");
 		try {
-			serialPort = SerialPort.getSerialPort(this);
+			serialPort = SerialPort.getSerialPort();
+			serialPort.setSharedPreferences(PreferenceManager.getDefaultSharedPreferences(this));
 			serialPort.setOnStringReceivedListener(this);
 			/** Create threads */
 			//sendingThread = new SendingThread(this, serialPort);//started in onCheckedChangeListener
 			
 			
-		} catch (SecurityException e) {
-			UserMessages.displayAlertDialog(R.string.error_security,this);
-		} catch (IOException e) {
-			UserMessages.displayAlertDialog(R.string.error_unknown,this);
 		} catch (InvalidParameterException e) {
 			UserMessages.displayAlertDialog(R.string.error_configuration,this);
-		} catch (InterruptedException e) {
-			Log.e (TAG, "Catched InterruptedException in onResume()",e);
 		}
 	}
 		

@@ -9,6 +9,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,47 +31,76 @@ import de.unierlangen.like.serialport.SerialPort;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*implements OnClickListener, OnLongClickListener */{
 	private static final String TAG = "MainYourLocationActivity";
+	public static final int THREAD_EVENT_READ_TAGS = 4;
+	private static final int READ_TAGS_INTERVAL = 3000;
 	private MapView mapView;
 	private Navigation navigation;
 	private MapBuilder mapBuilder;
 	private ZoomControls zoomControls;
 	private SerialPort readerSerialPort;
 	private Reader reader;
-	private ReadingTagsThread readingTagsThread;
 	private TagsDatabase tagsDatabase = new TagsDatabase();
-	private ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
 	private ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
 	//TODO make something nice with long click on the view
 	/*public boolean onLongClick(View v) {
 		return false;
 	}*/
-	/** Thread makes an inventory round every 3 seconds */
-	private class ReadingTagsThread extends Thread {
-		private static final String TAG = "SendingThread";
+
+	private Handler handler = new Handler() {
+		@SuppressWarnings("unchecked")
 		@Override
-		public void run() {
-			while (!isInterrupted()){
-				try {
-					readTagsFromReader = reader.performRound();
-					arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
-				} catch (IOException e) {
-					Log.e (TAG, "IOException in ReadingTagsThread",e);
-					e.printStackTrace();
-				} catch (ReaderException e) {
-					Log.e (TAG, "ReaderException in ReadingTagsThread",e);
-					e.printStackTrace();
-				}
-						
+		public void handleMessage(Message msg) {
+			Log.d (TAG, "handleMessage(" + msg.what + ")");
+			switch (msg.what) {
+			case Reader.RESPONSE_TAGS:
+			case Reader.EVENT_TAGS:
+				readTagsFromReader = (ArrayList<GenericTag>) msg.obj;
+				// FIXME replace fields with local variables
+				ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
+				arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
+				navigation = new Navigation(arrayOfTags);
+				mapView.setRectFTags(navigation.getAreaWithTags());
+				mapView.setTags(arrayOfTags);
+				break;
+			case Reader.RESPONSE_REGS:
+				//TODO implement analysis of RESPONSE_REGS
+				break;
+			case Reader.WARNING:
+				ReaderException e = (ReaderException) msg.obj;
+				Toast.makeText(getApplicationContext(),"Warning: " + e.getMessage(), Toast.LENGTH_LONG).show();
+				break;
+			case Reader.ERROR:
+				ReaderException e1 = (ReaderException) msg.obj;
+				Log.d(TAG,"Reader repoted error", e1);
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainYourLocationActivity.this);
+				builder.setTitle("Achtung!");
+				builder.setMessage("Oops! " +
+						"The reader is missing or connected is wrong. " +
+						"Check the connection between phone and reader. " +
+						"Do you wanna try to communicate with reader again?");
+				builder.setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						getApplication().stopService(getIntent()); 
+					}
+				});
+				builder.setPositiveButton("Go ahead", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface arg0, int arg1) {
+						startActivity(new Intent(getApplicationContext(), MainYourLocationActivity.class));
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+				return;
+			case THREAD_EVENT_READ_TAGS:
+				reader.performRound();
+				sendMessageDelayed(obtainMessage(THREAD_EVENT_READ_TAGS), READ_TAGS_INTERVAL);
+				break;
+			default:
+				break;
 			}
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				Log.e (TAG, "InterruptedException in ReadingTagsThread",e);
-				e.printStackTrace();
-			}
-				super.run();
-		}
-	}
+		};
+	};
+
 	//** Called when the activity is first created. *//
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,59 +122,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			}
 		});
 		
-		//TODO remove retry, add dialog for retry, move that stuff to onResume
-		try {
-			readerSerialPort = SerialPort.getSerialPort(this);
-				try {
-					reader = new Reader(readerSerialPort);
-				} catch (Exception e1) {
-					Log.d(TAG,"reader constructor failed", e1);
-					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setTitle("Achtung!");
-					builder.setMessage("Oops! Reader constructor failed. " +
-							"The reader is missing or connected wrong. " +
-							"Check the connection between phone and reader. " +
-							"Do you wanna try to communicate with reader again?");
-					builder.setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							getApplication().stopService(getIntent()); 
-						}
-					});
-					builder.setPositiveButton("Go ahead", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface arg0, int arg1) {
-							startActivity(new Intent(getApplicationContext(), MainYourLocationActivity.class));
-						}
-					});
-					AlertDialog alert = builder.create();
-					alert.show();
-					return;
-				}
-			
-				
-		} catch (InvalidParameterException e2) {
-			Log.d(TAG,"Unable to get SerialPort. It has to be configured first", e2);
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Achtung!");
-			builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
-			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
-				}
-			});
-			AlertDialog alert = builder.create();
-			alert.show();
-			e2.printStackTrace();
-		} catch (SecurityException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (InterruptedException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} 
-		
 		try {
 			mapBuilder = new MapBuilder("/sdcard/like/map.txt");
 		} catch (IOException e) {
@@ -155,7 +134,26 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		ArrayList<Door> doors = mapBuilder.getDoors();
 		mapView.setWalls(walls);
 		mapView.setDoors(doors);
-				
+		
+		try {
+			readerSerialPort = SerialPort.getSerialPort();
+			readerSerialPort.setSharedPreferences(PreferenceManager.getDefaultSharedPreferences(this));
+		} catch (InvalidParameterException e) {
+			Log.w(TAG,"SerialPort has to be configured first", e);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Achtung!");
+			builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
+			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
+			e.printStackTrace();
+		}
+		reader = new Reader(readerSerialPort, handler);
+		Log.d(TAG,"Reader and serial port were created succesfully");
         //Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
 	}
 	
@@ -163,16 +161,14 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	protected void onResume() {
 		super.onResume();
 		Log.d(TAG,"onResume() in MainYourLocationActivity called");
-		readingTagsThread.start();
-		navigation = new Navigation(arrayOfTags);
-		mapView.setRectFTags(navigation.getAreaWithTags());
-		mapView.setTags(arrayOfTags);
+		handler.obtainMessage(THREAD_EVENT_READ_TAGS).sendToTarget();
 	}
 	
 	@Override
     protected void onPause(){
 		super.onPause();
-		readingTagsThread.stop();
+		Log.d(TAG,"onPause() in MainYourLocationActivity called");
+		handler.removeMessages(THREAD_EVENT_READ_TAGS);
 	}
 
 }
