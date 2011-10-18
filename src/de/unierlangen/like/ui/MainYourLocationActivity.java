@@ -67,7 +67,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 				break;
 			case Reader.WARNING:
 				ReaderException e = (ReaderException) msg.obj;
-				Toast.makeText(getApplicationContext(),"Warning: " + e.getMessage(), Toast.LENGTH_LONG).show();
+				//FIXME revert this commit later whan do not send warnings all the time.
+				//Toast.makeText(getApplicationContext(),"Warning: " + e.getMessage(), Toast.LENGTH_LONG).show();
 				break;
 			case Reader.ERROR:
 				ReaderException e1 = (ReaderException) msg.obj;
