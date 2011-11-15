@@ -53,12 +53,13 @@ public class MapView extends View {
 		super(context, attrs);
 		init();
 	}
-
 	public MapView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}
-
+	
+	// This handles handles a request to make a new translate 
+	// (when the view should be moved because of the changing of reader's position)
 	private Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
@@ -67,7 +68,6 @@ public class MapView extends View {
 				rectFTags = (RectF) msg.obj;
 				invalidate();
 				break;
-
 			default:
 				break;
 			}
@@ -124,7 +124,7 @@ public class MapView extends View {
 		return padding;
 	}
 	
-	//Methods used to control the view
+	// Methods, which are used to control the view
 	public void setAreaPadding(float newPadding) {
 		padding = newPadding;
 		invalidate();
@@ -142,14 +142,11 @@ public class MapView extends View {
 		this.walls = walls;
 		invalidate();
 	}
-
 	public void setDoors(ArrayList<Door> doors) {
 		this.doors = doors;
 		invalidate();
 	}
-
 	public void setRectFTags(RectF rectFTags) {
-
 		float diffLeft = rectFTags.left - this.rectFTags.left;
 		float diffTop = rectFTags.top - this.rectFTags.top;
 		float diffRight = rectFTags.right - this.rectFTags.right;
@@ -164,58 +161,8 @@ public class MapView extends View {
 			Message msg = Message.obtain(handler, REQUEST_TRANSLATE, rectF);
 			handler.sendMessageDelayed(msg, 50*i);
 		}
-		//invalidate();
-	}
-		
-	//Override views methods
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		Log.d(TAG, "Width spec: " + MeasureSpec.toString(widthMeasureSpec));
-		Log.d(TAG, "Height spec: " + MeasureSpec.toString(heightMeasureSpec));
-		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-		//if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {widthSize=200;}
-		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-		//if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED) {heightSize=300;}
-		setMeasuredDimension(widthSize, heightSize);
 	}
 	
-	@Override
-	protected void onDraw(Canvas canvas) {
-
-		canvas.save(Canvas.MATRIX_SAVE_FLAG);
-		
-		/** Calculate drawing area, using counted tags' position. */
-		prepareDrawingArea(canvas);
-		/** Draw debug rectangle */		
-		canvas.drawRect(rectFTags, debugRectPaint);
-		/** TODO comment */
-		if (!zones.isEmpty()){
-			for (Zone zone: zones){
-				drawZone(canvas, zonePaintFilled, zone);
-				drawZone(canvas, zonePaintBounder, zone);
-			}
-		}
-		/** Draw walls */
-		for (Wall wall: walls)
-		{
-			canvas.drawLine(wall.getX1(), wall.getY1(), wall.getX2(), wall.getY2(), wallsPaint);
-		}
-		/** Draw doors */
-		for (Door door: doors){
-			float startAngle = door.getStartAngle();
-			if (door.getLength()<0) {
-				startAngle = startAngle + 180;
-			}
-			canvas.drawArc(door.getRectF(), startAngle, door.getSweepAngle(), true, doorsPaint);
-		}
-		/** Draw tags */
-		for (Tag tag: tags){
-			drawTag(canvas, tagPaint, tag);
-		}
-		/** Restore canvas state */
-		canvas.restore();
-	}
-
 	private void prepareDrawingArea(Canvas canvas)	{
 		float minX = rectFTags.left - padding;
 		float minY = rectFTags.top - padding;
@@ -277,12 +224,54 @@ public class MapView extends View {
 		canvas.drawPath(path, paint);
 		Log.d("drawZone","zone has been drawn");
 	}
-}
-
-
-
-
-
-
+		
+	//Override view's methods
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		Log.d(TAG, "Width spec: " + MeasureSpec.toString(widthMeasureSpec));
+		Log.d(TAG, "Height spec: " + MeasureSpec.toString(heightMeasureSpec));
+		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+		//if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {widthSize=200;}
+		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+		//if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED) {heightSize=300;}
+		setMeasuredDimension(widthSize, heightSize);
+	}
 	
+	@Override
+	protected void onDraw(Canvas canvas) {
 
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		
+		/** Calculate drawing area, using counted tags' position. */
+		prepareDrawingArea(canvas);
+		/** Draw debug rectangle */		
+		canvas.drawRect(rectFTags, debugRectPaint);
+		/** TODO comment */
+		if (!zones.isEmpty()){
+			for (Zone zone: zones){
+				drawZone(canvas, zonePaintFilled, zone);
+				drawZone(canvas, zonePaintBounder, zone);
+			}
+		}
+		/** Draw walls */
+		for (Wall wall: walls)
+		{
+			canvas.drawLine(wall.getX1(), wall.getY1(), wall.getX2(), wall.getY2(), wallsPaint);
+		}
+		/** Draw doors */
+		for (Door door: doors){
+			float startAngle = door.getStartAngle();
+			if (door.getLength()<0) {
+				startAngle = startAngle + 180;
+			}
+			canvas.drawArc(door.getRectF(), startAngle, door.getSweepAngle(), true, doorsPaint);
+		}
+		/** Draw tags */
+		for (Tag tag: tags){
+			drawTag(canvas, tagPaint, tag);
+		}
+		/** Restore canvas state */
+		canvas.restore();
+	}
+
+}
