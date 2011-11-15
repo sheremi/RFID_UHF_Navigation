@@ -10,6 +10,8 @@ import android.graphics.Path;
 import android.graphics.Path.FillType;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +25,9 @@ import de.unierlangen.like.navigation.Zone;
  *
  */
 public class MapView extends View {
+	private static final int SMOOTH_TRANSLATION_FRAMES = 30;
 	private static final String TAG = MapView.class.getSimpleName();
+	public static final int REQUEST_TRANSLATE = 1;
 	// Drawing tools
 	private Paint debugRectPaint;
 	private Paint tagPaint;
@@ -49,11 +53,27 @@ public class MapView extends View {
 		super(context, attrs);
 		init();
 	}
+
 	public MapView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}
-	
+
+	private Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case REQUEST_TRANSLATE:
+				rectFTags = (RectF) msg.obj;
+				invalidate();
+				break;
+
+			default:
+				break;
+			}
+		}
+	};
+
 	// Methods
 	private void init() {
 		//initialize all fields as empty
@@ -129,8 +149,22 @@ public class MapView extends View {
 	}
 
 	public void setRectFTags(RectF rectFTags) {
-		this.rectFTags = rectFTags;
-		invalidate();
+
+		float diffLeft = rectFTags.left - this.rectFTags.left;
+		float diffTop = rectFTags.top - this.rectFTags.top;
+		float diffRight = rectFTags.right - this.rectFTags.right;
+		float diffBottom = rectFTags.bottom - this.rectFTags.bottom;
+		//TODO Here we can optimize the speed of translate
+		for (int i=1; i<=SMOOTH_TRANSLATION_FRAMES; i++){
+			RectF rectF = new RectF(this.rectFTags);
+			rectF.left += (diffLeft/SMOOTH_TRANSLATION_FRAMES)*i;
+			rectF.top += (diffTop/SMOOTH_TRANSLATION_FRAMES)*i;
+			rectF.right += (diffRight/SMOOTH_TRANSLATION_FRAMES)*i;
+			rectF.bottom += (diffBottom/SMOOTH_TRANSLATION_FRAMES)*i;
+			Message msg = Message.obtain(handler, REQUEST_TRANSLATE, rectF);
+			handler.sendMessageDelayed(msg, 50*i);
+		}
+		//invalidate();
 	}
 		
 	//Override views methods
