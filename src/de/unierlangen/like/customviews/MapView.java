@@ -24,7 +24,7 @@ import de.unierlangen.like.navigation.Zone;
  */
 public class MapView extends View {
 	private static final String TAG = MapView.class.getSimpleName();
-	// drawing tools
+	// Drawing tools
 	private Paint debugRectPaint;
 	private Paint tagPaint;
 	private Paint wallsPaint;
@@ -37,13 +37,9 @@ public class MapView extends View {
 	private ArrayList<Tag> tags;
 	private RectF rectFTags;
 	private ArrayList<Zone> zones;
-	//
-	private float minX;
-	private float minY;
-	private float maxX;
-	private float maxY;
+	// Items to translate and scale
 	private float padding = 3.0f;
-	
+
 	// Constructors
 	public MapView(Context context) {
 		super(context);
@@ -155,7 +151,7 @@ public class MapView extends View {
 		canvas.save(Canvas.MATRIX_SAVE_FLAG);
 		
 		/** Calculate drawing area, using counted tags' position. */
-		prepareDrawingArea(canvas, getWidth(), getHeight());
+		prepareDrawingArea(canvas);
 		/** Draw debug rectangle */		
 		canvas.drawRect(rectFTags, debugRectPaint);
 		/** TODO comment */
@@ -186,25 +182,23 @@ public class MapView extends View {
 		canvas.restore();
 	}
 
-	private void prepareDrawingArea(Canvas canvas, int width, int height) {
+	private void prepareDrawingArea(Canvas canvas)	{
+		float minX = rectFTags.left - padding;
+		float minY = rectFTags.top - padding;
+		float maxX = rectFTags.right + padding;
+		float maxY = rectFTags.bottom + padding;
 		float scaleFactor;
-		minX = rectFTags.left - padding;
-		minY = rectFTags.top - padding;
-		maxX = rectFTags.right + padding;
-		maxY = rectFTags.bottom + padding;
-		
-		if ((maxX - minX)/(maxY - minY) > width/height){
-			scaleFactor = width/(maxX - minX);
-			canvas.scale(scaleFactor, scaleFactor);
-			canvas.translate(-minX, -minY);
-			canvas.translate(0, height/scaleFactor/2-(maxY-minY)/2);
+		float positionX = -minX;
+		float positionY = -minY;
+		if ((maxX - minX)/(maxY - minY) > getWidth()/ getHeight()){
+			scaleFactor = getWidth()/(maxX - minX);
+			positionY += getHeight()/scaleFactor/2-(maxY-minY)/2;
 		} else {
-			scaleFactor = height/(maxY - minY);
-			canvas.scale(scaleFactor, scaleFactor);
-			canvas.translate(-minX, -minY);
-			canvas.translate(width/scaleFactor/2-(maxX-minX)/2, 0);
+			scaleFactor = getHeight()/(maxY - minY);
+			positionX += getWidth()/scaleFactor/2-(maxX-minX)/2;
 		}
-		
+		canvas.scale(scaleFactor, scaleFactor);
+		canvas.translate(positionX, positionY);
 	}
 	
 	public void drawTag(Canvas canvas, Paint paint, Tag tag) {
