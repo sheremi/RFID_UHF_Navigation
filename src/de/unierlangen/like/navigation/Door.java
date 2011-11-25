@@ -1,5 +1,6 @@
 package de.unierlangen.like.navigation;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 
@@ -10,7 +11,7 @@ public class Door extends Obstacle {
 	private float length;
 	private float startAngle;
 	private float sweepAngle;
-	
+	private PointF intersection;
 	
 	//Constructors 
 	// for any single door
@@ -58,9 +59,9 @@ public class Door extends Obstacle {
 		return new RectF(xAxle-Math.abs(length), yAxle-Math.abs(length), xAxle+Math.abs(length), yAxle+Math.abs(length));
 	}
 	@Override
-	public boolean isBetween(Tag tag, float x, float y) {
-		// TODO Implement math (isBetween, Door)
-		return false;
+	public PointF getIntersection(Tag tag, float x, float y) {
+		// TODO Implement math (getIntersection, Door)
+		return intersection;
 	}
 
 	@Override

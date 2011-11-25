@@ -3,7 +3,6 @@ package de.unierlangen.like.ui;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -31,6 +30,8 @@ import de.unierlangen.like.serialport.SerialPort;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*implements OnClickListener, OnLongClickListener */{
 	private static final String TAG = "MainYourLocationActivity";
+	private static final float ZONE_RADIUS = 4.0f;
+	private static final int AMOUNT_OF_POINTS_PER_ZONE = 72;
 	public static final int THREAD_EVENT_READ_TAGS = 4;
 	private static final int READ_TAGS_INTERVAL = 3000;
 	private MapView mapView;
@@ -40,7 +41,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private SerialPort readerSerialPort;
 	private Reader reader;
 	private TagsDatabase tagsDatabase = new TagsDatabase();
-	private ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
 	//TODO make something nice with long click on the view
 	/*public boolean onLongClick(View v) {
 		return false;
@@ -54,13 +54,14 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			switch (msg.what) {
 			case Reader.RESPONSE_TAGS:
 			case Reader.EVENT_TAGS:
+				ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
 				readTagsFromReader = (ArrayList<GenericTag>) msg.obj;
-				// FIXME replace fields with local variables
 				ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
 				arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
-				navigation = new Navigation(arrayOfTags);
+				navigation.setTags(arrayOfTags);
 				mapView.setRectFTags(navigation.getAreaWithTags());
 				mapView.setTags(arrayOfTags);
+				mapView.setZones(navigation.getZones(ZONE_RADIUS, AMOUNT_OF_POINTS_PER_ZONE));
 				break;
 			case Reader.RESPONSE_REGS:
 				//TODO implement analysis of RESPONSE_REGS
@@ -135,6 +136,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		ArrayList<Door> doors = mapBuilder.getDoors();
 		mapView.setWalls(walls);
 		mapView.setDoors(doors);
+		navigation = new Navigation(walls, doors);
 		
 		try {
 			readerSerialPort = SerialPort.getSerialPort();
