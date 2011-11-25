@@ -1,5 +1,6 @@
 package de.unierlangen.like.navigation;
 
+import android.graphics.PointF;
 import de.unierlangen.like.rfid.GenericTag;
 
 /**
@@ -41,6 +42,14 @@ public class Tag extends GenericTag {
 
 	public float getY() {
 		return y;
+	}
+	
+	/**
+	 * @param PointF point
+	 * @return
+	 */
+	public double getDistanceTo(PointF point) {
+		return (Math.hypot((this.x-point.x), (this.y-point.y)));
 	}
 
 }

@@ -2,23 +2,35 @@ package de.unierlangen.like.navigation;
 
 import java.util.ArrayList;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 public class Navigation {
 	
 	// Fields
+	private ArrayList<Wall> mWalls;
+	private ArrayList<Door> mDoors;
 	// Tools for navigation
 	private ArrayList<Tag> arrayOfTags;
 	// Geometry parameters
-	private float areaWithTagsX2 = Float.MIN_VALUE;
-	private float areaWithTagsY2 = Float.MIN_VALUE;
-	private float areaWithTagsX1 = Float.MAX_VALUE;
-	private float areaWithTagsY1 = Float.MAX_VALUE;
-	
+	private float areaWithTagsX2;
+	private float areaWithTagsY2;
+	private float areaWithTagsX1;
+	private float areaWithTagsY1;
+
 	// Constructor
-	public Navigation(ArrayList<Tag> arrayOfTags) {
+	public Navigation(ArrayList<Wall> walls, ArrayList<Door> doors) {
 		super();
+		mWalls = walls;
+		mDoors = doors;
+	}
+	
+	public void setTags(ArrayList<Tag> arrayOfTags) {
 		this.arrayOfTags = arrayOfTags;
+		areaWithTagsX2 = Float.MIN_VALUE;
+		areaWithTagsY2 = Float.MIN_VALUE;
+		areaWithTagsX1 = Float.MAX_VALUE;
+		areaWithTagsY1 = Float.MAX_VALUE;
 		for (Tag tag : this.arrayOfTags)
 		{
 			areaWithTagsX1 = Math.min(areaWithTagsX1, tag.getX());
@@ -32,5 +44,32 @@ public class Navigation {
 	public RectF getAreaWithTags() {
 		return new RectF(areaWithTagsX1, areaWithTagsY1, areaWithTagsX2, areaWithTagsY2);
 	}
+	/**
+	 * 
+	 * @param radius
+	 * @param amountOfPoints
+	 * @return
+	 */
+	public ArrayList<Zone> getZones(float radius, int amountOfPoints){
+		ArrayList<Zone> zones = new ArrayList<Zone>();
+		for(Tag tag: this.arrayOfTags){
+			Zone zone = new Zone(tag, radius, amountOfPoints);	
+			for (PointF point : zone.getPoints()){
+				for (Wall wall : mWalls){
+					PointF intersection = wall.getIntersection(tag, point.x, point.y);
+					if (intersection!=null){
+						if (tag.getDistanceTo(intersection) < tag.getDistanceTo(point)){
+							point.x = intersection.x;
+							point.y = intersection.y;
+						}
+					}
+				}
+			}
+			zones.add(zone);
+		}
+		return zones;
+	}
+
+	
 	
 }
