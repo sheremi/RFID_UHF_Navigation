@@ -16,11 +16,14 @@ public class TagsDatabase {
 	private HashMap<String, Float[]> createTagsHashMap(){
 		//Map keys (EPC values) to objects of tags for navigation with specific coordinates
 
-		hashMap.put("EBA123", new Float[]{18.37f,5.89f});
-		hashMap.put("FA894", new Float[]{14.74f,7.03f});
-		hashMap.put("BEEB111", new Float[]{22.00f,5.89f});
-		hashMap.put("DEFFA321", new Float[]{26.00f,9.89f});
-
+		hashMap.put("BE1", new Float[]{24.68f,5.67f});
+		hashMap.put("BE2", new Float[]{30.00f,7.25f});
+		hashMap.put("BE3", new Float[]{34.50f,5.67f});
+		hashMap.put("BE4", new Float[]{34.70f,7.71f});
+		hashMap.put("BE5", new Float[]{41.27f,7.25f});
+		hashMap.put("BE6", new Float[]{42.18f,5.21f});
+		hashMap.put("BE7", new Float[]{43.09f,7.25f});
+		
 		return hashMap;
 	}
 
