@@ -1,6 +1,8 @@
 package de.unierlangen.like.navigation;
 
+import android.graphics.PointF;
+
 
 public abstract class Obstacle {
-	public abstract boolean isBetween (Tag tag,float x, float y);
+	public abstract PointF getIntersection (Tag tag,float x, float y);
 }
