@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 import de.unierlangen.like.customviews.MapView;
+import de.unierlangen.like.navigation.DijkstraRouter;
 import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.MapBuilder;
 import de.unierlangen.like.navigation.Navigation;
@@ -134,8 +136,11 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 
 		ArrayList<Wall> walls = mapBuilder.getWalls();
 		ArrayList<Door> doors = mapBuilder.getDoors();
+		DijkstraRouter dijkstraRouter = new DijkstraRouter();
+		Path routingPath = dijkstraRouter.findRoute(null, null);
 		mapView.setWalls(walls);
 		mapView.setDoors(doors);
+		mapView.setRoute(routingPath);
 		navigation = new Navigation(walls, doors);
 		
 		try {

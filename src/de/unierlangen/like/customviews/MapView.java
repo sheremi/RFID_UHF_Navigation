@@ -35,12 +35,14 @@ public class MapView extends View {
 	private Paint doorsPaint;
 	private Paint zonePaintFilled;
 	private Paint zonePaintBounder;
+	private Paint routePaint;
 	//Items to draw
 	private ArrayList<Wall> walls;
 	private ArrayList<Door> doors;
 	private ArrayList<Tag> tags;
 	private RectF rectFTags;
 	private ArrayList<Zone> zones;
+	private Path routingPath;
 	// Items to translate and scale
 	private float padding = 3.0f;
 
@@ -82,6 +84,7 @@ public class MapView extends View {
 		tags = new ArrayList<Tag>();
 		rectFTags = new RectF();
 		zones = new ArrayList<Zone>();
+		routingPath = new Path();
 		
 		tagPaint = new Paint();
 		tagPaint.setStyle(Paint.Style.STROKE);
@@ -118,6 +121,12 @@ public class MapView extends View {
 		debugRectPaint.setColor(0x5fff2318);
 		debugRectPaint.setStrokeWidth(0.1f);
 		debugRectPaint.setAntiAlias(true);
+		
+		routePaint = new Paint();
+		routePaint.setStyle(Paint.Style.STROKE);
+		routePaint.setColor(0xdfEE0000);
+		routePaint.setStrokeWidth(0.18f);
+		routePaint.setAntiAlias(true);
 	}
 	
 	public float getPadding() {
@@ -163,6 +172,11 @@ public class MapView extends View {
 		}
 	}
 	
+	public void setRoute(Path routingPath){
+		this.routingPath = routingPath;
+		invalidate();
+	}
+	
 	private void prepareDrawingArea(Canvas canvas)	{
 		float minX = rectFTags.left - padding;
 		float minY = rectFTags.top - padding;
@@ -182,7 +196,7 @@ public class MapView extends View {
 		canvas.translate(positionX, positionY);
 	}
 	
-	public void drawTag(Canvas canvas, Paint paint, Tag tag) {
+	private void drawTag(Canvas canvas, Paint paint, Tag tag) {
 		
 		int filterColor = 0;
 		/** Calculates value relative to range*/
@@ -213,7 +227,7 @@ public class MapView extends View {
 		canvas.restore();	*/
 	}
 	
-	public void drawZone(Canvas canvas, Paint paint, Zone zone) {
+	private void drawZone(Canvas canvas, Paint paint, Zone zone) {
 		Path path = new Path();
 		path.setLastPoint(zone.getPoints().get(0).x, zone.getPoints().get(0).y);
 		for (PointF point: zone.getPoints()) {
@@ -223,6 +237,10 @@ public class MapView extends View {
 		path.setFillType(FillType.WINDING);
 		canvas.drawPath(path, paint);
 		Log.d("drawZone","zone has been drawn");
+	}
+	
+	private void drawRoute(Canvas canvas, Paint paint, Path routingPath){
+		canvas.drawPath(routingPath, paint);
 	}
 		
 	//Override view's methods
@@ -270,8 +288,8 @@ public class MapView extends View {
 		for (Tag tag: tags){
 			drawTag(canvas, tagPaint, tag);
 		}
+		drawRoute(canvas, routePaint, routingPath);
 		/** Restore canvas state */
 		canvas.restore();
 	}
-
 }
