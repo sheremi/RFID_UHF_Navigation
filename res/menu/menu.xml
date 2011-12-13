@@ -8,10 +8,6 @@
 		android:id = "@+id/test_mode"
 		android:icon="@drawable/test_mode" />
 	<item 
-		android:title = "Find room"
-		android:id = "@+id/find_room"
-		android:icon="@drawable/find_room" />
-	<item 
 		android:title = "Info"
 		android:id = "@+id/info"
 		android:icon="@drawable/info" >

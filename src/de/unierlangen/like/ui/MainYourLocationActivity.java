@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 import de.unierlangen.like.customviews.MapView;
@@ -22,6 +25,7 @@ import de.unierlangen.like.navigation.DijkstraRouter;
 import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.MapBuilder;
 import de.unierlangen.like.navigation.Navigation;
+import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.TagsDatabase;
 import de.unierlangen.like.navigation.Wall;
@@ -36,6 +40,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private static final int AMOUNT_OF_POINTS_PER_ZONE = 72;
 	public static final int THREAD_EVENT_READ_TAGS = 4;
 	private static final int READ_TAGS_INTERVAL = 3000;
+	private static final int REQUEST_ROOM = 1;
 	private MapView mapView;
 	private Navigation navigation;
 	private MapBuilder mapBuilder;
@@ -43,10 +48,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private SerialPort readerSerialPort;
 	private Reader reader;
 	private TagsDatabase tagsDatabase = new TagsDatabase();
-	//TODO make something nice with long click on the view
-	/*public boolean onLongClick(View v) {
-		return false;
-	}*/
 
 	private Handler handler = new Handler() {
 		@SuppressWarnings("unchecked")
@@ -70,8 +71,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 				break;
 			case Reader.WARNING:
 				ReaderException e = (ReaderException) msg.obj;
-				//FIXME revert this commit later whan do not send warnings all the time.
-				//Toast.makeText(getApplicationContext(),"Warning: " + e.getMessage(), Toast.LENGTH_LONG).show();
+				//FIXME revert this commit later when do not send warnings all the time.
+				Toast.makeText(getApplicationContext(),"Warning: " + e.getMessage(), Toast.LENGTH_LONG).show();
 				break;
 			case Reader.ERROR:
 				ReaderException e1 = (ReaderException) msg.obj;
@@ -111,6 +112,13 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_your_location);
 		mapView = (MapView)findViewById(R.id.mapView);
+		mapView.setOnLongClickListener(new OnLongClickListener() {
+			public boolean onLongClick(View v) {
+				Intent intent = new Intent(MainYourLocationActivity.this, FindRoomActivity.class);
+				startActivityForResult(intent, REQUEST_ROOM);
+				return false;
+			}
+		});
 		// Control elements for zooming
 		zoomControls = (ZoomControls)findViewById(R.id.zoomcontrols);
 		zoomControls.setOnZoomInClickListener(new OnClickListener() {
@@ -136,11 +144,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 
 		ArrayList<Wall> walls = mapBuilder.getWalls();
 		ArrayList<Door> doors = mapBuilder.getDoors();
-		DijkstraRouter dijkstraRouter = new DijkstraRouter();
-		Path routingPath = dijkstraRouter.findRoute(null, null);
 		mapView.setWalls(walls);
 		mapView.setDoors(doors);
-		mapView.setRoute(routingPath);
 		navigation = new Navigation(walls, doors);
 		
 		try {
@@ -179,16 +184,20 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		handler.removeMessages(THREAD_EVENT_READ_TAGS);
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == Activity.RESULT_OK) {
+			String roomName = (String)data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
+			RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
+			// Coordinates of the destination point (chosen room)
+			PointF roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
+			// TESTING coordinates of the reader's position
+			// TODO change to real coordinates, when the graph and connection with the reader are finished
+			PointF position = new PointF(32.98f,2.92f);
+			DijkstraRouter dijkstraRouter = new DijkstraRouter();
+			Path routingPath = dijkstraRouter.findRoute(position, roomCoordinates);
+			mapView.setRoute(routingPath);
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 }
-
-
-
-
-
-
-	
-	
-        
-
-    
- 

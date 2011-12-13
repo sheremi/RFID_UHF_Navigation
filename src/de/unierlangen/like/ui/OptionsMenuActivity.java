@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-
 public class OptionsMenuActivity extends Activity {
 	
 	@Override
@@ -22,45 +21,35 @@ public class OptionsMenuActivity extends Activity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
 		switch (item.getItemId()) {
-		case R.id.your_location:
-			startActivity(new Intent(OptionsMenuActivity.this, MainYourLocationActivity.class));
-			break;
-		case R.id.find_room:
-			startActivity(new Intent(OptionsMenuActivity.this, FindRoomActivity.class));
-			break;
-		case R.id.test_mode:
-			startActivity(new Intent(OptionsMenuActivity.this, TestModeActivity.class));
-			break;
-		case R.id.about_submenu:
-			startActivity(new Intent(OptionsMenuActivity.this, AboutActivity.class));
-			break;
-		case R.id.help_submenu:
-			startActivity(new Intent(OptionsMenuActivity.this, HelpActivity.class));
-			break;
-		case R.id.prefs:
-			break;
-		case R.id.info:
-			break;
-		//case R.id.user_prefs:
-		//TODO implement user preferences
-			//break;
-		case R.id.serial_submenu:
-			startActivity(new Intent(this, SerialPortPreferences.class));
-			break;
-		case R.id.readerset_submenu:
-			startActivity(new Intent(this, ReaderPreferences.class));
-			break;	
-		default: UserMessages.showMsg((String)item.getTitle(), this);
-
+			case R.id.your_location:
+				startActivity(new Intent(OptionsMenuActivity.this, MainYourLocationActivity.class));
+				break;
+			case R.id.test_mode:
+				startActivity(new Intent(OptionsMenuActivity.this, TestModeActivity.class));
+				break;
+			case R.id.about_submenu:
+				startActivity(new Intent(OptionsMenuActivity.this, AboutActivity.class));
+				break;
+			case R.id.help_submenu:
+				startActivity(new Intent(OptionsMenuActivity.this, HelpActivity.class));
+				break;
+			case R.id.prefs:
+				break;
+			case R.id.info:
+				break;
+			//case R.id.user_prefs:
+			//TODO implement user preferences
+				//break;
+			case R.id.serial_submenu:
+				startActivity(new Intent(this, SerialPortPreferences.class));
+				break;
+			case R.id.readerset_submenu:
+				startActivity(new Intent(this, ReaderPreferences.class));
+				break;	
+			default: UserMessages.showMsg((String)item.getTitle(), this);
 		}
 		//return super.onOptionsItemSelected(item);
 		return false;
 	}
-	
-	
-	
 }
-
-

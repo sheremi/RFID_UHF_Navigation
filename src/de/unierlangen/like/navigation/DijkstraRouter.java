@@ -82,20 +82,24 @@ public class DijkstraRouter {
 	}
 
 	public Path findRoute(PointF currentPosition, PointF destination) {
-		Vertex positionVertex = findClosestVertexToPosition();
-		Vertex destinationVertex = findClosestVertexToDestination();
+		Vertex positionVertex = findClosestVertexTo(currentPosition);
+		Vertex destinationVertex = findClosestVertexTo(destination);
 		ArrayList<Vertex> route = findRouteInGraph(positionVertex, destinationVertex);
 		return convertRouteToPath(route);
 	}
 	
-	// TODO Replace to one method findClosestVertexTo(PointF point)
-	private Vertex findClosestVertexToPosition(){
-		Vertex vertex = graph.getVertex("1");
-		return vertex;
-	}
-	private Vertex findClosestVertexToDestination(){
-		Vertex vertex = graph.getVertex("7");
-		return vertex;
+	private Vertex findClosestVertexTo(PointF point){
+		Vertex closestVertex = graph.getVertex("1");
+		float shortestDist = Float.MAX_VALUE;
+		for (Vertex vertex : graph.getVertices()){
+			PointF vertexCoordinates = (PointF)vertex.getProperty(KEY_COORDINATES);
+			float distToPoint = (float) Math.sqrt(Math.pow((vertexCoordinates.x-point.x), 2) + Math.pow((vertexCoordinates.y-point.y), 2));
+			if (distToPoint < shortestDist){
+				shortestDist = distToPoint;
+				closestVertex = vertex;
+			}
+		}
+		return closestVertex;
 	}
 	/**
 	 * 
