@@ -236,7 +236,7 @@ public class MapView extends View {
 		path.close();
 		path.setFillType(FillType.WINDING);
 		canvas.drawPath(path, paint);
-		Log.d("drawZone","zone has been drawn");
+		//Log.d("drawZone","zone has been drawn");
 	}
 	
 	private void drawRoute(Canvas canvas, Paint paint, Path routingPath){

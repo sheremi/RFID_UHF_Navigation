@@ -85,14 +85,21 @@ public class DijkstraRouter {
 		float shortestDist = Float.MAX_VALUE;
 		for (Vertex vertex : graph.getVertices()){
 			PointF vertexCoordinates = (PointF)vertex.getProperty(KEY_COORDINATES);
+			StringBuilder sb11 = new StringBuilder().append("vertexCoordinates: ");
+			sb11.append(vertexCoordinates.x + "; ");
+			sb11.append(vertexCoordinates.y + "; ");
+			Log.d(TAG, sb11.toString());
 			float distToPoint = (float) Math.sqrt(Math.pow((vertexCoordinates.x-point.x), 2) + Math.pow((vertexCoordinates.y-point.y), 2));
+			StringBuilder sb = new StringBuilder().append("distToPoint: ");
+			sb.append(distToPoint + "; ");
+			Log.d(TAG, sb.toString());
 			if (distToPoint < shortestDist){
 				shortestDist = distToPoint;
 				closestVertex = vertex;
-				StringBuilder sb = new StringBuilder().append("closestVertex and shortestDist have changed; ");
-				sb.append("shortestDist: " + shortestDist + "; ");
-				sb.append("closestVertex: " + closestVertex.getId());
-				Log.d(TAG, sb.toString());
+				StringBuilder sb1 = new StringBuilder().append("closestVertex and shortestDist have changed; ");
+				sb1.append("shortestDist: " + shortestDist + "; ");
+				sb1.append("closestVertex: " + closestVertex.getId());
+				Log.d(TAG, sb1.toString());
 			}
 		}
 		return closestVertex;
