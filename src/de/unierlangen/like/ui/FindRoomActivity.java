@@ -31,7 +31,7 @@ public class FindRoomActivity extends Activity {
 		textView.setAdapter(adapter);
 		buttonClear.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				textView.clearComposingText();
+				textView.setText("");
 			}
 		});
 		buttonOK.setOnClickListener(new OnClickListener() {
