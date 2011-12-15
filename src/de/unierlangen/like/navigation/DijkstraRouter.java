@@ -39,7 +39,7 @@ public class DijkstraRouter {
 				}
 			}
 		});
-		// adding coordinates
+		// adding vertices and edges
 		graph.addVertex("1").setProperty(KEY_COORDINATES, new PointF(31.98f,2.72f));
 		graph.addVertex("2").setProperty(KEY_COORDINATES, new PointF(31.98f,6.58f));
 		graph.addVertex("3").setProperty(KEY_COORDINATES, new PointF(34.24f,6.58f));
@@ -47,21 +47,11 @@ public class DijkstraRouter {
 		graph.addVertex("5").setProperty(KEY_COORDINATES, new PointF(41.5f,-1.81f));
 		graph.addVertex("6").setProperty(KEY_COORDINATES, new PointF(45.59f,6.58f));
 		graph.addVertex("7").setProperty(KEY_COORDINATES, new PointF(45.59f,2.72f));
-		graph.getVertex("1").setProperty(KEY_DISTANCE, Float.MAX_VALUE);
-		graph.getVertex("2").setProperty(KEY_DISTANCE, Float.MAX_VALUE);
-		graph.getVertex("3").setProperty(KEY_DISTANCE, Float.MAX_VALUE);
-		graph.getVertex("4").setProperty(KEY_DISTANCE, Float.MAX_VALUE);
-		graph.getVertex("5").setProperty(KEY_DISTANCE, Float.MAX_VALUE);
-		graph.getVertex("6").setProperty(KEY_DISTANCE, Float.MAX_VALUE);
-		graph.getVertex("7").setProperty(KEY_DISTANCE, Float.MAX_VALUE);
-		graph.getVertex("1").setProperty(KEY_STATUS, STATUS_UNVISITED);
-		graph.getVertex("2").setProperty(KEY_STATUS, STATUS_UNVISITED);
-		graph.getVertex("3").setProperty(KEY_STATUS, STATUS_UNVISITED);
-		graph.getVertex("4").setProperty(KEY_STATUS, STATUS_UNVISITED);
-		graph.getVertex("5").setProperty(KEY_STATUS, STATUS_UNVISITED);
-		graph.getVertex("6").setProperty(KEY_STATUS, STATUS_UNVISITED);
-		graph.getVertex("7").setProperty(KEY_STATUS, STATUS_UNVISITED);
-
+		graph.addVertex("8").setProperty(KEY_COORDINATES, new PointF(37.65f,-1.81f));
+		for (Vertex vertex : graph.getVertices()){
+			vertex.setProperty(KEY_DISTANCE, Float.MAX_VALUE);
+			vertex.setProperty(KEY_STATUS, STATUS_UNVISITED);
+		}
 		graph.addEdge("1", graph.getVertex("1"), graph.getVertex("2"), "1").setProperty(KEY_DISTANCE, 3.86f);
 		graph.addEdge("1a", graph.getVertex("2"), graph.getVertex("1"), "1a").setProperty(KEY_DISTANCE, 3.86f);
 		graph.addEdge("2", graph.getVertex("2"), graph.getVertex("3"), "2").setProperty(KEY_DISTANCE, 2.27f);
@@ -74,6 +64,8 @@ public class DijkstraRouter {
 		graph.addEdge("5a", graph.getVertex("6"), graph.getVertex("4"), "5a").setProperty(KEY_DISTANCE, 4.08f);
 		graph.addEdge("6", graph.getVertex("6"), graph.getVertex("7"), "6").setProperty(KEY_DISTANCE, 3.86f);
 		graph.addEdge("6a", graph.getVertex("7"), graph.getVertex("6"), "6a").setProperty(KEY_DISTANCE, 3.86f);
+		graph.addEdge("7", graph.getVertex("5"), graph.getVertex("8"), "7").setProperty(KEY_DISTANCE, 3.86f);
+		graph.addEdge("7a", graph.getVertex("8"), graph.getVertex("5"), "7a").setProperty(KEY_DISTANCE, 3.86f);
 
 		if (DBG) {
 			dumpGraph(true);
@@ -97,6 +89,10 @@ public class DijkstraRouter {
 			if (distToPoint < shortestDist){
 				shortestDist = distToPoint;
 				closestVertex = vertex;
+				StringBuilder sb = new StringBuilder().append("closestVertex and shortestDist have changed; ");
+				sb.append("shortestDist: " + shortestDist + "; ");
+				sb.append("closestVertex: " + closestVertex.getId());
+				Log.d(TAG, sb.toString());
 			}
 		}
 		return closestVertex;

@@ -191,6 +191,9 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
 			// Coordinates of the destination point (chosen room)
 			PointF roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
+			StringBuilder sb = new StringBuilder().append("roomCoordinates: ");
+			sb.append(roomCoordinates);
+			Log.d(TAG, sb.toString());
 			// TESTING coordinates of the reader's position
 			// TODO change to real coordinates, when the graph and connection with the reader are finished
 			PointF position = new PointF(32.98f,2.92f);
