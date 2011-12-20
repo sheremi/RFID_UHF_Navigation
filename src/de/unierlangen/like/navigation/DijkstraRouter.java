@@ -17,9 +17,9 @@ public class DijkstraRouter {
 	private static final boolean DBG = true;
 	private static final String TAG = "DijkstraRouter";
 	private static final String STATUS_VISITED = "visited";
+	private static final String STATUS_UNVISITED = "unvisited";
 	private static final String KEY_COORDINATES = "coordinates";
 	private static final String KEY_STATUS = "status";
-	private static final String STATUS_UNVISITED = "unvisited";
 	private static final String KEY_DISTANCE = "dist";
 
 	private TinkerGraph graph;
@@ -83,25 +83,21 @@ public class DijkstraRouter {
 	private Vertex findClosestVertexTo(PointF point){
 		Vertex closestVertex = graph.getVertex("1");
 		float shortestDist = Float.MAX_VALUE;
+		Log.d(TAG, "Search of the closest vertex to the point " + "{" + point.x + "; " + point.y +"} " + "was initiated.");
 		for (Vertex vertex : graph.getVertices()){
 			PointF vertexCoordinates = (PointF)vertex.getProperty(KEY_COORDINATES);
-			StringBuilder sb11 = new StringBuilder().append("vertexCoordinates: ");
-			sb11.append(vertexCoordinates.x + "; ");
-			sb11.append(vertexCoordinates.y + "; ");
-			Log.d(TAG, sb11.toString());
+			StringBuilder sb = new StringBuilder().append("Vertex " + vertex.getId() + "; ");
+			sb.append("vertexCoordinates: " + vertexCoordinates.x + "; " + vertexCoordinates.y + "; ");
 			float distToPoint = (float) Math.sqrt(Math.pow((vertexCoordinates.x-point.x), 2) + Math.pow((vertexCoordinates.y-point.y), 2));
-			StringBuilder sb = new StringBuilder().append("distToPoint: ");
-			sb.append(distToPoint + "; ");
+			sb.append(" distToPoint: " + distToPoint);
 			Log.d(TAG, sb.toString());
 			if (distToPoint < shortestDist){
 				shortestDist = distToPoint;
 				closestVertex = vertex;
-				StringBuilder sb1 = new StringBuilder().append("closestVertex and shortestDist have changed; ");
-				sb1.append("shortestDist: " + shortestDist + "; ");
-				sb1.append("closestVertex: " + closestVertex.getId());
-				Log.d(TAG, sb1.toString());
 			}
 		}
+		StringBuilder sb1 = new StringBuilder().append("ShortestDist: " + shortestDist + "; " + "closestVertex: " + closestVertex.getId());
+		Log.d(TAG, sb1.toString());
 		return closestVertex;
 	}
 	/**
@@ -118,7 +114,7 @@ public class DijkstraRouter {
 		addNextVertexToRoute(destination, route);
 		// Display debug information to the Log
 		if (DBG) {
-			StringBuilder sb = new StringBuilder().append("route: ");
+			StringBuilder sb = new StringBuilder().append("Route: ");
 			for (Vertex vertex: route) {
 				sb.append(vertex.getId()).append(" ");
 			}
@@ -141,7 +137,7 @@ public class DijkstraRouter {
 			if (Math.abs((calculatedOutVertexDist + calculatedEdgeDist) - calculatedInVertexDist) < 0.0001f){
 				route.add(edge.getOutVertex());
 				if (DBG) {
-					StringBuilder sb = new StringBuilder().append("to the route added vertex: ");
+					StringBuilder sb = new StringBuilder().append("to the route was added vertex: ");
 					sb.append(edge.getOutVertex().getId()).append(" ");
 					Log.d(TAG, sb.toString());
 				}
@@ -153,11 +149,10 @@ public class DijkstraRouter {
 	}
 
 	/**
-	 * Calculates distances to all vertices in the graph, starting with current position
+	 * Calculates distances to all vertices in the graph, starting with the current position
 	 * @param position from which distances are calculated
 	 */
 	private void calculateDistancesToAllVertices(Vertex position) {
-		//TODO don't we have to clean the graph first?
 		position.setProperty(KEY_DISTANCE, 0.00f);
 		queue.add(position);
 		while (!queue.isEmpty()) {
@@ -207,10 +202,10 @@ public class DijkstraRouter {
 		Log.d(TAG, "Graph: ");
 		for (Vertex vertex: graph.getVertices()){
 			StringBuilder sb = new StringBuilder();
-			sb.append(" Vertex ").append(vertex.getId()).append(" ");
-			for (String key : vertex.getPropertyKeys()) {
-				sb.append(key).append(" ").append(vertex.getProperty(key).toString()).append(" ");
-			}
+			sb.append(" Vertex ").append(vertex.getId()).append("; ");
+			sb.append(" status: ").append(vertex.getProperty(KEY_STATUS).toString()).append("; ");
+			PointF vCoord = (PointF) vertex.getProperty(KEY_COORDINATES);
+			sb.append(" coordinates: ").append("{" + vCoord.x + "; " + vCoord.y +"}");
 			Log.d(TAG, sb.toString());
 			if (verbose) {
 				Log.d (TAG, "  InEdges: ");
