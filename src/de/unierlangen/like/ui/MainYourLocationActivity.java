@@ -72,7 +72,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			case Reader.WARNING:
 				ReaderException e = (ReaderException) msg.obj;
 				//FIXME revert this commit later when do not send warnings all the time.
-				Toast.makeText(getApplicationContext(),"Warning: " + e.getMessage(), Toast.LENGTH_LONG).show();
+				//Toast.makeText(getApplicationContext(),"Warning: " + e.getMessage(), Toast.LENGTH_LONG).show();
 				break;
 			case Reader.ERROR:
 				ReaderException e1 = (ReaderException) msg.obj;
@@ -186,17 +186,14 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		//if (resultCode == Activity.RESULT_OK) {
+		// Comparison of two floats (checking if resultCode == RESULT_OK)
+		if (Math.abs(resultCode) - Math.abs(Activity.RESULT_OK) < 0.00001f) {
 			String roomName = (String)data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
 			RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
 			// Coordinates of the destination point (chosen room)
 			PointF roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
 			StringBuilder sb = new StringBuilder().append("Activity.RESULT_OK; room's name and coordinates: ");
-			sb.append(roomName);
-			sb.append(" ");
-			sb.append(roomCoordinates.x);
-			sb.append(" ");
-			sb.append(roomCoordinates.y);
+			sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
 			Log.d(TAG, sb.toString());
 			// TESTING coordinates of the reader's position
 			// TODO change to real coordinates, when the graph and connection with the reader are finished
@@ -204,7 +201,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			DijkstraRouter dijkstraRouter = new DijkstraRouter();
 			Path routingPath = dijkstraRouter.findRoute(position, roomCoordinates);
 			mapView.setRoute(routingPath);
-		//}
+		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 }
