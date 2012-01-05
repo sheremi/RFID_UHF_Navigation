@@ -1,9 +1,6 @@
 package de.unierlangen.like.navigation;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -18,18 +15,11 @@ public class MapBuilder {
 	private float wallX2;
 	private float wallY2;
 	private double alpha;
+	private FileReader fileReader = new FileReader();
 	
 	public MapBuilder(String path) throws IOException {
-		/** Create input channel to read from Java */
-		FileChannel inputChannel = new FileInputStream(path).getChannel();
-		ByteBuffer buffer = ByteBuffer.allocate((int)(inputChannel.size()*2));
-		int size = inputChannel.read(buffer);
-		
-		buffer.flip();
-		String content = new String(buffer.array(),0,size);
-		
-		inputChannel.close();
-		recognizeString(content, false);
+		/** Create input channel and read from the file */
+		recognizeString(fileReader.getDataFromFile(path), false);
 	}
 
 	/**
@@ -44,13 +34,8 @@ public class MapBuilder {
 	private void recognizeString(String content, boolean debug){
 		walls = new ArrayList<Wall>();
 		doors = new ArrayList<Door>();
-		// Create a pattern to match breaks
-		Pattern oneRow = Pattern.compile(";\r\n");
 		Pattern oneNumber = Pattern.compile(",");
-		//Split input with the pattern
-		String[] allRows = oneRow.split(content);
-		
-	    for (String entry: allRows)
+		for (String entry : fileReader.splitStringContent(content))
 	    {
 	    	String[] singlenumber = oneNumber.split(entry);
 	    	if (singlenumber[0].equals("w")){

@@ -36,6 +36,7 @@ public class MapView extends View {
 	private Paint zonePaintFilled;
 	private Paint zonePaintBounder;
 	private Paint routePaint;
+	private Paint readerPositionPaint;
 	//Items to draw
 	private ArrayList<Wall> walls;
 	private ArrayList<Door> doors;
@@ -43,6 +44,7 @@ public class MapView extends View {
 	private RectF rectFTags;
 	private ArrayList<Zone> zones;
 	private Path routingPath;
+	private PointF readerPosition;
 	// Items to translate and scale
 	private float padding = 3.0f;
 
@@ -85,6 +87,7 @@ public class MapView extends View {
 		rectFTags = new RectF();
 		zones = new ArrayList<Zone>();
 		routingPath = new Path();
+		readerPosition = new PointF();
 		
 		tagPaint = new Paint();
 		tagPaint.setStyle(Paint.Style.STROKE);
@@ -127,6 +130,12 @@ public class MapView extends View {
 		routePaint.setColor(0xdfEE0000);
 		routePaint.setStrokeWidth(0.18f);
 		routePaint.setAntiAlias(true);
+		
+		readerPositionPaint = new Paint();
+		readerPositionPaint.setStyle(Paint.Style.FILL);
+		readerPositionPaint.setColor(0xffA020F0);
+		readerPositionPaint.setStrokeWidth(0.15f);
+		readerPositionPaint.setAntiAlias(true);
 	}
 	
 	public float getPadding() {
@@ -174,6 +183,11 @@ public class MapView extends View {
 	
 	public void setRoute(Path routingPath){
 		this.routingPath = routingPath;
+		invalidate();
+	}
+	
+	public void setReaderPosition(PointF readerPosition){
+		this.readerPosition = readerPosition;
 		invalidate();
 	}
 	
@@ -264,7 +278,7 @@ public class MapView extends View {
 		prepareDrawingArea(canvas);
 		/** Draw debug rectangle */		
 		canvas.drawRect(rectFTags, debugRectPaint);
-		/** TODO comment */
+		/** Draw zones around tags */
 		if (!zones.isEmpty()){
 			for (Zone zone: zones){
 				drawZone(canvas, zonePaintFilled, zone);
@@ -288,6 +302,9 @@ public class MapView extends View {
 		for (Tag tag: tags){
 			drawTag(canvas, tagPaint, tag);
 		}
+		/** Draw current reader's position */
+		canvas.drawCircle(readerPosition.x, readerPosition.y, 0.3f, readerPositionPaint);
+		/** Draw route*/
 		drawRoute(canvas, routePaint, routingPath);
 		/** Restore canvas state */
 		canvas.restore();

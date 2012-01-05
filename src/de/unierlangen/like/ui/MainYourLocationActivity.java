@@ -65,6 +65,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 				mapView.setRectFTags(navigation.getAreaWithTags());
 				mapView.setTags(arrayOfTags);
 				mapView.setZones(navigation.getZones(ZONE_RADIUS, AMOUNT_OF_POINTS_PER_ZONE));
+				mapView.setReaderPosition(navigation.getReaderPosition());
 				break;
 			case Reader.RESPONSE_REGS:
 				//TODO implement analysis of RESPONSE_REGS
@@ -80,7 +81,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 				AlertDialog.Builder builder = new AlertDialog.Builder(MainYourLocationActivity.this);
 				builder.setTitle("Achtung!");
 				builder.setMessage("Oops! " +
-						"The reader is missing or connected is wrong. " +
+						"The reader is missing or connection is wrong. " +
 						"Check the connection between phone and reader. " +
 						"Do you wanna try to communicate with reader again?");
 				builder.setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {

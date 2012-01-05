@@ -1,9 +1,6 @@
 package de.unierlangen.like.navigation;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -25,20 +22,11 @@ public class RoomsDatabase {
 
 	private RoomsDatabase(){
 		try {
-			//"/sdcard/like/rooms.txt"
-			/** Create input channel to read from Java */
-			FileChannel inputChannel = new FileInputStream("/sdcard/like/rooms.txt").getChannel();
-			ByteBuffer buffer = ByteBuffer.allocate((int)(inputChannel.size()*2));
-			int size = inputChannel.read(buffer);
-			buffer.flip();
-			String content = new String(buffer.array(),0,size);
-			inputChannel.close();
-			// Create a pattern to match breaks
-			Pattern oneRow = Pattern.compile(";\r\n");
+			/** Create input channel and read from the file */
+			FileReader fileReader = new FileReader();
+			String content = fileReader.getDataFromFile("/sdcard/like/rooms.txt");
 			Pattern oneElement = Pattern.compile(",");
-			//Split input with the pattern
-			String[] allRows = oneRow.split(content);
-			for (String entry: allRows){
+			for (String entry: fileReader.splitStringContent(content)){
 				String[] singleElement = oneElement.split(entry);
 				String roomName = singleElement[0];
 				float x = Float.parseFloat(singleElement[1]);
