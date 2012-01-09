@@ -43,6 +43,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private static final int REQUEST_ROOM = 1;
 	private MapView mapView;
 	private Navigation navigation;
+	private DijkstraRouter dijkstraRouter;
 	private MapBuilder mapBuilder;
 	private ZoomControls zoomControls;
 	private SerialPort readerSerialPort;
@@ -169,6 +170,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		reader = new Reader(readerSerialPort, handler);
 		Log.d(TAG,"Reader and serial port were created succesfully");
         //Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
+		dijkstraRouter = new DijkstraRouter();
 	}
 	
 	@Override
@@ -199,7 +201,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			// TESTING coordinates of the reader's position
 			// TODO change to real coordinates, when the graph and connection with the reader are finished
 			PointF position = new PointF(32.98f,2.92f);
-			DijkstraRouter dijkstraRouter = new DijkstraRouter();
 			Path routingPath = dijkstraRouter.findRoute(position, roomCoordinates);
 			mapView.setRoute(routingPath);
 		}
