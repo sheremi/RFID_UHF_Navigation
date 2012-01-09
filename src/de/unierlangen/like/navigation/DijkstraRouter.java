@@ -219,7 +219,6 @@ public class DijkstraRouter {
 	private void fillGraphWithVertices(){
 		try {
 			String content = fileReader.getDataFromFile("/sdcard/like/vertices.txt");
-			Log.d("content",content);
 			for (String entry: fileReader.splitStringContent(content)){
 				List<String> strings = Arrays.asList(entry.split(","));
 				Iterator<String> iterator = strings.iterator();
@@ -239,7 +238,6 @@ public class DijkstraRouter {
 	private void fillGraphWithEdges(){
 		try {
 			String content = fileReader.getDataFromFile("/sdcard/like/edges.txt");
-			Log.d("content",content);
 			for (String entry: fileReader.splitStringContent(content)){
 				List<String> strings = Arrays.asList(entry.split(","));
 				Iterator<String> iterator = strings.iterator();
@@ -247,9 +245,16 @@ public class DijkstraRouter {
 					String edgeNumber = iterator.next();
 					Vertex edgeInVertex = graph.getVertex(iterator.next());
 					Vertex edgeOutVertex = graph.getVertex(iterator.next());
-					Float edgeLength = calculateDistanceBetween((PointF)edgeInVertex.getProperty(KEY_COORDINATES),(PointF)edgeOutVertex.getProperty(KEY_COORDINATES));
-					graph.addEdge(edgeNumber, edgeInVertex, edgeOutVertex, edgeNumber).setProperty(KEY_DISTANCE, edgeLength);
-					graph.addEdge(edgeNumber+"a", edgeOutVertex, edgeInVertex, edgeNumber+"a").setProperty(KEY_DISTANCE, edgeLength);
+					try {
+						Float edgeLength = calculateDistanceBetween((PointF)edgeInVertex.getProperty(KEY_COORDINATES),(PointF)edgeOutVertex.getProperty(KEY_COORDINATES));
+						graph.addEdge(edgeNumber, edgeInVertex, edgeOutVertex, edgeNumber).setProperty(KEY_DISTANCE, edgeLength);
+						graph.addEdge(edgeNumber+"a", edgeOutVertex, edgeInVertex, edgeNumber+"a").setProperty(KEY_DISTANCE, edgeLength);
+					} catch (NullPointerException e) {
+						Log.d(TAG, "edgeNumber " + edgeNumber + " failed to get vertex");
+						if (edgeInVertex == null) Log.d(TAG, "edgeInVertex == null");
+						if (edgeOutVertex == null) Log.d(TAG, "edgeOutVertex == null");
+						e.printStackTrace();
+					}
 				}
 			}	
 		} catch (IOException e) {
