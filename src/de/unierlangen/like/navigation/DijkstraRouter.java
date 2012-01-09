@@ -1,14 +1,15 @@
 package de.unierlangen.like.navigation;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.PriorityQueue;
-
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.Log;
-
 import com.tinkerpop.blueprints.pgm.Edge;
 import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.impls.tg.TinkerGraph;
@@ -21,6 +22,7 @@ public class DijkstraRouter {
 	private static final String KEY_COORDINATES = "coordinates";
 	private static final String KEY_STATUS = "status";
 	private static final String KEY_DISTANCE = "dist";
+	private FileReader fileReader = new FileReader();
 
 	private TinkerGraph graph;
 	private PriorityQueue<Vertex> queue;
@@ -39,33 +41,15 @@ public class DijkstraRouter {
 				}
 			}
 		});
-		// adding vertices and edges
-		graph.addVertex("1").setProperty(KEY_COORDINATES, new PointF(31.98f,2.72f));
-		graph.addVertex("2").setProperty(KEY_COORDINATES, new PointF(31.98f,6.58f));
-		graph.addVertex("3").setProperty(KEY_COORDINATES, new PointF(34.24f,6.58f));
-		graph.addVertex("4").setProperty(KEY_COORDINATES, new PointF(41.5f,6.58f));
-		graph.addVertex("5").setProperty(KEY_COORDINATES, new PointF(41.5f,-1.81f));
-		graph.addVertex("6").setProperty(KEY_COORDINATES, new PointF(45.59f,6.58f));
-		graph.addVertex("7").setProperty(KEY_COORDINATES, new PointF(45.59f,2.72f));
-		graph.addVertex("8").setProperty(KEY_COORDINATES, new PointF(37.65f,-1.81f));
+		
+		// Adding vertices and edges
+		fillGraphWithVertices();
 		for (Vertex vertex : graph.getVertices()){
 			vertex.setProperty(KEY_DISTANCE, Float.MAX_VALUE);
 			vertex.setProperty(KEY_STATUS, STATUS_UNVISITED);
 		}
-		graph.addEdge("1", graph.getVertex("1"), graph.getVertex("2"), "1").setProperty(KEY_DISTANCE, 3.86f);
-		graph.addEdge("1a", graph.getVertex("2"), graph.getVertex("1"), "1a").setProperty(KEY_DISTANCE, 3.86f);
-		graph.addEdge("2", graph.getVertex("2"), graph.getVertex("3"), "2").setProperty(KEY_DISTANCE, 2.27f);
-		graph.addEdge("2a", graph.getVertex("3"), graph.getVertex("2"), "2a").setProperty(KEY_DISTANCE, 2.27f);
-		graph.addEdge("3", graph.getVertex("3"), graph.getVertex("4"), "3").setProperty(KEY_DISTANCE, 7.26f);
-		graph.addEdge("3a", graph.getVertex("4"), graph.getVertex("3"), "3a").setProperty(KEY_DISTANCE, 7.26f);
-		graph.addEdge("4", graph.getVertex("4"), graph.getVertex("5"), "4").setProperty(KEY_DISTANCE, 8.39f);
-		graph.addEdge("4a", graph.getVertex("5"), graph.getVertex("4"), "4a").setProperty(KEY_DISTANCE, 8.39f);
-		graph.addEdge("5", graph.getVertex("4"), graph.getVertex("6"), "5").setProperty(KEY_DISTANCE, 4.08f);
-		graph.addEdge("5a", graph.getVertex("6"), graph.getVertex("4"), "5a").setProperty(KEY_DISTANCE, 4.08f);
-		graph.addEdge("6", graph.getVertex("6"), graph.getVertex("7"), "6").setProperty(KEY_DISTANCE, 3.86f);
-		graph.addEdge("6a", graph.getVertex("7"), graph.getVertex("6"), "6a").setProperty(KEY_DISTANCE, 3.86f);
-		graph.addEdge("7", graph.getVertex("5"), graph.getVertex("8"), "7").setProperty(KEY_DISTANCE, 3.86f);
-		graph.addEdge("7a", graph.getVertex("8"), graph.getVertex("5"), "7a").setProperty(KEY_DISTANCE, 3.86f);
+
+		fillGraphWithEdges();
 
 		if (DBG) {
 			dumpGraph(true);
@@ -230,5 +214,51 @@ public class DijkstraRouter {
 			}
 			Log.d (TAG, sbEdge.toString());
 		}
+	}
+	
+	private void fillGraphWithVertices(){
+		try {
+			String content = fileReader.getDataFromFile("/sdcard/like/vertices.txt");
+			Log.d("content",content);
+			for (String entry: fileReader.splitStringContent(content)){
+				List<String> strings = Arrays.asList(entry.split(","));
+				Iterator<String> iterator = strings.iterator();
+				while (iterator.hasNext()){
+					String vertexNumber = iterator.next();
+					float vertexCoordinateX = Float.parseFloat(iterator.next().trim());
+					float vertexCoordinateY = Float.parseFloat(iterator.next().trim());
+					PointF vertexCoordinates = new PointF(vertexCoordinateX, vertexCoordinateY);
+					graph.addVertex(vertexNumber).setProperty(KEY_COORDINATES, vertexCoordinates);
+				}
+			}
+		} catch (IOException e) {
+			Log.e("DijkstraRouter", "file with vertices vertices.txt is not found",e);
+		}
+	}
+
+	private void fillGraphWithEdges(){
+		try {
+			String content = fileReader.getDataFromFile("/sdcard/like/edges.txt");
+			Log.d("content",content);
+			for (String entry: fileReader.splitStringContent(content)){
+				List<String> strings = Arrays.asList(entry.split(","));
+				Iterator<String> iterator = strings.iterator();
+				while (iterator.hasNext()){
+					String edgeNumber = iterator.next();
+					Vertex edgeInVertex = graph.getVertex(iterator.next());
+					Vertex edgeOutVertex = graph.getVertex(iterator.next());
+					Float edgeLength = calculateDistanceBetween((PointF)edgeInVertex.getProperty(KEY_COORDINATES),(PointF)edgeOutVertex.getProperty(KEY_COORDINATES));
+					graph.addEdge(edgeNumber, edgeInVertex, edgeOutVertex, edgeNumber).setProperty(KEY_DISTANCE, edgeLength);
+					graph.addEdge(edgeNumber+"a", edgeOutVertex, edgeInVertex, edgeNumber+"a").setProperty(KEY_DISTANCE, edgeLength);
+				}
+			}	
+		} catch (IOException e) {
+			Log.e("DijkstraRouter", "file with edges edges.txt is not found",e);
+		}
+	}
+	
+	private Float calculateDistanceBetween(PointF point1, PointF point2){
+		Float dist = (float) Math.sqrt(Math.pow(point2.x-point1.x, 2) + Math.pow(point2.y-point1.y, 2));
+		return dist;
 	}
 }
