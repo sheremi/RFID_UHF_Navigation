@@ -66,7 +66,12 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 				mapView.setRectFTags(navigation.getAreaWithTags());
 				mapView.setTags(arrayOfTags);
 				mapView.setZones(navigation.getZones(ZONE_RADIUS, AMOUNT_OF_POINTS_PER_ZONE));
-				mapView.setReaderPosition(navigation.getReaderPosition());
+				PointF readerPosition = navigation.getReaderPosition();
+				mapView.setReaderPosition(readerPosition);
+				if (roomCoordinates != null){
+					Path routingPath = dijkstraRouter.findRoute(readerPosition, roomCoordinates);
+					mapView.setRoute(routingPath);
+				}
 				break;
 			case Reader.RESPONSE_REGS:
 				//TODO implement analysis of RESPONSE_REGS
@@ -107,6 +112,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			}
 		};
 	};
+	private PointF roomCoordinates;
 
 	//** Called when the activity is first created. *//
 	@Override
@@ -193,16 +199,10 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		if (Math.abs(resultCode) - Math.abs(Activity.RESULT_OK) < 0.00001f) {
 			String roomName = (String)data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
 			RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
-			// Coordinates of the destination point (chosen room)
-			PointF roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
+			roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
 			StringBuilder sb = new StringBuilder().append("Activity.RESULT_OK; room's name and coordinates: ");
 			sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
 			Log.d(TAG, sb.toString());
-			// TESTING coordinates of the reader's position
-			// TODO change to real coordinates, when the graph and connection with the reader are finished
-			PointF position = new PointF(32.98f,2.92f);
-			Path routingPath = dijkstraRouter.findRoute(position, roomCoordinates);
-			mapView.setRoute(routingPath);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

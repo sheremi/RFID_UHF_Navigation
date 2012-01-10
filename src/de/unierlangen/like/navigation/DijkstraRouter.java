@@ -15,7 +15,7 @@ import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.impls.tg.TinkerGraph;
 
 public class DijkstraRouter {
-	private static final boolean DBG = true;
+	private static final boolean DBG = false;
 	private static final String TAG = "DijkstraRouter";
 	private static final String STATUS_VISITED = "visited";
 	private static final String STATUS_UNVISITED = "unvisited";
@@ -67,21 +67,30 @@ public class DijkstraRouter {
 	private Vertex findClosestVertexTo(PointF point){
 		Vertex closestVertex = graph.getVertex("1");
 		float shortestDist = Float.MAX_VALUE;
-		Log.d(TAG, "Search of the closest vertex to the point " + "{" + point.x + "; " + point.y +"} " + "was initiated.");
+		if (DBG) {
+			Log.d(TAG, "Search of the closest vertex to the point " + "{" + point.x + "; " + point.y +"} " + "was initiated.");
+		}
 		for (Vertex vertex : graph.getVertices()){
 			PointF vertexCoordinates = (PointF)vertex.getProperty(KEY_COORDINATES);
-			StringBuilder sb = new StringBuilder().append("Vertex " + vertex.getId() + "; ");
-			sb.append("vertexCoordinates: " + vertexCoordinates.x + "; " + vertexCoordinates.y + "; ");
+			StringBuilder sb = new StringBuilder();
+			if (DBG) {
+				sb.append("Vertex " + vertex.getId() + "; ");
+				sb.append("vertexCoordinates: " + vertexCoordinates.x + "; " + vertexCoordinates.y + "; ");
+			}
 			float distToPoint = (float) Math.sqrt(Math.pow((vertexCoordinates.x-point.x), 2) + Math.pow((vertexCoordinates.y-point.y), 2));
-			sb.append(" distToPoint: " + distToPoint);
-			Log.d(TAG, sb.toString());
+			if (DBG) {
+				sb.append(" distToPoint: " + distToPoint);
+				Log.d(TAG, sb.toString());
+			}
 			if (distToPoint < shortestDist){
 				shortestDist = distToPoint;
 				closestVertex = vertex;
 			}
 		}
-		StringBuilder sb1 = new StringBuilder().append("ShortestDist: " + shortestDist + "; " + "closestVertex: " + closestVertex.getId());
-		Log.d(TAG, sb1.toString());
+		if (DBG) {
+			StringBuilder sb1 = new StringBuilder().append("ShortestDist: " + shortestDist + "; " + "closestVertex: " + closestVertex.getId());
+			Log.d(TAG, sb1.toString());
+		}
 		return closestVertex;
 	}
 	/**
