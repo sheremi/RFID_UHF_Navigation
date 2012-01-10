@@ -61,7 +61,11 @@ public class DijkstraRouter {
 		Vertex positionVertex = findClosestVertexTo(currentPosition);
 		Vertex destinationVertex = findClosestVertexTo(destination);
 		ArrayList<Vertex> route = findRouteInGraph(positionVertex, destinationVertex);
-		return convertRouteToPath(route);
+		//TODO Correct drawing of the path (sometimes it looks ugly (crooked lines) 
+		//because of the drawing from the currentPosition, but not from a vertex)
+		Path path = convertRouteToPath(route);
+		path.setLastPoint(currentPosition.x, currentPosition.y);
+		return path;
 	}
 	
 	private Vertex findClosestVertexTo(PointF point){
@@ -146,6 +150,10 @@ public class DijkstraRouter {
 	 * @param position from which distances are calculated
 	 */
 	private void calculateDistancesToAllVertices(Vertex position) {
+		for (Vertex vertex : graph.getVertices()){
+			vertex.setProperty(KEY_DISTANCE, Float.MAX_VALUE);
+			vertex.setProperty(KEY_STATUS, STATUS_UNVISITED);
+		}
 		position.setProperty(KEY_DISTANCE, 0.00f);
 		queue.add(position);
 		while (!queue.isEmpty()) {
