@@ -3,11 +3,15 @@ package de.unierlangen.like.customviews;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.LightingColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Path.FillType;
+import android.graphics.Picture;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -19,6 +23,7 @@ import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.navigation.Zone;
+import de.unierlangen.like.ui.R;
 /**
  * View to represent map and tags graphically
  * @author Kate
@@ -133,8 +138,7 @@ public class MapView extends View {
 		
 		readerPositionPaint = new Paint();
 		readerPositionPaint.setStyle(Paint.Style.FILL);
-		readerPositionPaint.setColor(0xffA020F0);
-		readerPositionPaint.setStrokeWidth(0.15f);
+		readerPositionPaint.setColor(0xffFF00FF);
 		readerPositionPaint.setAntiAlias(true);
 	}
 	
@@ -304,6 +308,9 @@ public class MapView extends View {
 		}
 		/** Draw current reader's position */
 		canvas.drawCircle(readerPosition.x, readerPosition.y, 0.3f, readerPositionPaint);
+		//TODO make a nice visualization of the reader's position
+		//Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.android);
+		//canvas.drawBitmap(logo,readerPosition.x, readerPosition.y, null);
 		/** Draw route*/
 		drawRoute(canvas, routePaint, routingPath);
 		/** Restore canvas state */
