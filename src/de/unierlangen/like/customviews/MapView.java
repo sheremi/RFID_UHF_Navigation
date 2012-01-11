@@ -260,6 +260,26 @@ public class MapView extends View {
 	private void drawRoute(Canvas canvas, Paint paint, Path routingPath){
 		canvas.drawPath(routingPath, paint);
 	}
+	/**
+	 * @param canvas
+	 */
+	private void drawPosition(Canvas canvas) {
+		canvas.save(Canvas.MATRIX_SAVE_FLAG);
+		Paint logoPaint = new Paint();
+		logoPaint.setFilterBitmap(true);
+		// Make the icon more green
+		logoPaint.setColorFilter(new LightingColorFilter(0x1f338822, 0));
+		Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.android);
+		Matrix logoMatrix = new Matrix();
+		// Set correct size of the icon
+		float bitmapScale = 0.025f;
+		logoMatrix.setScale(bitmapScale, bitmapScale);
+		// Calculate the offset of the icon's position
+		float offset = - (icon.getHeight() + icon.getWidth()) * bitmapScale / 4;
+		canvas.translate(readerPosition.x + offset,readerPosition.y + offset);
+		canvas.drawBitmap(icon, logoMatrix, logoPaint);
+		canvas.restore();
+	}
 		
 	//Override view's methods
 	@Override
@@ -307,10 +327,7 @@ public class MapView extends View {
 			drawTag(canvas, tagPaint, tag);
 		}
 		/** Draw current reader's position */
-		canvas.drawCircle(readerPosition.x, readerPosition.y, 0.3f, readerPositionPaint);
-		//TODO make a nice visualization of the reader's position
-		//Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.android);
-		//canvas.drawBitmap(logo,readerPosition.x, readerPosition.y, null);
+		drawPosition(canvas);
 		/** Draw route*/
 		drawRoute(canvas, routePaint, routingPath);
 		/** Restore canvas state */
