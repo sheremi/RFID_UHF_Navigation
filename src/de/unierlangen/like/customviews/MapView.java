@@ -11,7 +11,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Path.FillType;
-import android.graphics.Picture;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -20,6 +19,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import de.unierlangen.like.navigation.Door;
+import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.navigation.Zone;
@@ -42,6 +42,7 @@ public class MapView extends View {
 	private Paint zonePaintBounder;
 	private Paint routePaint;
 	private Paint readerPositionPaint;
+	private Paint textPaint;
 	//Items to draw
 	private ArrayList<Wall> walls;
 	private ArrayList<Door> doors;
@@ -140,6 +141,13 @@ public class MapView extends View {
 		readerPositionPaint.setStyle(Paint.Style.FILL);
 		readerPositionPaint.setColor(0xffFF00FF);
 		readerPositionPaint.setAntiAlias(true);
+		
+		textPaint = new Paint();
+		textPaint.setStyle(Paint.Style.STROKE);
+		textPaint.setColor(0xffFFD700);
+		textPaint.setStrokeWidth(0.05f);
+		textPaint.setAntiAlias(true);
+		textPaint.setTextSize(1.0f);
 	}
 	
 	public float getPadding() {
@@ -280,6 +288,18 @@ public class MapView extends View {
 		canvas.drawBitmap(icon, logoMatrix, logoPaint);
 		canvas.restore();
 	}
+	/**
+	 * @param canvas
+	 */
+	private void drawRoomName(Canvas canvas) {
+		RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
+		for (String roomName : roomsDatabase.getRoomsNamesArray()){
+			if (roomName.contains("3")){
+			PointF roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
+			canvas.drawText(roomName, roomCoordinates.x, roomCoordinates.y, textPaint);
+			}
+		}
+	}
 		
 	//Override view's methods
 	@Override
@@ -322,6 +342,8 @@ public class MapView extends View {
 			}
 			canvas.drawArc(door.getRectF(), startAngle, door.getSweepAngle(), true, doorsPaint);
 		}
+		/** Draw names (numbers) of the rooms */
+		drawRoomName(canvas);
 		/** Draw tags */
 		for (Tag tag: tags){
 			drawTag(canvas, tagPaint, tag);
