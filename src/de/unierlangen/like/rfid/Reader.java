@@ -88,8 +88,12 @@ public class Reader implements OnStringReceivedListener{
 		response = response.concat(string);
 		if (response.contains("\n")){
 			Log.d(TAG, "Response: "+response);
-			Message msg = analyzeResponse(response);
-			handler.sendMessage(msg);
+			try {
+				Message msg = analyzeResponse(response);
+				handler.sendMessage(msg);
+			} catch (NumberFormatException e) {
+				Log.e(TAG, "!! NumberFormatException !!", e);
+			}
 			response = "";
 		}
 	}
