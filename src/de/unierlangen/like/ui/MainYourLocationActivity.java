@@ -37,7 +37,6 @@ import de.unierlangen.like.serialport.SerialPort;
 public class MainYourLocationActivity extends OptionsMenuActivity /*implements OnClickListener, OnLongClickListener */{
 	private static final String TAG = "MainYourLocationActivity";
 	private static final float ZONE_RADIUS = 4.0f;
-	private static final int AMOUNT_OF_POINTS_PER_ZONE = 72;
 	public static final int THREAD_EVENT_READ_TAGS = 4;
 	private static final int READ_TAGS_INTERVAL = 3000;
 	private static final int REQUEST_ROOM = 1;
@@ -65,7 +64,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 				navigation.setTags(arrayOfTags);
 				mapView.setRectFTags(navigation.getAreaWithTags());
 				mapView.setTags(arrayOfTags);
-				mapView.setZones(navigation.getZones(ZONE_RADIUS, AMOUNT_OF_POINTS_PER_ZONE));
+				mapView.setZones(navigation.getZones(ZONE_RADIUS));
 				PointF readerPosition = navigation.getReaderPosition();
 				mapView.setReaderPosition(readerPosition);
 				if (roomCoordinates != null){

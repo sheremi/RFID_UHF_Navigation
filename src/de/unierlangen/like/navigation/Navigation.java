@@ -51,10 +51,10 @@ public class Navigation {
 	 * @param amountOfPoints
 	 * @return
 	 */
-	public ArrayList<Zone> getZones(float radius, int amountOfPoints){
+	public ArrayList<Zone> getZones(float radius){
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 		for(Tag tag: this.arrayOfTags){
-			Zone zone = new Zone(tag, radius, amountOfPoints);	
+			Zone zone = new Zone(tag, radius);	
 			for (PointF point : zone.getPoints()){
 				for (Wall wall : mWalls){
 					PointF intersection = wall.getIntersection(tag, point.x, point.y);
