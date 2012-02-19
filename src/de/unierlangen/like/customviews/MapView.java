@@ -11,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Path.FillType;
+import android.graphics.Picture;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -43,6 +44,7 @@ public class MapView extends View {
 	private Paint routePaint;
 	private Paint readerPositionPaint;
 	private Paint textPaint;
+	private Picture preDrawnMap;
 	//Items to draw
 	private ArrayList<Wall> walls;
 	private ArrayList<Door> doors;
@@ -300,7 +302,24 @@ public class MapView extends View {
 			}
 		}
 	}
-		
+
+	/**
+	 * 
+	 */
+	private void drawMap(Canvas canvas) {
+		for (Wall wall: walls) {
+			canvas.drawLine(wall.getX1(), wall.getY1(), wall.getX2(), wall.getY2(), wallsPaint);
+		}
+		for (Door door: doors){
+			float startAngle = door.getStartAngle();
+			if (door.getLength()<0) {
+				startAngle = startAngle + 180;
+			}
+			canvas.drawArc(door.getRectF(), startAngle, door.getSweepAngle(), true, doorsPaint);
+		}
+		drawRoomName(canvas);
+	}
+
 	//Override view's methods
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -311,6 +330,11 @@ public class MapView extends View {
 		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 		//if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED) {heightSize=300;}
 		setMeasuredDimension(widthSize, heightSize);
+		// 
+		preDrawnMap = new Picture();
+		Canvas mapCanvas = preDrawnMap.beginRecording(widthSize, heightSize);
+		drawMap(mapCanvas);
+		preDrawnMap.endRecording();
 	}
 	
 	@Override
@@ -329,21 +353,8 @@ public class MapView extends View {
 				drawZone(canvas, zonePaintBounder, zone);
 			}
 		}
-		/** Draw walls */
-		for (Wall wall: walls)
-		{
-			canvas.drawLine(wall.getX1(), wall.getY1(), wall.getX2(), wall.getY2(), wallsPaint);
-		}
-		/** Draw doors */
-		for (Door door: doors){
-			float startAngle = door.getStartAngle();
-			if (door.getLength()<0) {
-				startAngle = startAngle + 180;
-			}
-			canvas.drawArc(door.getRectF(), startAngle, door.getSweepAngle(), true, doorsPaint);
-		}
-		/** Draw names (numbers) of the rooms */
-		drawRoomName(canvas);
+		/** Draw map */
+		canvas.drawPicture(preDrawnMap);
 		/** Draw tags */
 		for (Tag tag: tags){
 			drawTag(canvas, tagPaint, tag);
