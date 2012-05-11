@@ -15,6 +15,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -34,7 +37,7 @@ import de.unierlangen.like.rfid.Reader;
 import de.unierlangen.like.rfid.Reader.ReaderException;
 import de.unierlangen.like.serialport.SerialPort;
 
-public class MainYourLocationActivity extends OptionsMenuActivity /*implements OnClickListener, OnLongClickListener */{
+public class MainYourLocationActivity extends OptionsMenuActivity implements OnGestureListener /*implements OnClickListener, OnLongClickListener */{
 	private static final String TAG = "MainYourLocationActivity";
 	private static final float ZONE_RADIUS = 4.0f;
 	public static final int THREAD_EVENT_READ_TAGS = 4;
@@ -48,12 +51,14 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	private SerialPort readerSerialPort;
 	private Reader reader;
 	private TagsDatabase tagsDatabase = new TagsDatabase();
+	private PointF roomCoordinates;
+	private GestureDetector mGestureDetector = new GestureDetector(this);
 
 	private Handler handler = new Handler() {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void handleMessage(Message msg) {
-			Log.d (TAG, "handleMessage(" + msg.what + ")");
+			//Log.d (TAG, "handleMessage(" + msg.what + ")");
 			switch (msg.what) {
 			case Reader.RESPONSE_TAGS:
 			case Reader.EVENT_TAGS:
@@ -111,21 +116,20 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			}
 		};
 	};
-	private PointF roomCoordinates;
-
+	
 	//** Called when the activity is first created. *//
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_your_location);
 		mapView = (MapView)findViewById(R.id.mapView);
-		mapView.setOnLongClickListener(new OnLongClickListener() {
+		/*mapView.setOnLongClickListener(new OnLongClickListener() {
 			public boolean onLongClick(View v) {
 				Intent intent = new Intent(MainYourLocationActivity.this, FindRoomActivity.class);
 				startActivityForResult(intent, REQUEST_ROOM);
 				return false;
 			}
-		});
+		});*/
 		// Control elements for zooming
 		zoomControls = (ZoomControls)findViewById(R.id.zoomcontrols);
 		zoomControls.setOnZoomInClickListener(new OnClickListener() {
@@ -133,11 +137,10 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 				mapView.setAreaPadding(mapView.getPadding() - 2.0f);
 			}
 		});
-	        
+
 		zoomControls.setOnZoomOutClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				mapView.setAreaPadding(mapView.getPadding() + 2.0f);  
-				
 			}
 		});
 		
@@ -174,10 +177,37 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 		}
 		reader = new Reader(readerSerialPort, handler);
 		Log.d(TAG,"Reader and serial port were created succesfully");
-        //Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
+		//Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
 		dijkstraRouter = new DijkstraRouter();
 	}
 	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		mGestureDetector.onTouchEvent(event);
+		// MotionEvent object holds XY values
+		if(event.getAction() == MotionEvent.ACTION_MOVE) {
+			String text = "You clicked at x = " + event.getRawX() + " and y = " + event.getRawY();
+			Log.d(TAG, text);
+			Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+		}
+		return super.onTouchEvent(event);
+	}
+	
+/*	@Override
+	public void onShowPress(MotionEvent e) {
+		String text = "You click at x = " + e.getX() + " and y = " + e.getY();
+		Log.d(TAG, text);
+		Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+		
+	}
+	
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+	        float distanceY) {
+	            endX = e2.getX();
+	            endY = e2.getY();
+	}*/
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -186,7 +216,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 	}
 	
 	@Override
-    protected void onPause(){
+	protected void onPause(){
 		super.onPause();
 		Log.d(TAG,"onPause() in MainYourLocationActivity called");
 		handler.removeMessages(THREAD_EVENT_READ_TAGS);
@@ -204,5 +234,37 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*implements O
 			Log.d(TAG, sb.toString());
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	public boolean onDown(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void onLongPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void onShowPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean onSingleTapUp(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

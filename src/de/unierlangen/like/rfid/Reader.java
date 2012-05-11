@@ -16,7 +16,7 @@ import de.unierlangen.like.serialport.SerialPort;
 public class Reader implements OnStringReceivedListener{
 
 	private static final String TAG = "Reader";
-
+	private static final boolean DBG = false;
 	public static final int EVENT_TAGS = 1;
 	public static final int RESPONSE_TAGS = 2;
 	public static final int RESPONSE_REGS = 3;
@@ -87,7 +87,7 @@ public class Reader implements OnStringReceivedListener{
 	public void onStringReceived(String string) {
 		response = response.concat(string);
 		if (response.contains("\n")){
-			Log.d(TAG, "Response: "+response);
+			if (DBG) Log.d(TAG, "Response: "+response);
 			try {
 				Message msg = analyzeResponse(response);
 				handler.sendMessage(msg);
@@ -106,7 +106,7 @@ public class Reader implements OnStringReceivedListener{
 	 */
 	private Message analyzeResponse(String response) {
 		Message msg = Message.obtain();
-		Log.d(TAG, "response = " + response);
+		if (DBG) Log.d(TAG, "response = " + response);
 		List<String> strings = Arrays.asList(response.split(","));
 		if (strings.size()>1) {
 			strings = strings.subList(0, strings.size()-1);
@@ -155,7 +155,7 @@ public class Reader implements OnStringReceivedListener{
 		}
 		//TODO use amountOfTags where it should be used
 		amountOfTags = tags.size();
-		Log.d(TAG, "amountOfTags = " + amountOfTags);
+		if (DBG) Log.d(TAG, "amountOfTags = " + amountOfTags);
 		return tags;
 	}
 	/**

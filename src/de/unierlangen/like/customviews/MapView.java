@@ -85,6 +85,8 @@ public class MapView extends View {
 			}
 		}
 	};
+	private int viewWidth;
+	private int viewHeight;
 
 	// Methods
 	private void init() {
@@ -323,8 +325,10 @@ public class MapView extends View {
 	//Override view's methods
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		Log.d(TAG, "Width spec: " + MeasureSpec.toString(widthMeasureSpec));
-		Log.d(TAG, "Height spec: " + MeasureSpec.toString(heightMeasureSpec));
+		viewWidth = widthMeasureSpec;
+		viewHeight = heightMeasureSpec;
+		Log.d(TAG, "Width spec: " + MeasureSpec.toString(viewWidth));
+		Log.d(TAG, "Height spec: " + MeasureSpec.toString(viewHeight));
 		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 		//if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {widthSize=200;}
 		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
@@ -366,4 +370,11 @@ public class MapView extends View {
 		/** Restore canvas state */
 		canvas.restore();
 	}
+	public int getViewWidth() {
+		return viewWidth;
+	}
+	public int getViewHeight() {
+		return viewHeight;
+	}
+	
 }

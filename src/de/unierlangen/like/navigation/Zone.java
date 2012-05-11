@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class Zone {
 	private static final String TAG = "Zone";
-	private static final boolean DBG = true;
+	private static final boolean DBG = false;
 	private static final int AMOUNT_OF_POINTS_PER_ZONE = 72;
 	private ArrayList<PointF> points;
 	private static Zone instance;
