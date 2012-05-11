@@ -11,54 +11,53 @@ import java.nio.channels.FileChannel;
 
 import android.util.Log;
 
-
 /**
  * Used to control Freerunner's USB
+ * 
  * @author kulikov
  */
 public class FreerunnerUSB {
 
-	private static final String TAG = "FreerunnerUSB";
-	
-	/**
-	 * Sets USB state to "host" if isHost is true and to "device" if isHost is false
-	 * @param isHost
-	 * @throws IOException
-	 */
-	static public void setUSBHostState (boolean isHost) throws IOException{
-		
-		String logicState="device";
-		String powerState="0";
-		
-		if (isHost==true) {
-			logicState="host";
-			powerState="1";
-		} 
-		
-		try {
+    private static final String TAG = "FreerunnerUSB";
 
-			/** Create OutputStream to usb port driver */
-			FileChannel hostDriverOutputChannel = new FileOutputStream("/sys/devices/platform/s3c-ohci/usb_mode").getChannel();
-			hostDriverOutputChannel.write(ByteBuffer.wrap(logicState.getBytes()));
-			hostDriverOutputChannel.close();
-			
-			FileOutputStream powerDriverOutputStream = new FileOutputStream("/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-host.0/hostmode");
-			FileChannel powerDriverOutputChannel = powerDriverOutputStream.getChannel();
-			powerDriverOutputChannel.write(ByteBuffer.wrap(powerState.getBytes()));
-			powerDriverOutputChannel.close();
-											
-		} catch (FileNotFoundException e) {
-			Log.d(TAG, "Catched: ", e);
-		} catch (IOException e) {
-			Log.d(TAG, "Catched: ", e);
-			throw e;
-		}
+    /**
+     * Sets USB state to "host" if isHost is true and to "device" if isHost is
+     * false
+     * 
+     * @param isHost
+     * @throws IOException
+     */
+    static public void setUSBHostState(boolean isHost) throws IOException {
 
-		
-		
-		
-	}
-	
-	
-	
+        String logicState = "device";
+        String powerState = "0";
+
+        if (isHost == true) {
+            logicState = "host";
+            powerState = "1";
+        }
+
+        try {
+
+            /** Create OutputStream to usb port driver */
+            FileChannel hostDriverOutputChannel = new FileOutputStream(
+                    "/sys/devices/platform/s3c-ohci/usb_mode").getChannel();
+            hostDriverOutputChannel.write(ByteBuffer.wrap(logicState.getBytes()));
+            hostDriverOutputChannel.close();
+
+            FileOutputStream powerDriverOutputStream = new FileOutputStream(
+                    "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-host.0/hostmode");
+            FileChannel powerDriverOutputChannel = powerDriverOutputStream.getChannel();
+            powerDriverOutputChannel.write(ByteBuffer.wrap(powerState.getBytes()));
+            powerDriverOutputChannel.close();
+
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "Catched: ", e);
+        } catch (IOException e) {
+            Log.d(TAG, "Catched: ", e);
+            throw e;
+        }
+
+    }
+
 }

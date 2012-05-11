@@ -8,61 +8,61 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 
 public class OptionsMenuActivity extends Activity {
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu){
-		super.onCreateOptionsMenu(menu);
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
-		return true; 
-	}
-	
-	/**
-	 * override onOptions ItemSelected here
-	 */
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.your_location:
-				startActivity(new Intent(OptionsMenuActivity.this, MainYourLocationActivity.class));
-				break;
-			case R.id.test_mode:
-				startActivity(new Intent(OptionsMenuActivity.this, TestModeActivity.class));
-				break;
-			case R.id.about_submenu:
-				startActivity(new Intent(OptionsMenuActivity.this, AboutActivity.class));
-				break;
-			case R.id.help_submenu:
-				startActivity(new Intent(OptionsMenuActivity.this, HelpActivity.class));
-				break;
-			case R.id.prefs:
-				break;
-			case R.id.info:
-				break;
-			//case R.id.user_prefs:
-			//TODO implement user preferences
-				//break;
-			case R.id.serial_submenu:
-				startActivity(new Intent(this, SerialPortPreferences.class));
-				break;
-			case R.id.readerset_submenu:
-				startActivity(new Intent(this, ReaderPreferences.class));
-				break;	
-			default: UserMessages.showMsg((String)item.getTitle(), this);
-		}
-		//return super.onOptionsItemSelected(item);
-		return false;
-	}
 
-	public void onShowPress(MotionEvent e) {
-		float x = e.getX();
-		float y = e.getY();
-		
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
 
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    /**
+     * override onOptions ItemSelected here
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.your_location:
+            startActivity(new Intent(OptionsMenuActivity.this, MainYourLocationActivity.class));
+            break;
+        case R.id.test_mode:
+            startActivity(new Intent(OptionsMenuActivity.this, TestModeActivity.class));
+            break;
+        case R.id.about_submenu:
+            startActivity(new Intent(OptionsMenuActivity.this, AboutActivity.class));
+            break;
+        case R.id.help_submenu:
+            startActivity(new Intent(OptionsMenuActivity.this, HelpActivity.class));
+            break;
+        case R.id.prefs:
+            break;
+        case R.id.info:
+            break;
+        // case R.id.user_prefs:
+        // TODO implement user preferences
+        // break;
+        case R.id.serial_submenu:
+            startActivity(new Intent(this, SerialPortPreferences.class));
+            break;
+        case R.id.readerset_submenu:
+            startActivity(new Intent(this, ReaderPreferences.class));
+            break;
+        default:
+            UserMessages.showMsg((String) item.getTitle(), this);
+        }
+        // return super.onOptionsItemSelected(item);
+        return false;
+    }
+
+    public void onShowPress(MotionEvent e) {
+        float x = e.getX();
+        float y = e.getY();
+
+    }
+
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

@@ -32,129 +32,139 @@ import android.util.Log;
 /** Describes serial port */
 public class SerialPort implements OnSharedPreferenceChangeListener {
 
-	private static final String TAG = "SerialPort";
+    private static final String TAG = "SerialPort";
 
-	/** mFd is used in native method close() as a reference. */
-	private FileDescriptor mFd;
-	private ByteBuffer buffer;
-	private FileChannel serialInputChannel;
-	private FileChannel serialOutputChannel;
-	private ReceivingThread receivingThread;
-	private OnStringReceivedListener onStringReceivedListener;
-	/** Singleton instance */
-	private static SerialPort instance;
-	
-	/** Thread reads data from port and calls onStringReceived from 
-	 * given {@link de.unierlangen.like.serialport.OnStringReceivedListener OnStringReceivedListener}
-	 */
-	private class ReceivingThread extends Thread {
-		private static final String TAG = "ReceivingThread";
-		@Override
-		public void run() {
-			try {
-				while (!isInterrupted()){
-					String readString = readString();
-					onStringReceivedListener.onStringReceived(readString);
-					Thread.yield();
-				}
-			} catch (IOException e) {
-				Log.e (TAG, "IOException in SendingThread", e);
-			}
-			super.run();
-		}
-	}
-	
-	/**
-	 * 
-	 * @param context
-	 * @return
-	 * @throws SecurityException
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	public static SerialPort getSerialPort() {
-		if (instance==null){
-			instance = new SerialPort("/dev/s3c2410_serial2", 9600);
-		}
-		return instance;
-	}
-	
-	/** Writes single string to the serial port */
-	public void writeString (String stringToWrite) {
-		try {
-			serialOutputChannel.write(ByteBuffer.wrap(stringToWrite.getBytes()));
-		} catch (IOException e) {
-			Log.d(TAG, "Was not able to write", e);
-		}
-	}
-	
-	public void setSharedPreferences (SharedPreferences sharedPreferences) throws InvalidParameterException {
-		sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-		String path = sharedPreferences.getString("DEVICE", "");
-		int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "-1"));
-		if (path.equals("") || baudrate == -1) {
-			throw new InvalidParameterException("Preferences do not contain required keys");
-		}
-		openPort(path, baudrate);
-	}
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-			String key) {
-		if (key.equals("BAUDRATE")||key.equals("DEVICE")){
-			String path = sharedPreferences.getString("DEVICE", "/dev/s3c2410_serial2");
-			int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "9600"));
-			openPort(path, baudrate);
-		}
-	}
-	/** Set interface to handle symbols received by serial port */
-	public void setOnStringReceivedListener(OnStringReceivedListener onStringReceivedListener) {
-		this.onStringReceivedListener = onStringReceivedListener;
-		if (receivingThread==null){
-			receivingThread = new ReceivingThread();
-			receivingThread.start();
-		}
-	}
-	
-	/**
-	 * Serial port constructor. To receive data use {@link de.unierlangen.like.serialport.SerialPort#setOnStringReceivedListener setOnStringReceivedListener}
-	 * @param context
-	 * @throws InvalidParameterException
-	 * @throws SecurityException
-	 * @throws IOException
-	 */
-	private SerialPort(String path, int baudrate) {
-		Log.d(TAG, "SerialPort(" + path + ", " + baudrate +")");
-		buffer = ByteBuffer.allocate(64);
-		openPort(path, baudrate);
-	}
-	
-	private void openPort(String path, int baudrate) {
-		if (mFd!=null) {
-			close();
-		}
-		mFd = open(path, baudrate);
-		serialInputChannel = new FileInputStream(mFd).getChannel();
-		serialOutputChannel = new FileOutputStream(mFd).getChannel();
-	}
+    /** mFd is used in native method close() as a reference. */
+    private FileDescriptor mFd;
+    private ByteBuffer buffer;
+    private FileChannel serialInputChannel;
+    private FileChannel serialOutputChannel;
+    private ReceivingThread receivingThread;
+    private OnStringReceivedListener onStringReceivedListener;
+    /** Singleton instance */
+    private static SerialPort instance;
 
-	/**
-	 * Read string from the port. Will block the thread if port is empty.
-	 * @return String read from the port
-	 * @throws IOException
-	 */
-	private String readString () throws IOException{
-		/** Here exception could be generated */
-		int size = serialInputChannel.read(buffer);
-		buffer.flip();
-		return new String(buffer.array(),0,size);
-	}
+    /**
+     * Thread reads data from port and calls onStringReceived from given
+     * {@link de.unierlangen.like.serialport.OnStringReceivedListener
+     * OnStringReceivedListener}
+     */
+    private class ReceivingThread extends Thread {
+        private static final String TAG = "ReceivingThread";
 
-	/** Configures and opens serial port */
-	private native static FileDescriptor open(String path, int baudrate);
-	/** Closes serial port */
-	private native void close();
-	/** Load library with open() and close() */
-	static {
-		System.loadLibrary("serial_port");
-	}
+        @Override
+        public void run() {
+            try {
+                while (!isInterrupted()) {
+                    String readString = readString();
+                    onStringReceivedListener.onStringReceived(readString);
+                    Thread.yield();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "IOException in SendingThread", e);
+            }
+            super.run();
+        }
+    }
+
+    /**
+     * 
+     * @param context
+     * @return
+     * @throws SecurityException
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static SerialPort getSerialPort() {
+        if (instance == null) {
+            instance = new SerialPort("/dev/s3c2410_serial2", 9600);
+        }
+        return instance;
+    }
+
+    /** Writes single string to the serial port */
+    public void writeString(String stringToWrite) {
+        try {
+            serialOutputChannel.write(ByteBuffer.wrap(stringToWrite.getBytes()));
+        } catch (IOException e) {
+            Log.d(TAG, "Was not able to write", e);
+        }
+    }
+
+    public void setSharedPreferences(SharedPreferences sharedPreferences)
+            throws InvalidParameterException {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        String path = sharedPreferences.getString("DEVICE", "");
+        int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "-1"));
+        if (path.equals("") || baudrate == -1) {
+            throw new InvalidParameterException("Preferences do not contain required keys");
+        }
+        openPort(path, baudrate);
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("BAUDRATE") || key.equals("DEVICE")) {
+            String path = sharedPreferences.getString("DEVICE", "/dev/s3c2410_serial2");
+            int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "9600"));
+            openPort(path, baudrate);
+        }
+    }
+
+    /** Set interface to handle symbols received by serial port */
+    public void setOnStringReceivedListener(OnStringReceivedListener onStringReceivedListener) {
+        this.onStringReceivedListener = onStringReceivedListener;
+        if (receivingThread == null) {
+            receivingThread = new ReceivingThread();
+            receivingThread.start();
+        }
+    }
+
+    /**
+     * Serial port constructor. To receive data use
+     * {@link de.unierlangen.like.serialport.SerialPort#setOnStringReceivedListener
+     * setOnStringReceivedListener}
+     * 
+     * @param context
+     * @throws InvalidParameterException
+     * @throws SecurityException
+     * @throws IOException
+     */
+    private SerialPort(String path, int baudrate) {
+        Log.d(TAG, "SerialPort(" + path + ", " + baudrate + ")");
+        buffer = ByteBuffer.allocate(64);
+        openPort(path, baudrate);
+    }
+
+    private void openPort(String path, int baudrate) {
+        if (mFd != null) {
+            close();
+        }
+        mFd = open(path, baudrate);
+        serialInputChannel = new FileInputStream(mFd).getChannel();
+        serialOutputChannel = new FileOutputStream(mFd).getChannel();
+    }
+
+    /**
+     * Read string from the port. Will block the thread if port is empty.
+     * 
+     * @return String read from the port
+     * @throws IOException
+     */
+    private String readString() throws IOException {
+        /** Here exception could be generated */
+        int size = serialInputChannel.read(buffer);
+        buffer.flip();
+        return new String(buffer.array(), 0, size);
+    }
+
+    /** Configures and opens serial port */
+    private native static FileDescriptor open(String path, int baudrate);
+
+    /** Closes serial port */
+    private native void close();
+
+    /** Load library with open() and close() */
+    static {
+        System.loadLibrary("serial_port");
+    }
 }
-

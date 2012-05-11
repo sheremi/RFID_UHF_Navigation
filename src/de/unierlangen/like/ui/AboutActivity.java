@@ -7,20 +7,20 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class AboutActivity extends Activity {
-	
-	Button ok;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+
+    Button ok;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.about);
-	
-        Button ok = (Button)findViewById(R.id.ok_button);
+
+        Button ok = (Button) findViewById(R.id.ok_button);
         ok.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				AboutActivity.this.finish();
-			}
-		});
-	}
+
+            public void onClick(View v) {
+                AboutActivity.this.finish();
+            }
+        });
+    }
 }
