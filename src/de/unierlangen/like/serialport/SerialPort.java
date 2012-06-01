@@ -30,7 +30,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.util.Log;
 
 /** Describes serial port */
-public class SerialPort implements OnSharedPreferenceChangeListener {
+public class SerialPort implements OnSharedPreferenceChangeListener, RxChannel, TxChannel {
 
     private static final String TAG = "SerialPort";
 
@@ -39,33 +39,9 @@ public class SerialPort implements OnSharedPreferenceChangeListener {
     private ByteBuffer buffer;
     private FileChannel serialInputChannel;
     private FileChannel serialOutputChannel;
-    private ReceivingThread receivingThread;
-    private OnStringReceivedListener onStringReceivedListener;
+
     /** Singleton instance */
     private static SerialPort instance;
-
-    /**
-     * Thread reads data from port and calls onStringReceived from given
-     * {@link de.unierlangen.like.serialport.OnStringReceivedListener
-     * OnStringReceivedListener}
-     */
-    private class ReceivingThread extends Thread {
-        private static final String TAG = "ReceivingThread";
-
-        @Override
-        public void run() {
-            try {
-                while (!isInterrupted()) {
-                    String readString = readString();
-                    onStringReceivedListener.onStringReceived(readString);
-                    Thread.yield();
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "IOException in SendingThread", e);
-            }
-            super.run();
-        }
-    }
 
     /**
      * 
@@ -80,15 +56,6 @@ public class SerialPort implements OnSharedPreferenceChangeListener {
             instance = new SerialPort("/dev/s3c2410_serial2", 9600);
         }
         return instance;
-    }
-
-    /** Writes single string to the serial port */
-    public void writeString(String stringToWrite) {
-        try {
-            serialOutputChannel.write(ByteBuffer.wrap(stringToWrite.getBytes()));
-        } catch (IOException e) {
-            Log.d(TAG, "Was not able to write", e);
-        }
     }
 
     public void setSharedPreferences(SharedPreferences sharedPreferences)
@@ -107,15 +74,6 @@ public class SerialPort implements OnSharedPreferenceChangeListener {
             String path = sharedPreferences.getString("DEVICE", "/dev/s3c2410_serial2");
             int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "9600"));
             openPort(path, baudrate);
-        }
-    }
-
-    /** Set interface to handle symbols received by serial port */
-    public void setOnStringReceivedListener(OnStringReceivedListener onStringReceivedListener) {
-        this.onStringReceivedListener = onStringReceivedListener;
-        if (receivingThread == null) {
-            receivingThread = new ReceivingThread();
-            receivingThread.start();
         }
     }
 
@@ -150,13 +108,13 @@ public class SerialPort implements OnSharedPreferenceChangeListener {
      * @return String read from the port
      * @throws IOException
      */
-    private String readString() throws IOException {
+    public String readString() throws IOException {
         /** Here exception could be generated */
         int size = serialInputChannel.read(buffer);
         buffer.flip();
         return new String(buffer.array(), 0, size);
     }
-
+    
     /** Configures and opens serial port */
     private native static FileDescriptor open(String path, int baudrate);
 
@@ -166,5 +124,14 @@ public class SerialPort implements OnSharedPreferenceChangeListener {
     /** Load library with open() and close() */
     static {
         System.loadLibrary("serial_port");
+    }
+
+    /** Writes single string to the serial port */
+    public void sendString(String stringToSend) {
+        try {
+            serialOutputChannel.write(ByteBuffer.wrap(stringToSend.getBytes()));
+        } catch (IOException e) {
+            Log.d(TAG, "Was not able to write", e);
+        }
     }
 }

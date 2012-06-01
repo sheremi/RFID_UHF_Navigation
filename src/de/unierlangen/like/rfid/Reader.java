@@ -10,23 +10,45 @@ import java.util.List;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import de.unierlangen.like.serialport.OnStringReceivedListener;
+import de.unierlangen.like.serialport.ReceivingThread;
 import de.unierlangen.like.serialport.SerialPort;
 
-public class Reader implements OnStringReceivedListener {
+public class Reader /*extends Service*/ {
 
     private static final String TAG = "Reader";
-    private static final boolean DBG = false;
+    private static final boolean DBG = true;
     public static final int EVENT_TAGS = 1;
     public static final int RESPONSE_TAGS = 2;
     public static final int RESPONSE_REGS = 3;
     public static final int ERROR = -1;
     public static final int WARNING = -2;
+    private static final int EVENT_STRING_RECEIVED = 1;
 
     private SerialPort readerSerialPort;
     private int amountOfTags;
-    private String response = "";
-    private Handler handler;
+
+    private Handler registrantHandler;
+    private ReceivingThread mReceivingThread;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (DBG) Log.d(TAG, "handleMessage(" + msg.what + ")");
+            switch (msg.what) {
+            case EVENT_STRING_RECEIVED:
+                Message message = analyzeResponse((String) msg.obj);
+                if (registrantHandler != null) {
+                    registrantHandler.sendMessage(message);
+                }
+                break;
+
+            default:
+                Log.d(TAG, "unknown data");
+                break;
+            }
+
+        }
+    };
 
     public static enum Configuration {
         DEFAULT, LOW_POWER, HIGH_POWER
@@ -52,9 +74,10 @@ public class Reader implements OnStringReceivedListener {
      */
     public Reader(SerialPort serialPort, Handler handler) {
         readerSerialPort = serialPort;
-        this.handler = handler;
-        readerSerialPort.setOnStringReceivedListener(this);
-        readerSerialPort.writeString("preved");
+        this.registrantHandler = handler;
+        mReceivingThread = new ReceivingThread(serialPort, mHandler, EVENT_STRING_RECEIVED);
+        mReceivingThread.start();
+        readerSerialPort.sendString("preved");
     }
 
     public void initialize(Configuration configuration) throws IOException {
@@ -66,18 +89,18 @@ public class Reader implements OnStringReceivedListener {
             break;
         case DEFAULT:
         default:
-            readerSerialPort.writeString("a");
+            readerSerialPort.sendString("a");
         }
 
     }
 
     public void performRound() {
         // Tell reader MCU to start inventory round
-        readerSerialPort.writeString("rdr get tags");
+        readerSerialPort.sendString("rdr get tags");
     }
 
     public void displayRegisters() throws IOException {
-        readerSerialPort.writeString("rdr get regs");
+        readerSerialPort.sendString("rdr get regs");
     }
 
     public int getAmountOfTags() {
@@ -85,32 +108,11 @@ public class Reader implements OnStringReceivedListener {
     }
 
     /**
-     * Called when {@link de.unierlangen.like.serialport.SerialPort SerialPort}
-     * receives string from serial port. Stores response and unlocks the thread.
-     * 
-     * @throws ReaderException
-     */
-    public void onStringReceived(String string) {
-        response = response.concat(string);
-        if (response.contains("\n")) {
-            if (DBG) Log.d(TAG, "Response: " + response);
-            try {
-                Message msg = analyzeResponse(response);
-                handler.sendMessage(msg);
-            } catch (NumberFormatException e) {
-                Log.e(TAG, "!! NumberFormatException !!", e);
-            }
-            response = "";
-        }
-    }
-
-    /**
-     * Recognizes the string (answer), which was got from the reader after
+     * Recognizes the string (answer), which was received from the reader after
      * performing an inventory round. Then packs the recognized data to the
      * message and assigns a topic to it.
      * 
-     * @param response
-     *            - the answer (string) from reader.
+     * @param response the answer (string) from reader.
      * @return message to be handled by a Handler.
      * @throws ReaderException
      */

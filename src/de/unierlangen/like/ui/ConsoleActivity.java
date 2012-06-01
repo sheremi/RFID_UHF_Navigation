@@ -35,7 +35,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import de.unierlangen.like.serialport.OnStringReceivedListener;
 import de.unierlangen.like.serialport.SerialPort;
 
 /**
@@ -44,8 +43,7 @@ import de.unierlangen.like.serialport.SerialPort;
  * 
  */
 public class ConsoleActivity extends OptionsMenuActivity implements OnClickListener,
-        OnEditorActionListener, OnCheckedChangeListener, OnStringReceivedListener,
-        OnLongClickListener {
+        OnEditorActionListener, OnCheckedChangeListener, OnLongClickListener {
 
     private static final String TAG = "ConsoleActivity";
     /** Serial port used by console */
@@ -108,12 +106,12 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnClickListe
         SharedPreferences sp = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
         String messageString = sp.getString("GREETING", "");
-        serialPort.writeString(messageString);
+        serialPort.sendString(messageString);
         onStringSent(messageString);
     }
 
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        serialPort.writeString(v.getText().toString());// +"\n");
+        serialPort.sendString(v.getText().toString());// +"\n");
         onStringSent(v.getText().toString());
         return false;
     }
@@ -144,7 +142,7 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnClickListe
             String loopbackString = "Hi!";
             try {
                 while (!isInterrupted()) {
-                    serialPort.writeString(loopbackString);
+                    serialPort.sendString(loopbackString);
                     onStringSent(loopbackString);
                     Thread.sleep(1000);
                 }
@@ -178,6 +176,7 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnClickListe
         incoming = 0;
         /**
          * Create the Handler. It will implicitly bind to the Looper that is
+         * 
          * internally created for this thread (since it is the UI thread)
          */
         handler = new Handler();
@@ -190,8 +189,7 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnClickListe
         try {
             serialPort = SerialPort.getSerialPort();
             serialPort.setSharedPreferences(PreferenceManager.getDefaultSharedPreferences(this));
-            serialPort.setOnStringReceivedListener(this);
-            /** Create threads */
+             /** Create threads */
             // sendingThread = new SendingThread(this, serialPort);//started in
             // onCheckedChangeListener
 
