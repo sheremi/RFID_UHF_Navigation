@@ -17,6 +17,8 @@ public class TagsDatabase {
         // Map keys (EPC values) to objects of tags for navigation with specific
         // coordinates
 
+        hashMap.put("204033b2dcd96c00000", new Float[] { 24.68f, 5.67f });
+        hashMap.put("b08033b2ddd96c00000", new Float[] { 30.00f, 7.25f });
         hashMap.put("BE1", new Float[] { 24.68f, 5.67f });
         hashMap.put("BE2", new Float[] { 30.00f, 7.25f });
         hashMap.put("BE3", new Float[] { 34.50f, 5.67f });

@@ -70,15 +70,17 @@ public class MainYourLocationActivity extends OptionsMenuActivity implements OnG
                 readTagsFromReader = (ArrayList<GenericTag>) msg.obj;
                 ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
                 arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
-                navigation.setTags(arrayOfTags);
-                mapView.setRectFTags(navigation.getAreaWithTags());
-                mapView.setTags(arrayOfTags);
-                mapView.setZones(navigation.getZones(ZONE_RADIUS));
-                PointF readerPosition = navigation.getReaderPosition();
-                mapView.setReaderPosition(readerPosition);
-                if (roomCoordinates != null) {
-                    Path routingPath = dijkstraRouter.findRoute(readerPosition, roomCoordinates);
-                    mapView.setRoute(routingPath);
+                if (!arrayOfTags.isEmpty()) {
+                    navigation.setTags(arrayOfTags);
+                    mapView.setRectFTags(navigation.getAreaWithTags());
+                    mapView.setTags(arrayOfTags);
+                    mapView.setZones(navigation.getZones(ZONE_RADIUS));
+                    PointF readerPosition = navigation.getReaderPosition();
+                    mapView.setReaderPosition(readerPosition);
+                    if (roomCoordinates != null) {
+                        Path routingPath = dijkstraRouter.findRoute(readerPosition, roomCoordinates);
+                        mapView.setRoute(routingPath);
+                    }
                 }
                 break;
             case Reader.RESPONSE_REGS:

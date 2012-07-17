@@ -166,7 +166,8 @@ public class Reader /*extends Service*/ {
         // Skip third member - amount of tags
         iterator.next();
         while (iterator.hasNext()) {
-            tags.add(new GenericTag(iterator.next(), Integer.parseInt(iterator.next()), true));
+            tags.add(new GenericTag(iterator.next(), /*Integer.parseInt(iterator.next())*/ 0, true));
+            iterator.next();
         }
         // TODO use amountOfTags where it should be used
         amountOfTags = tags.size();
