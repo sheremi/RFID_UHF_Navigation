@@ -11,7 +11,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import de.unierlangen.like.serialport.ReceivingThread;
+import de.unierlangen.like.serialport.RxChannel;
 import de.unierlangen.like.serialport.SerialPort;
+import de.unierlangen.like.serialport.TxChannel;
 
 public class Reader /*extends Service*/ {
 
@@ -24,7 +26,8 @@ public class Reader /*extends Service*/ {
     public static final int WARNING = -2;
     private static final int EVENT_STRING_RECEIVED = 1;
 
-    private SerialPort readerSerialPort;
+    private TxChannel txChannel;
+    private RxChannel rxChannel;
     private int amountOfTags;
 
     private Handler registrantHandler;
@@ -72,12 +75,13 @@ public class Reader /*extends Service*/ {
      * @throws InterruptedException
      * @throws ReaderException
      */
-    public Reader(SerialPort serialPort, Handler handler) {
-        readerSerialPort = serialPort;
+    public Reader(RxChannel rxChannel, TxChannel txChannel, Handler handler) {
+        this.rxChannel = rxChannel;        
+        this.txChannel = txChannel;
         this.registrantHandler = handler;
-        mReceivingThread = new ReceivingThread(serialPort, mHandler, EVENT_STRING_RECEIVED);
+        mReceivingThread = new ReceivingThread(rxChannel, mHandler, EVENT_STRING_RECEIVED);
         mReceivingThread.start();
-        readerSerialPort.sendString("preved");
+        txChannel.sendString("preved");
     }
 
     public void initialize(Configuration configuration) throws IOException {
@@ -89,18 +93,18 @@ public class Reader /*extends Service*/ {
             break;
         case DEFAULT:
         default:
-            readerSerialPort.sendString("a");
+            txChannel.sendString("a");
         }
 
     }
 
     public void performRound() {
         // Tell reader MCU to start inventory round
-        readerSerialPort.sendString("rdr get tags");
+        txChannel.sendString("rdr get tags");
     }
 
     public void displayRegisters() throws IOException {
-        readerSerialPort.sendString("rdr get regs");
+        txChannel.sendString("rdr get regs");
     }
 
     public int getAmountOfTags() {

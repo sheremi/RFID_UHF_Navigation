@@ -15,9 +15,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -35,7 +32,9 @@ import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.rfid.GenericTag;
 import de.unierlangen.like.rfid.Reader;
 import de.unierlangen.like.rfid.Reader.ReaderException;
+import de.unierlangen.like.serialport.RxChannel;
 import de.unierlangen.like.serialport.SerialPort;
+import de.unierlangen.like.serialport.TxChannel;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*
                                                                    * OnGestureListener
@@ -54,11 +53,11 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     private DijkstraRouter dijkstraRouter;
     private MapBuilder mapBuilder;
     private ZoomControls zoomControls;
-    private SerialPort readerSerialPort;
     private Reader reader;
     private TagsDatabase tagsDatabase = new TagsDatabase();
     private PointF roomCoordinates;
-    // private GestureDetector mGestureDetector = new GestureDetector(this);
+    private TxChannel txChannel;
+    private RxChannel rxChannel;
 
     private Handler handler = new Handler() {
         @SuppressWarnings("unchecked")
@@ -172,8 +171,9 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         navigation = new Navigation(walls, doors);
 
         try {
-            readerSerialPort = SerialPort.getSerialPort();
-            readerSerialPort.setSharedPreferences(PreferenceManager
+            rxChannel = SerialPort.getSerialPort();
+            txChannel = SerialPort.getSerialPort();
+            SerialPort.getSerialPort().setSharedPreferences(PreferenceManager
                     .getDefaultSharedPreferences(this));
         } catch (InvalidParameterException e) {
             Log.w(TAG, "SerialPort has to be configured first", e);
@@ -189,7 +189,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
             alert.show();
             e.printStackTrace();
         }
-        reader = new Reader(readerSerialPort, handler);
+        reader = new Reader(rxChannel, txChannel, handler);
         Log.d(TAG, "Reader and serial port were created succesfully");
         // Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
         dijkstraRouter = new DijkstraRouter();
