@@ -32,6 +32,7 @@ import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.rfid.GenericTag;
 import de.unierlangen.like.rfid.Reader;
 import de.unierlangen.like.rfid.Reader.ReaderException;
+import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.RxChannel;
 import de.unierlangen.like.serialport.SerialPort;
 import de.unierlangen.like.serialport.TxChannel;
@@ -79,7 +80,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
                     PointF readerPosition = navigation.getReaderPosition();
                     mapView.setReaderPosition(readerPosition);
                     if (roomCoordinates != null) {
-                        Path routingPath = dijkstraRouter.findRoute(readerPosition, roomCoordinates);
+                        Path routingPath = dijkstraRouter
+                                .findRoute(readerPosition, roomCoordinates);
                         mapView.setRoute(routingPath);
                     }
                 }
@@ -170,25 +172,9 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         mapView.setDoors(doors);
         navigation = new Navigation(walls, doors);
 
-        try {
-            rxChannel = SerialPort.getSerialPort();
-            txChannel = SerialPort.getSerialPort();
-            SerialPort.getSerialPort().setSharedPreferences(PreferenceManager
-                    .getDefaultSharedPreferences(this));
-        } catch (InvalidParameterException e) {
-            Log.w(TAG, "SerialPort has to be configured first", e);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Achtung!");
-            builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
-                }
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
-            e.printStackTrace();
-        }
+        rxChannel = CommunicationManager.getRxChannel();
+        txChannel = CommunicationManager.getTxChannel();
+
         reader = new Reader(rxChannel, txChannel, handler);
         Log.d(TAG, "Reader and serial port were created succesfully");
         // Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();

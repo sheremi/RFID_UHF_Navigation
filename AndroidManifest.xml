@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="de.unierlangen.like.ui"
-	android:versionCode="1"
+	package="de.unierlangen.like.ui" android:versionCode="1"
 	android:versionName="1.0">
-	<application
-		android:icon="@drawable/icon"
-		android:label="@string/app_name">
-		<activity 
-			android:name=".MainYourLocationActivity"
+	<application android:name="NavigationApplication"
+		android:icon="@drawable/icon" android:label="@string/app_name">
+		<activity android:name=".MainYourLocationActivity"
 			android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -21,17 +18,13 @@
 		<activity android:name=".LoopbackActivity"></activity>
 		<activity android:name=".TestModeActivity"></activity>
 		<activity android:name=".FindRoomActivity"></activity>
-		<activity 
-			android:name=".AboutActivity"
-			android:label="@string/about_title"
+		<activity android:name=".AboutActivity" android:label="@string/about_title"
 			android:theme="@android:style/Theme.Dialog">
 		</activity>
-		<activity 
-			android:name="de.unierlangen.like.ui.HelpActivity"
-			android:label="@string/help_title"
-			android:theme="@android:style/Theme.Dialog">
+		<activity android:name="de.unierlangen.like.ui.HelpActivity"
+			android:label="@string/help_title" android:theme="@android:style/Theme.Dialog">
 		</activity>
-		
+
 	</application>
 	<uses-sdk android:minSdkVersion="3" />
 </manifest>
