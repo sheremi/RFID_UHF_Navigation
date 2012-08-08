@@ -1,37 +1,38 @@
 @startuml
- 
+
+    
     class MainYourLocationActivity
     class FindRoomActivity
     class ConsoleActivity
- 
-    FindRoomActivity .right. MainYourLocationActivity : startActivityForResult
-    FindRoomActivity o-- RoomsDatabase
-    
+    class Communicator
     class MapView
+    
+
+    FindRoomActivity .right. MainYourLocationActivity : startActivityForResult
+    RoomsDatabase -down-o FindRoomActivity
+
     class DijkstraRouter
     class MapBuilder
     class Navigation
     class RoomsDatabase
     class TagsDatabase
- 
-    MainYourLocationActivity o-down-o MapView
-    MainYourLocationActivity o-- IReader
-    MainYourLocationActivity o-- DijkstraRouter : bad
-    MainYourLocationActivity o-- Navigation
-    MainYourLocationActivity o-- RoomsDatabase
-    MainYourLocationActivity o-- TagsDatabase
-    MainYourLocationActivity o-- SerialPort : bad
-    MainYourLocationActivity o-- MapBuilder
     
- 'reader is self contained
+    MainYourLocationActivity o-down-o MapView
+    MainYourLocationActivity o-right- IReader
+    Communicator o-down- DijkstraRouter
+    Communicator o-down- Navigation
+    Communicator o-down- RoomsDatabase
+    Communicator o-down- TagsDatabase
+    Communicator o-down- MapBuilder
+    MainYourLocationActivity o-- Communicator
+    
+'reader is self contained
     interface IReader {
-    	performRound(handler, code)
+        performRound(handler, code)
     }
     class ReaderService
     ReaderService .down.|> IReader
-    ReaderService o-left-o ReceivingThread : subscribed
-    ReaderService o-- TxChannel
-    
+        
     class SerialPortPreferences
     class SerialPortFinder
     class SerialPortPersistantData << (D,#FF7700) >>
@@ -40,20 +41,29 @@
     
     interface RxChannel
     interface TxChannel
-    class SerialPort
+    class SerialPort as "SerialPort implements Rx, Tx"
     SerialPort o--o SerialPortPersistantData : observer
-    SerialPort .down.|> RxChannel
-    SerialPort .down.|> TxChannel
     
     class ReceivingThread
+    
+    ConsoleActivity o--o ReceivingThread
+    ReaderService o--o ReceivingThread
+    
+    class CommunicationManagerProxy
+    class BlueTooth as "BlueTooth implements Rx, Tx"
+    class SerialEmulator as "SerialEmulator implements Rx, Tx"
+    CommunicationManagerProxy *-down- SerialPort
+    CommunicationManagerProxy *-down- BlueTooth
+    CommunicationManagerProxy *-down- SerialEmulator
+    CommunicationManagerProxy .down.|> RxChannel
+    CommunicationManagerProxy .down.|> TxChannel
+    ReaderService o-- TxChannel
     ReceivingThread o-- RxChannel
+    ConsoleActivity o-- TxChannel
     
-    ConsoleActivity o-- SerialPort : bad
-    ConsoleActivity o-right-o ReceivingThread
-    
- 
- @enduml
- 
+
+@enduml
+
     class Door
     class Wall
     class Tag
