@@ -1,0 +1,68 @@
+@startuml
+ 
+    class MainYourLocationActivity
+    class FindRoomActivity
+    class ConsoleActivity
+ 
+    FindRoomActivity .right. MainYourLocationActivity : startActivityForResult
+    FindRoomActivity o-- RoomsDatabase
+    
+    class MapView
+    class DijkstraRouter
+    class MapBuilder
+    class Navigation
+    class RoomsDatabase
+    class TagsDatabase
+ 
+    MainYourLocationActivity o-down-o MapView
+    MainYourLocationActivity o-- IReader
+    MainYourLocationActivity o-- DijkstraRouter : bad
+    MainYourLocationActivity o-- Navigation
+    MainYourLocationActivity o-- RoomsDatabase
+    MainYourLocationActivity o-- TagsDatabase
+    MainYourLocationActivity o-- SerialPort : bad
+    MainYourLocationActivity o-- MapBuilder
+    
+ 'reader is self contained
+    interface IReader {
+    	performRound(handler, code)
+    }
+    class ReaderService
+    ReaderService .down.|> IReader
+    ReaderService o-left-o ReceivingThread : subscribed
+    ReaderService o-- TxChannel
+    
+    class SerialPortPreferences
+    class SerialPortFinder
+    class SerialPortPersistantData << (D,#FF7700) >>
+    SerialPortPreferences o-down-o SerialPortPersistantData : observer
+    SerialPortPreferences o-- SerialPortFinder
+    
+    interface RxChannel
+    interface TxChannel
+    class SerialPort
+    SerialPort o--o SerialPortPersistantData : observer
+    SerialPort .down.|> RxChannel
+    SerialPort .down.|> TxChannel
+    
+    class ReceivingThread
+    ReceivingThread o-- RxChannel
+    
+    ConsoleActivity o-- SerialPort : bad
+    ConsoleActivity o-right-o ReceivingThread
+    
+ 
+ @enduml
+ 
+    class Door
+    class Wall
+    class Tag
+    class Zone
+    class AboutActivity
+    class HelpActivity
+    class ReaderPreferences
+    class ReaderRegistersListActivity
+    class OptionsMenuActivity
+    MainYourLocationActivity -down-|> OptionsMenuActivity
+    FindRoomActivity -down-|> OptionsMenuActivity
+    ConsoleActivity -down-|> OptionsMenuActivity
