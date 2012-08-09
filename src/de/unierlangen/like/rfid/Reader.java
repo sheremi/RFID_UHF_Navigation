@@ -10,12 +10,11 @@ import java.util.List;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import de.unierlangen.like.serialport.ReceivingThread;
-import de.unierlangen.like.serialport.RxChannel;
-import de.unierlangen.like.serialport.SerialPort;
+import de.unierlangen.like.serialport.CommunicationManager;
+import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
 import de.unierlangen.like.serialport.TxChannel;
 
-public class Reader /*extends Service*/ {
+public class Reader /* extends Service */{
 
     private static final String TAG = "Reader";
     private static final boolean DBG = true;
@@ -27,11 +26,10 @@ public class Reader /*extends Service*/ {
     private static final int EVENT_STRING_RECEIVED = 1;
 
     private TxChannel txChannel;
-    private RxChannel rxChannel;
+    private IStringPublisher stringPublisher;
     private int amountOfTags;
 
     private Handler registrantHandler;
-    private ReceivingThread mReceivingThread;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -75,12 +73,11 @@ public class Reader /*extends Service*/ {
      * @throws InterruptedException
      * @throws ReaderException
      */
-    public Reader(RxChannel rxChannel, TxChannel txChannel, Handler handler) {
-        this.rxChannel = rxChannel;        
-        this.txChannel = txChannel;
+    public Reader(Handler handler) {
         this.registrantHandler = handler;
-        mReceivingThread = new ReceivingThread(rxChannel, mHandler, EVENT_STRING_RECEIVED);
-        mReceivingThread.start();
+        txChannel = CommunicationManager.getTxChannel();
+        stringPublisher = CommunicationManager.getStringPublisher();
+        stringPublisher.register(mHandler, EVENT_STRING_RECEIVED);
         txChannel.sendString("preved");
     }
 
@@ -116,7 +113,8 @@ public class Reader /*extends Service*/ {
      * performing an inventory round. Then packs the recognized data to the
      * message and assigns a topic to it.
      * 
-     * @param response the answer (string) from reader.
+     * @param response
+     *            the answer (string) from reader.
      * @return message to be handled by a Handler.
      * @throws ReaderException
      */
@@ -170,7 +168,10 @@ public class Reader /*extends Service*/ {
         // Skip third member - amount of tags
         iterator.next();
         while (iterator.hasNext()) {
-            tags.add(new GenericTag(iterator.next(), /*Integer.parseInt(iterator.next())*/ 0, true));
+            tags.add(new GenericTag(iterator.next(), /*
+                                                      * Integer.parseInt(iterator
+                                                      * .next())
+                                                      */0, true));
             iterator.next();
         }
         // TODO use amountOfTags where it should be used

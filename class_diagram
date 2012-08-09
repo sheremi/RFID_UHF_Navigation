@@ -44,19 +44,25 @@
     class SerialPort as "SerialPort implements Rx, Tx"
     SerialPort o--o SerialPortPersistantData : observer
     
-    class ReceivingThread
+    class ReceivingThreadSerial
+    class ReceivingThreadBT
+    class ReceivingThreadEmul
     
-    ConsoleActivity o--o ReceivingThread
-    ReaderService o--o ReceivingThread
+    SerialPort o-- ReceivingThreadSerial
+
     
-    class CommunicationManagerProxy
+    ReaderService o-- ReceivingThread
+    
+    class CommunicationManagerFactory
     class BlueTooth as "BlueTooth implements Rx, Tx"
     class SerialEmulator as "SerialEmulator implements Rx, Tx"
-    CommunicationManagerProxy *-down- SerialPort
-    CommunicationManagerProxy *-down- BlueTooth
-    CommunicationManagerProxy *-down- SerialEmulator
-    CommunicationManagerProxy .down.|> RxChannel
-    CommunicationManagerProxy .down.|> TxChannel
+    BlueTooth o-- ReceivingThreadBT
+    SerialEmulator o-- ReceivingThreadEmul
+    CommunicationManagerFactory *-down- SerialPort
+    CommunicationManagerFactory *-down- BlueTooth
+    CommunicationManagerFactory *-down- SerialEmulator
+    CommunicationManagerFactory .down.|> RxChannel
+    CommunicationManagerFactory .down.|> TxChannel
     ReaderService o-- TxChannel
     ReceivingThread o-- RxChannel
     ConsoleActivity o-- TxChannel

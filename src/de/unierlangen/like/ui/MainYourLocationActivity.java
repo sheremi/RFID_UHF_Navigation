@@ -1,7 +1,6 @@
 package de.unierlangen.like.ui;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -13,7 +12,6 @@ import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,10 +30,6 @@ import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.rfid.GenericTag;
 import de.unierlangen.like.rfid.Reader;
 import de.unierlangen.like.rfid.Reader.ReaderException;
-import de.unierlangen.like.serialport.CommunicationManager;
-import de.unierlangen.like.serialport.RxChannel;
-import de.unierlangen.like.serialport.SerialPort;
-import de.unierlangen.like.serialport.TxChannel;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*
                                                                    * OnGestureListener
@@ -57,8 +51,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     private Reader reader;
     private TagsDatabase tagsDatabase = new TagsDatabase();
     private PointF roomCoordinates;
-    private TxChannel txChannel;
-    private RxChannel rxChannel;
 
     private Handler handler = new Handler() {
         @SuppressWarnings("unchecked")
@@ -172,10 +164,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         mapView.setDoors(doors);
         navigation = new Navigation(walls, doors);
 
-        rxChannel = CommunicationManager.getRxChannel();
-        txChannel = CommunicationManager.getTxChannel();
-
-        reader = new Reader(rxChannel, txChannel, handler);
+        reader = new Reader(handler);
         Log.d(TAG, "Reader and serial port were created succesfully");
         // Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
         dijkstraRouter = new DijkstraRouter();
