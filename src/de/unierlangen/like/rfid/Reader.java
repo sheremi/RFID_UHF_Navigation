@@ -82,7 +82,7 @@ public class Reader /* extends Service */{
     }
 
     public void initialize(Configuration configuration) throws IOException {
-        // FIXME choose configuration from enum
+        // TODO choose configuration from enum
         switch (configuration) {
         case LOW_POWER:
             break;
@@ -90,6 +90,7 @@ public class Reader /* extends Service */{
             break;
         case DEFAULT:
         default:
+            // FIXME what's "a"?
             txChannel.sendString("a");
         }
 
