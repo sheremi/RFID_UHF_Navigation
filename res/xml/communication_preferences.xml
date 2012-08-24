@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:title="Serial port setup">
+
+	<PreferenceCategory
+	android:title="Communication type">
+		<ListPreference 
+			android:entries="@array/comm_types_name" 
+			android:entryValues="@array/comm_types_value" 
+			android:key="COMM_TYPE" 
+			android:persistent="true" 
+			android:title="Communication type">
+		</ListPreference>
+	</PreferenceCategory>
+
+</PreferenceScreen>

@@ -19,7 +19,6 @@ public class CommunicationManager {
 
     public interface IStringPublisher {
         public void register(Handler handler, int what);
-
         public void unregister(Handler handler);
     }
 
@@ -31,7 +30,6 @@ public class CommunicationManager {
 
     public static TxChannel getTxChannel() {
         return mTxChannel;
-
     }
 
     public static IStringPublisher getStringPublisher() {
@@ -40,34 +38,45 @@ public class CommunicationManager {
     }
 
     /**
-     * Creates hashmaps of txChannels (connection types) and reading threads.
+     * Creates hashmaps of txChannels (connection types) and reading threads (stringPublishers).
      * Initializes mTxChannel and mStringPublisher.
      * 
      * @param context
      */
     public static void init(Context context) {
-        //Creating
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        //Creating HashMap
         Map<String, TxChannel> txChannels = new HashMap<String, TxChannel>();
+
         SerialPort serialPort = SerialPort.getSerialPort();
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        serialPort.setSharedPreferences(sp);
-        // Here will be created and added to the map 2 more objects - BT and Emulator
         txChannels.put("serial", serialPort);
 
+        Emulation emulation = new Emulation(false);
+        txChannels.put("emulation", emulation);
+
+        Emulation emulationSimple = new Emulation(true);
+        txChannels.put("emulationSimple", emulationSimple);
+
+        // Here will be created and added one more txChannel to the map - BT
+
         //Assigns mTxChannel to the current connection type (it's Proxy, nobody has 
-        // to know exactly, what is the current connection type).
-        ProxyTxChannel proxyTx = new ProxyTxChannel(txChannels);
+        // to know exactly, what the current connection type is).
+        ProxyTxChannel proxyTx = new ProxyTxChannel(txChannels, defaultSharedPreferences);
         mTxChannel = proxyTx;
 
         Map<String, IStringPublisher> publishers = new HashMap<String, IStringPublisher>();
+
         IStringPublisher serialPortPublisher = new ReceivingThread(serialPort);
         publishers.put("serial", serialPortPublisher);
-        // Here will be created and added to the map 2 more publishers - BT and Emulator threads
+
+        publishers.put("emulation", emulation);
+        publishers.put("emulationSimple", emulationSimple);
+
+        // Here will be created and added one more publisher to the map - BT
 
         //Assigns mStringPublisher to the current reading thread (it's Proxy, nobody has 
-        // to know exactly, what is the current connection type and its reading thread).
-        ProxyReceivingThead proxyStringPublisher = new ProxyReceivingThead(publishers);
+        // to know exactly, what the current connection type and its reading thread are).
+        ProxyReceivingThead proxyStringPublisher = new ProxyReceivingThead(publishers, defaultSharedPreferences);
         mStringPublisher = proxyStringPublisher;
-
     }
 }

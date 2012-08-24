@@ -63,7 +63,6 @@ class ReceivingThread extends Thread implements IStringPublisher {
             if (DBG) Log.d(TAG, "start");
             start();
         }
-
     }
 
     public void unregister(Handler handler) {

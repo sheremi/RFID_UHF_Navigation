@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
 
 public class Emulation implements TxChannel, IStringPublisher {
@@ -51,8 +52,10 @@ public class Emulation implements TxChannel, IStringPublisher {
                 receivedString = "medved";
             } else if (stringToSend.contains("rdr get tags")) {
                 if (isSimplified == true) {
+                    Log.d("Emulation", "isSimplified == true");
                     receivedString = responses.get(0);
                 } else {
+                    Log.d("Emulation", "isSimplified == false");
                     if (! iterator.hasNext()){
                         iterator = responses.iterator();
                     }

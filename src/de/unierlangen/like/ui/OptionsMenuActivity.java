@@ -1,5 +1,6 @@
 package de.unierlangen.like.ui;
 
+import de.unierlangen.like.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
@@ -38,12 +39,13 @@ public class OptionsMenuActivity extends Activity {
         case R.id.prefs:
             break;
         case R.id.info:
+            startActivity(new Intent(OptionsMenuActivity.this, CommunicationPreferences.class));
             break;
         // case R.id.user_prefs:
         // TODO implement user preferences
         // break;
         case R.id.serial_submenu:
-            startActivity(new Intent(this, SerialPortPreferences.class));
+            startActivity(new Intent(OptionsMenuActivity.this, CommunicationPreferences.class));
             break;
         case R.id.readerset_submenu:
             startActivity(new Intent(this, ReaderPreferences.class));
