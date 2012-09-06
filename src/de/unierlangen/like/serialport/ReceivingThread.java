@@ -69,4 +69,5 @@ class ReceivingThread extends Thread implements IStringPublisher {
         recipientHandler = null;
 
     }
+
 }

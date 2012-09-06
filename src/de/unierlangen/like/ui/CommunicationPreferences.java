@@ -62,7 +62,7 @@ public class CommunicationPreferences extends PreferenceActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_serial_prefs, menu);
+        inflater.inflate(R.menu.menu_comm_prefs, menu);
         return true;
     }
 

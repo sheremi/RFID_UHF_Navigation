@@ -18,6 +18,7 @@ public class ProxyTxChannel implements TxChannel, OnSharedPreferenceChangeListen
 
     private static final String COMM_TYPE = "COMM_TYPE";
     private TxChannel activeTxChannel;
+    Map<String, TxChannel> txChannels;
 
     /**
      * User can choose a connection type in preferences. Proxy becomes chosen
@@ -29,6 +30,7 @@ public class ProxyTxChannel implements TxChannel, OnSharedPreferenceChangeListen
      *            SharedPreferences containing {@link ProxyTxChannel#COMM_TYPE}
      */
     public ProxyTxChannel(Map<String, TxChannel> txChannels, SharedPreferences sp) {
+        this.txChannels = txChannels;
         String activeTxChannelName = sp.getString(COMM_TYPE, "emulation");
         activeTxChannel = txChannels.get(activeTxChannelName);
         sp.registerOnSharedPreferenceChangeListener(this);
@@ -41,7 +43,8 @@ public class ProxyTxChannel implements TxChannel, OnSharedPreferenceChangeListen
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
         if (key.equals(COMM_TYPE)) {
             String activeTxChannelName = sp.getString(COMM_TYPE, "emulation");
-            Log.d("ProxyTxChannel", "activeTxChannelName = " + activeTxChannelName);
+            activeTxChannel = txChannels.get(activeTxChannelName);
+            Log.d("ProxyTxChannel", "activeTxChannelName = " + activeTxChannel);
         }
 
     }

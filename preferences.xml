@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright (C) 2002-2011 RealVNC Ltd. All Rights Reserved.
+ 
+   This is a sample application intended to demonstrate part of the
+   VNC Mobile Solution SDK. It is not intended as a production-ready
+   component.
+-->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/prefs_cat_demo" >
+
+        <CheckBoxPreference
+            android:defaultValue="1"
+            android:key="vnc_demo_autoconnect"
+            android:summary="@string/prefs_demo_autoconnect_summary"
+            android:title="@string/prefs_demo_autoconnect" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/prefs_cat_a2dp">
+
+        <CheckBoxPreference
+            android:defaultValue="1"
+            android:key="a2dp_autoconnect"
+            android:summaryOff="@string/prefs_a2dp_checkbox_sum_off"
+            android:summaryOn="@string/prefs_a2dp_checkbox_sum_on"
+            android:title="@string/prefs_a2dp_checkbox" />
+
+        <EditTextPreference
+            android:defaultValue="IVI"
+            android:key="a2dp_device_name"
+            android:title="@string/prefs_a2dp_device_name" />
+
+        <PreferenceScreen
+            android:title="@string/prefs_bluetooth_settings_title"
+            android:summary="@string/prefs_bluetooth_settings_summary" >
+
+            <intent
+                android:action="android.intent.action.MAIN"
+                android:targetClass="com.android.settings.bluetooth.BluetoothSettings"
+                android:targetPackage="com.android.settings" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/prefs_cat_vncsettings" >
+
+        <EditTextPreference
+            android:defaultValue="5900"
+            android:key="vnc_port"
+            android:maxLength="5"
+            android:numeric="integer"
+            android:summary="@string/prefs_vnc_port_summary"
+            android:title="@string/prefs_vnc_port" />
+
+        <PreferenceScreen
+            android:summary="@string/prefs_cat_bridge_summary"
+            android:title="@string/prefs_cat_bridge" >
+
+            <CheckBoxPreference
+                android:defaultValue="1"
+                android:key="vnc_sms_listener"
+                android:summary="@string/prefs_sms_listener_summary"
+                android:title="@string/prefs_sms_listener" />
+
+            <EditTextPreference
+                android:key="url_connection"
+                android:summary="@string/prefs_url_connection_summary"
+                android:title="@string/prefs_url_connection" />
+
+            <EditTextPreference
+                android:key="url_logging"
+                android:summary="@string/prefs_url_logging_summary"
+                android:title="@string/prefs_url_logging" />
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:summary="@string/prefs_cat_security_summary"
+            android:title="@string/prefs_cat_security" >
+
+            <CheckBoxPreference
+                android:defaultValue="0"
+                android:key="vnc_encryption"
+                android:summary="@string/prefs_vnc_encryption_summary"
+                android:title="@string/prefs_vnc_encryption" />
+
+            <ListPreference
+                android:entries="@array/authtype_id"
+                android:entryValues="@array/authtype_value"
+                android:key="vnc_authtype"
+                android:summary="@string/prefs_vnc_authtype_summary"
+                android:title="@string/prefs_vnc_authtype" />
+
+            <CheckBoxPreference
+                android:defaultValue="1"
+                android:key="vnc_signature_validation"
+                android:summary="@string/prefs_vnc_signature_validation_summary"
+                android:title="@string/prefs_vnc_signature_validation" />
+
+            <CheckBoxPreference
+                android:key="vnc_accept_prompt"
+                android:summary="@string/prefs_vnc_accept_prompt_summary"
+                android:title="@string/prefs_vnc_accept_prompt" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:summary="@string/prefs_cat_clipboard_summary"
+        android:title="@string/prefs_cat_clipboard" >
+
+        <CheckBoxPreference
+            android:defaultValue="1"
+            android:key="vnc_clipboard"
+            android:summary="@string/prefs_vnc_clipboard_summary"
+            android:title="@string/prefs_vnc_clipboard" />
+
+        <CheckBoxPreference
+            android:defaultValue="0"
+            android:dependency="vnc_clipboard"
+            android:key="vnc_clipboard_on_connect"
+            android:summary="@string/prefs_vnc_clipboard_on_connect_summary"
+            android:title="@string/prefs_vnc_clipboard_on_connect" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

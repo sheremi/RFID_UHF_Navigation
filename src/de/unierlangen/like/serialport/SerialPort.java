@@ -51,13 +51,18 @@ public class SerialPort implements RxChannel, TxChannel {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static SerialPort getSerialPort() {
+    public static SerialPort getSerialPort() throws SerialPortException{
         if (instance == null) {
             instance = new SerialPort(path, baudrate);
         }
         return instance;
     }
-
+    
+    public class SerialPortException extends Exception {
+        public SerialPortException(String string) {
+            super(string);
+        }
+    }
     /**
      * Serial port constructor. To receive data use
      * {@link de.unierlangen.like.serialport.SerialPort#setOnStringReceivedListener

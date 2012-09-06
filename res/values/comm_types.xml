@@ -5,12 +5,14 @@
 		<item>serial</item>
 		<item>emulation</item>
 		<item>emulationSimple</item>
+		<item>bluetooth</item>
 	</string-array>
 	
 	<string-array name="comm_types_value">
 		<item>serial</item>
 		<item>emulation</item>
 		<item>emulationSimple</item>
+		<item>bluetooth</item>
 	</string-array>
 
 </resources>
