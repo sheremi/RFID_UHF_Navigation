@@ -20,6 +20,7 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 import de.unierlangen.like.customviews.MapView;
@@ -36,12 +37,13 @@ import de.unierlangen.like.rfid.Reader;
 import de.unierlangen.like.rfid.Reader.ReaderException;
 import de.unierlangen.like.serialport.SerialPort;
 
-public class MainYourLocationActivity extends OptionsMenuActivity implements OnGestureListener /*
-                                                                                                * implements
-                                                                                                * OnClickListener
-                                                                                                * ,
-                                                                                                * OnLongClickListener
-                                                                                                */{
+public class MainYourLocationActivity extends OptionsMenuActivity /*
+                                                                   * OnGestureListener
+                                                                   * implements
+                                                                   * OnClickListener
+                                                                   * ,
+                                                                   * OnLongClickListener
+                                                                   */{
     private static final String TAG = "MainYourLocationActivity";
     private static final float ZONE_RADIUS = 4.0f;
     public static final int THREAD_EVENT_READ_TAGS = 4;
@@ -56,7 +58,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity implements OnG
     private Reader reader;
     private TagsDatabase tagsDatabase = new TagsDatabase();
     private PointF roomCoordinates;
-    private GestureDetector mGestureDetector = new GestureDetector(this);
+    // private GestureDetector mGestureDetector = new GestureDetector(this);
 
     private Handler handler = new Handler() {
         @SuppressWarnings("unchecked")
@@ -131,12 +133,15 @@ public class MainYourLocationActivity extends OptionsMenuActivity implements OnG
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_your_location);
         mapView = (MapView) findViewById(R.id.mapView);
-        /*
-         * mapView.setOnLongClickListener(new OnLongClickListener() { public
-         * boolean onLongClick(View v) { Intent intent = new
-         * Intent(MainYourLocationActivity.this, FindRoomActivity.class);
-         * startActivityForResult(intent, REQUEST_ROOM); return false; } });
-         */
+
+        mapView.setOnLongClickListener(new OnLongClickListener() {
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(MainYourLocationActivity.this, FindRoomActivity.class);
+                startActivityForResult(intent, REQUEST_ROOM);
+                return false;
+            }
+        });
+
         // Control elements for zooming
         zoomControls = (ZoomControls) findViewById(R.id.zoomcontrols);
         zoomControls.setOnZoomInClickListener(new OnClickListener() {
@@ -190,17 +195,14 @@ public class MainYourLocationActivity extends OptionsMenuActivity implements OnG
         dijkstraRouter = new DijkstraRouter();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        mGestureDetector.onTouchEvent(event);
-        // MotionEvent object holds XY values
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            String text = "You clicked at x = " + event.getRawX() + " and y = " + event.getRawY();
-            Log.d(TAG, text);
-            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-        }
-        return super.onTouchEvent(event);
-    }
+    /*
+     * @Override public boolean onTouchEvent(MotionEvent event) {
+     * mGestureDetector.onTouchEvent(event); // MotionEvent object holds XY
+     * values if (event.getAction() == MotionEvent.ACTION_MOVE) { String text =
+     * "You clicked at x = " + event.getRawX() + " and y = " + event.getRawY();
+     * Log.d(TAG, text); Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+     * } return super.onTouchEvent(event); }
+     */
 
     /*
      * @Override public void onShowPress(MotionEvent e) { String text =
@@ -231,44 +233,48 @@ public class MainYourLocationActivity extends OptionsMenuActivity implements OnG
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Comparison of two floats (checking if resultCode == RESULT_OK)
         if (Math.abs(resultCode) - Math.abs(Activity.RESULT_OK) < 0.00001f) {
-            String roomName = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
-            RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
-            roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
-            StringBuilder sb = new StringBuilder()
-                    .append("Activity.RESULT_OK; room's name and coordinates: ");
-            sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
-            Log.d(TAG, sb.toString());
+            if (requestCode == Activity.RESULT_OK) {
+                String roomName = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
+                RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
+                roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
+                StringBuilder sb = new StringBuilder()
+                        .append("Activity.RESULT_OK; room's name and coordinates: ");
+                sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
+                Log.d(TAG, sb.toString());
+            }
+            super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
-
-    public boolean onDown(MotionEvent e) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public void onLongPress(MotionEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public void onShowPress(MotionEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public boolean onSingleTapUp(MotionEvent e) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+        /*
+         * public boolean onDown(MotionEvent e) { // TODO Auto-generated method
+         * stub return false; }
+         * 
+         * public boolean onFling(MotionEvent e1, MotionEvent e2, float
+         * velocityX, float velocityY) { // TODO Auto-generated method stub
+         * return false; }
+         * 
+         * public void onLongPress(MotionEvent e) { // TODO Auto-generated
+         * method stub
+         * 
+         * }
+         * 
+         * public boolean onScroll(MotionEvent e1, MotionEvent e2, float
+         * distanceX, float distanceY) { // TODO Auto-generated method stub
+         * return false; }
+         * 
+         * public void onShowPress(MotionEvent e) { // TODO Auto-generated
+         * method stub
+         * 
+         * }
+         * 
+         * public boolean onSingleTapUp(MotionEvent e) { // TODO Auto-generated
+         * method stub return false; }
+         * 
+         * public boolean onLongClick(View v) { // TODO Auto-generated method
+         * stub return false; }
+         * 
+         * public void onClick(View v) { // TODO Auto-generated method stub
+         * 
+         * }
+         */
 }
