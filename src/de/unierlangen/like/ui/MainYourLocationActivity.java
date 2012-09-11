@@ -233,48 +233,43 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Comparison of two floats (checking if resultCode == RESULT_OK)
         if (Math.abs(resultCode) - Math.abs(Activity.RESULT_OK) < 0.00001f) {
-            if (requestCode == Activity.RESULT_OK) {
-                String roomName = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
-                RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
-                roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
-                StringBuilder sb = new StringBuilder()
-                        .append("Activity.RESULT_OK; room's name and coordinates: ");
-                sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
-                Log.d(TAG, sb.toString());
-            }
+            String roomName = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
+            RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
+            roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
+            StringBuilder sb = new StringBuilder().append("Activity.RESULT_OK; room's name and coordinates: ");
+            sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
+            Log.d(TAG, sb.toString());
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-        /*
-         * public boolean onDown(MotionEvent e) { // TODO Auto-generated method
-         * stub return false; }
-         * 
-         * public boolean onFling(MotionEvent e1, MotionEvent e2, float
-         * velocityX, float velocityY) { // TODO Auto-generated method stub
-         * return false; }
-         * 
-         * public void onLongPress(MotionEvent e) { // TODO Auto-generated
-         * method stub
-         * 
-         * }
-         * 
-         * public boolean onScroll(MotionEvent e1, MotionEvent e2, float
-         * distanceX, float distanceY) { // TODO Auto-generated method stub
-         * return false; }
-         * 
-         * public void onShowPress(MotionEvent e) { // TODO Auto-generated
-         * method stub
-         * 
-         * }
-         * 
-         * public boolean onSingleTapUp(MotionEvent e) { // TODO Auto-generated
-         * method stub return false; }
-         * 
-         * public boolean onLongClick(View v) { // TODO Auto-generated method
-         * stub return false; }
-         * 
-         * public void onClick(View v) { // TODO Auto-generated method stub
-         * 
-         * }
-         */
+    /*
+     * public boolean onDown(MotionEvent e) { // TODO Auto-generated method stub
+     * return false; }
+     * 
+     * public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+     * float velocityY) { // TODO Auto-generated method stub return false; }
+     * 
+     * public void onLongPress(MotionEvent e) { // TODO Auto-generated method
+     * stub
+     * 
+     * }
+     * 
+     * public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+     * float distanceY) { // TODO Auto-generated method stub return false; }
+     * 
+     * public void onShowPress(MotionEvent e) { // TODO Auto-generated method
+     * stub
+     * 
+     * }
+     * 
+     * public boolean onSingleTapUp(MotionEvent e) { // TODO Auto-generated
+     * method stub return false; }
+     * 
+     * public boolean onLongClick(View v) { // TODO Auto-generated method stub
+     * return false; }
+     * 
+     * public void onClick(View v) { // TODO Auto-generated method stub
+     * 
+     * }
+     */
 }
