@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Path;
@@ -30,6 +32,7 @@ import de.unierlangen.like.navigation.TagsDatabase;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.rfid.GenericTag;
 import de.unierlangen.like.rfid.Reader;
+import de.unierlangen.like.rfid.ReaderIntents;
 import de.unierlangen.like.rfid.Reader.ReaderException;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*
@@ -41,28 +44,23 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
                                                                    */{
     private static final String TAG = "MainYourLocationActivity";
     private static final float ZONE_RADIUS = 4.0f;
-    public static final int THREAD_EVENT_READ_TAGS = 4;
-    private static final int READ_TAGS_INTERVAL = 3000;
     private static final int REQUEST_ROOM = 1;
     private MapView mapView;
     private Navigation navigation;
     private DijkstraRouter dijkstraRouter;
     private MapBuilder mapBuilder;
     private ZoomControls zoomControls;
-    private Reader reader;
+
     private TagsDatabase tagsDatabase = new TagsDatabase();
     private PointF roomCoordinates;
 
-    private Handler handler = new Handler() {
-        @SuppressWarnings("unchecked")
+    private final BroadcastReceiver readerReceiver = new BroadcastReceiver() {
         @Override
-        public void handleMessage(Message msg) {
-            // Log.d (TAG, "handleMessage(" + msg.what + ")");
-            switch (msg.what) {
-            case Reader.RESPONSE_TAGS:
-            case Reader.EVENT_TAGS:
+        public void onReceive(Context context, Intent intent) {
+            if (ReaderIntents.ACTION_TAGS.equals(intent.getAction())) {
                 ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
-                readTagsFromReader = (ArrayList<GenericTag>) msg.obj;
+                // TODO extract tags from intent
+                // readTagsFromReader = (ArrayList<GenericTag>) msg.obj;
                 ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
                 arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
                 if (!arrayOfTags.isEmpty()) {
@@ -78,47 +76,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
                         mapView.setRoute(routingPath);
                     }
                 }
-                break;
-            case Reader.RESPONSE_REGS:
-                // TODO implement analysis of RESPONSE_REGS
-                break;
-            case Reader.WARNING:
-                ReaderException e = (ReaderException) msg.obj;
-                // FIXME revert this commit later when do not send warnings all
-                // the time.
-                // Toast.makeText(getApplicationContext(),"Warning: " +
-                // e.getMessage(), Toast.LENGTH_LONG).show();
-                break;
-            case Reader.ERROR:
-                ReaderException e1 = (ReaderException) msg.obj;
-                Log.d(TAG, "Reader repoted error", e1);
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainYourLocationActivity.this);
-                builder.setTitle("Achtung!");
-                builder.setMessage("Oops! " + "The reader is missing or connection is wrong. "
-                        + "Check the connection between phone and reader. "
-                        + "Do you wanna try to communicate with reader again?");
-                builder.setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        getApplication().stopService(getIntent());
-                    }
-                });
-                builder.setPositiveButton("Go ahead", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        startActivity(new Intent(getApplicationContext(),
-                                MainYourLocationActivity.class));
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
-                return;
-            case THREAD_EVENT_READ_TAGS:
-                reader.performRound();
-                sendMessageDelayed(obtainMessage(THREAD_EVENT_READ_TAGS), READ_TAGS_INTERVAL);
-                break;
-            default:
-                break;
             }
-        };
+        }
     };
 
     // ** Called when the activity is first created. *//
@@ -165,8 +124,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         mapView.setDoors(doors);
         navigation = new Navigation(walls, doors);
 
-        reader = new Reader(handler);
-        Log.d(TAG, "Reader and serial port were created succesfully");
         // Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
         dijkstraRouter = new DijkstraRouter();
     }
@@ -195,14 +152,14 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume() in MainYourLocationActivity called");
-        handler.obtainMessage(THREAD_EVENT_READ_TAGS).sendToTarget();
+        // TODO start reading tags
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        // TODO stop reading tags
         Log.d(TAG, "onPause() in MainYourLocationActivity called");
-        handler.removeMessages(THREAD_EVENT_READ_TAGS);
     }
 
     @Override
@@ -212,7 +169,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
             String roomName = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
             RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
             roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
-            StringBuilder sb = new StringBuilder().append("Activity.RESULT_OK; room's name and coordinates: ");
+            StringBuilder sb = new StringBuilder()
+                    .append("Activity.RESULT_OK; room's name and coordinates: ");
             sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
             Log.d(TAG, sb.toString());
             super.onActivityResult(requestCode, resultCode, data);
