@@ -24,15 +24,15 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.InvalidParameterException;
-
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.util.Log;
 
 /** Describes serial port */
-public class SerialPort implements OnSharedPreferenceChangeListener, RxChannel, TxChannel {
+public class SerialPort implements RxChannel, TxChannel {
 
     private static final String TAG = "SerialPort";
+    // Serial port parameters
+    private static final int baudrate = 9600;
+    private static final String path = "/dev/s3c2410_serial2";
 
     /** mFd is used in native method close() as a reference. */
     private FileDescriptor mFd;
@@ -51,32 +51,18 @@ public class SerialPort implements OnSharedPreferenceChangeListener, RxChannel, 
      * @throws IOException
      * @throws InterruptedException
      */
-    public static SerialPort getSerialPort() {
+    public static SerialPort getSerialPort() throws SerialPortException{
         if (instance == null) {
-            instance = new SerialPort("/dev/s3c2410_serial2", 9600);
+            instance = new SerialPort(path, baudrate);
         }
         return instance;
     }
-
-    public void setSharedPreferences(SharedPreferences sharedPreferences)
-            throws InvalidParameterException {
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        String path = sharedPreferences.getString("DEVICE", "");
-        int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "-1"));
-        if (path.equals("") || baudrate == -1) {
-            throw new InvalidParameterException("Preferences do not contain required keys");
-        }
-        openPort(path, baudrate);
-    }
-
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("BAUDRATE") || key.equals("DEVICE")) {
-            String path = sharedPreferences.getString("DEVICE", "/dev/s3c2410_serial2");
-            int baudrate = Integer.decode(sharedPreferences.getString("BAUDRATE", "9600"));
-            openPort(path, baudrate);
+    
+    public class SerialPortException extends Exception {
+        public SerialPortException(String string) {
+            super(string);
         }
     }
-
     /**
      * Serial port constructor. To receive data use
      * {@link de.unierlangen.like.serialport.SerialPort#setOnStringReceivedListener

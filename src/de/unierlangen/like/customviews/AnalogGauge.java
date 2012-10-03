@@ -19,7 +19,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import de.unierlangen.like.ui.R;
+import de.unierlangen.like.R;
 
 public final class AnalogGauge extends View {
     private static final String TAG = AnalogGauge.class.getSimpleName();

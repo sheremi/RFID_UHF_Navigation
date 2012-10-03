@@ -26,19 +26,5 @@
 		android:title="Preferences"
 		android:id = "@+id/prefs" 
 		android:icon="@drawable/prefs" >
-		<menu>
-			<item 
-				android:title = "User"
-				android:id = "@+id/user_prefs" />
-			<item 
-				android:title = "Serial port configuration"
-				android:id = "@+id/serial_submenu" />
-			<item 
-				android:title = "Reader settings"
-				android:id = "@+id/readerset_submenu" />
-			<item 
-				android:title = "Tags settings"
-				android:id = "@+id/tags_submenu" />
-		</menu>
 	</item>
 </menu>

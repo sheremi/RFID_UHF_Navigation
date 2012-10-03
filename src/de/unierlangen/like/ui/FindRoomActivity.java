@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import de.unierlangen.like.R;
 import de.unierlangen.like.navigation.RoomsDatabase;
 
 public class FindRoomActivity extends Activity {

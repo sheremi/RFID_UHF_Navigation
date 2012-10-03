@@ -1,5 +1,6 @@
 package de.unierlangen.like.ui;
 
+import de.unierlangen.like.R;
 import android.os.Bundle;
 import android.widget.Button;
 

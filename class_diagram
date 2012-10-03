@@ -1,0 +1,84 @@
+@startuml
+
+    
+    class MainYourLocationActivity
+    class FindRoomActivity
+    class ConsoleActivity
+    class Communicator
+    class MapView
+    
+
+    FindRoomActivity .right. MainYourLocationActivity : startActivityForResult
+    RoomsDatabase -down-o FindRoomActivity
+
+    class DijkstraRouter
+    class MapBuilder
+    class Navigation
+    class RoomsDatabase
+    class TagsDatabase
+    
+    MainYourLocationActivity o-down-o MapView
+    MainYourLocationActivity o-right- IReader
+    Communicator o-down- DijkstraRouter
+    Communicator o-down- Navigation
+    Communicator o-down- RoomsDatabase
+    Communicator o-down- TagsDatabase
+    Communicator o-down- MapBuilder
+    MainYourLocationActivity o-- Communicator
+    
+'reader is self contained
+    interface IReader {
+        performRound(handler, code)
+    }
+    class ReaderService
+    ReaderService .down.|> IReader
+        
+    class SerialPortPreferences
+    class SerialPortFinder
+    class SerialPortPersistantData << (D,#FF7700) >>
+    SerialPortPreferences o-down-o SerialPortPersistantData : observer
+    SerialPortPreferences o-- SerialPortFinder
+    
+    interface RxChannel
+    interface TxChannel
+    class SerialPort as "SerialPort implements Rx, Tx"
+    SerialPort o--o SerialPortPersistantData : observer
+    
+    class ReceivingThreadSerial
+    class ReceivingThreadBT
+    class ReceivingThreadEmul
+    
+    SerialPort o-- ReceivingThreadSerial
+
+    
+    ReaderService o-- ReceivingThread
+    
+    class CommunicationManagerFactory
+    class BlueTooth as "BlueTooth implements Rx, Tx"
+    class SerialEmulator as "SerialEmulator implements Rx, Tx"
+    BlueTooth o-- ReceivingThreadBT
+    SerialEmulator o-- ReceivingThreadEmul
+    CommunicationManagerFactory *-down- SerialPort
+    CommunicationManagerFactory *-down- BlueTooth
+    CommunicationManagerFactory *-down- SerialEmulator
+    CommunicationManagerFactory .down.|> RxChannel
+    CommunicationManagerFactory .down.|> TxChannel
+    ReaderService o-- TxChannel
+    ReceivingThread o-- RxChannel
+    ConsoleActivity o-- TxChannel
+    
+
+@enduml
+
+    class Door
+    class Wall
+    class Tag
+    class Zone
+    class AboutActivity
+    class HelpActivity
+    class ReaderPreferences
+    class ReaderRegistersListActivity
+    class OptionsMenuActivity
+    MainYourLocationActivity -down-|> OptionsMenuActivity
+    FindRoomActivity -down-|> OptionsMenuActivity
+    ConsoleActivity -down-|> OptionsMenuActivity

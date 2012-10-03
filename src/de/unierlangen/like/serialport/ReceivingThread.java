@@ -5,8 +5,9 @@ import java.io.IOException;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
 
-public class ReceivingThread extends Thread {
+class ReceivingThread extends Thread implements IStringPublisher {
     private static final String TAG = "ReceivingThread";
     private static final boolean DBG = true;
 
@@ -17,14 +18,17 @@ public class ReceivingThread extends Thread {
     /**
      * 
      * @param rxChannel
-     * @param handler handler to which thread will send messages
-     * @param msgWhat user-defined message code so that the recipient can identify what this message is about
+     * @param handler
+     *            handler to which thread will send messages
+     * @param msgWhat
+     *            user-defined message code so that the recipient can identify
+     *            what this message is about
      */
-    public ReceivingThread(RxChannel rxChannel, Handler handler, int msgWhat) {
+    public ReceivingThread(RxChannel rxChannel) {
         super();
-        this.msgWhat = msgWhat;
+
         this.rxChannel = rxChannel;
-        this.recipientHandler = handler;
+
     }
 
     @Override
@@ -36,10 +40,13 @@ public class ReceivingThread extends Thread {
                 receivedString = receivedString.concat(receivedStringSymbol);
                 if (receivedString.contains("\n")) {
                     if (DBG) Log.d(TAG, "Received string: " + receivedString);
-                    Message msg = recipientHandler.obtainMessage();
-                    msg.what = msgWhat;
-                    msg.obj = receivedString;
-                    recipientHandler.sendMessage(msg);
+                    Message msg;
+                    if (recipientHandler != null) {
+                        msg = recipientHandler.obtainMessage();
+                        msg.what = msgWhat;
+                        msg.obj = receivedString;
+                        recipientHandler.sendMessage(msg);
+                    }
                     receivedString = "";
                 }
             }
@@ -48,4 +55,19 @@ public class ReceivingThread extends Thread {
         }
         super.run();
     }
+
+    public void register(Handler handler, int what) {
+        this.recipientHandler = handler;
+        this.msgWhat = what;
+        if (!isAlive()) {
+            if (DBG) Log.d(TAG, "start");
+            start();
+        }
+    }
+
+    public void unregister(Handler handler) {
+        recipientHandler = null;
+
+    }
+
 }

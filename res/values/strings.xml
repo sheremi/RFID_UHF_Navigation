@@ -83,5 +83,6 @@
 	<string name="ok_label">OK</string>
 	<string name="plus_label"> + </string>
 	<string name="minus_label"> - </string>
-	
+	<string name="prefs_bluetooth_settings_title">Bluetooth</string>
+	<string name="prefs_bluetooth_settings_summary">go to Bluetooth System Settings&#8230;</string>
 </resources>

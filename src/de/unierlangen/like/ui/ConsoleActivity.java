@@ -17,12 +17,9 @@
 
 package de.unierlangen.like.ui;
 
-import java.security.InvalidParameterException;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,8 +27,10 @@ import android.view.View.OnLongClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import de.unierlangen.like.serialport.ReceivingThread;
-import de.unierlangen.like.serialport.SerialPort;
+import de.unierlangen.like.R;
+import de.unierlangen.like.serialport.CommunicationManager;
+import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
+import de.unierlangen.like.serialport.TxChannel;
 
 /**
  * 
@@ -43,13 +42,15 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
     private static final String TAG = "ConsoleActivity";
     private static final int EVENT_STRING_RECEIVED = 1;
     private static final boolean DBG = true;
-    /** Serial port used by console */
-    private SerialPort serialPort;
+    /** TxChannel used by console */
+    private TxChannel txChannel;
     /** Displays symbols received */
     private TextView textViewReception;
     /** EditText to send custom strings */
     private EditText editTextEmission;
     /* Concurrency - AsyncTasks, Threads and Handlers */
+    /** activePublisher (ReadingThread), used by current txChannel*/
+    private IStringPublisher stringPublisher;
     /** UI thread handler, use it to post runnables on UI thread */
     Handler handler = new Handler() {
         @Override
@@ -66,10 +67,9 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
             }
         }
     };
-    private ReceivingThread mReceivingThread;
 
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        serialPort.sendString(v.getText().toString());// +"\n");
+        txChannel.sendString(v.getText().toString());// +"\n");
         return false;
     }
 
@@ -89,28 +89,19 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
         editTextEmission.setOnEditorActionListener(this);
         textViewReception.setOnLongClickListener(this);
 
-        try {
-            serialPort = SerialPort.getSerialPort();
-            serialPort.setSharedPreferences(PreferenceManager.getDefaultSharedPreferences(this));
-             /** Create threads */
-            // sendingThread = new SendingThread(this, serialPort);//started in
-            // onCheckedChangeListener
-
-        } catch (InvalidParameterException e) {
-            UserMessages.displayAlertDialog(R.string.error_configuration, this);
-        }
+        txChannel = CommunicationManager.getTxChannel();
+        stringPublisher = CommunicationManager.getStringPublisher();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mReceivingThread = new ReceivingThread(serialPort, handler, EVENT_STRING_RECEIVED);
-        mReceivingThread.start();
+        stringPublisher.register(handler, EVENT_STRING_RECEIVED);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mReceivingThread.interrupt();
+        stringPublisher.unregister(handler);
     }
 }

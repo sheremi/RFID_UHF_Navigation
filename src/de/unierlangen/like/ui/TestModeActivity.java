@@ -3,6 +3,7 @@ package de.unierlangen.like.ui;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import de.unierlangen.like.R;
 import de.unierlangen.like.customviews.AnalogGauge;
 
 public class TestModeActivity extends OptionsMenuActivity implements OnClickListener {

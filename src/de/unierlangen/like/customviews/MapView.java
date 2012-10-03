@@ -19,12 +19,12 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import de.unierlangen.like.R;
 import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.navigation.Zone;
-import de.unierlangen.like.ui.R;
 
 /**
  * View to represent map and tags graphically

@@ -10,10 +10,11 @@ import java.util.List;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import de.unierlangen.like.serialport.ReceivingThread;
-import de.unierlangen.like.serialport.SerialPort;
+import de.unierlangen.like.serialport.CommunicationManager;
+import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
+import de.unierlangen.like.serialport.TxChannel;
 
-public class Reader /*extends Service*/ {
+public class Reader /* extends Service */{
 
     private static final String TAG = "Reader";
     private static final boolean DBG = true;
@@ -24,11 +25,11 @@ public class Reader /*extends Service*/ {
     public static final int WARNING = -2;
     private static final int EVENT_STRING_RECEIVED = 1;
 
-    private SerialPort readerSerialPort;
+    private TxChannel txChannel;
+    private IStringPublisher stringPublisher;
     private int amountOfTags;
 
     private Handler registrantHandler;
-    private ReceivingThread mReceivingThread;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -72,16 +73,16 @@ public class Reader /*extends Service*/ {
      * @throws InterruptedException
      * @throws ReaderException
      */
-    public Reader(SerialPort serialPort, Handler handler) {
-        readerSerialPort = serialPort;
+    public Reader(Handler handler) {
         this.registrantHandler = handler;
-        mReceivingThread = new ReceivingThread(serialPort, mHandler, EVENT_STRING_RECEIVED);
-        mReceivingThread.start();
-        readerSerialPort.sendString("preved");
+        txChannel = CommunicationManager.getTxChannel();
+        stringPublisher = CommunicationManager.getStringPublisher();
+        stringPublisher.register(mHandler, EVENT_STRING_RECEIVED);
+        txChannel.sendString("preved");
     }
 
     public void initialize(Configuration configuration) throws IOException {
-        // FIXME choose configuration from enum
+        // TODO choose configuration from enum
         switch (configuration) {
         case LOW_POWER:
             break;
@@ -89,18 +90,19 @@ public class Reader /*extends Service*/ {
             break;
         case DEFAULT:
         default:
-            readerSerialPort.sendString("a");
+            // FIXME what's "a"?
+            txChannel.sendString("a");
         }
 
     }
 
     public void performRound() {
         // Tell reader MCU to start inventory round
-        readerSerialPort.sendString("rdr get tags");
+        txChannel.sendString("rdr get tags");
     }
 
     public void displayRegisters() throws IOException {
-        readerSerialPort.sendString("rdr get regs");
+        txChannel.sendString("rdr get regs");
     }
 
     public int getAmountOfTags() {
@@ -112,7 +114,8 @@ public class Reader /*extends Service*/ {
      * performing an inventory round. Then packs the recognized data to the
      * message and assigns a topic to it.
      * 
-     * @param response the answer (string) from reader.
+     * @param response
+     *            the answer (string) from reader.
      * @return message to be handled by a Handler.
      * @throws ReaderException
      */
@@ -166,7 +169,10 @@ public class Reader /*extends Service*/ {
         // Skip third member - amount of tags
         iterator.next();
         while (iterator.hasNext()) {
-            tags.add(new GenericTag(iterator.next(), /*Integer.parseInt(iterator.next())*/ 0, true));
+            tags.add(new GenericTag(iterator.next(), /*
+                                                      * Integer.parseInt(iterator
+                                                      * .next())
+                                                      */0, true));
             iterator.next();
         }
         // TODO use amountOfTags where it should be used

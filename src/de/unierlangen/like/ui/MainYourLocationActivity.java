@@ -1,7 +1,6 @@
 package de.unierlangen.like.ui;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -13,16 +12,13 @@ import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 import android.widget.ZoomControls;
+import de.unierlangen.like.R;
 import de.unierlangen.like.customviews.MapView;
 import de.unierlangen.like.navigation.DijkstraRouter;
 import de.unierlangen.like.navigation.Door;
@@ -35,7 +31,6 @@ import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.rfid.GenericTag;
 import de.unierlangen.like.rfid.Reader;
 import de.unierlangen.like.rfid.Reader.ReaderException;
-import de.unierlangen.like.serialport.SerialPort;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*
                                                                    * OnGestureListener
@@ -54,11 +49,9 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     private DijkstraRouter dijkstraRouter;
     private MapBuilder mapBuilder;
     private ZoomControls zoomControls;
-    private SerialPort readerSerialPort;
     private Reader reader;
     private TagsDatabase tagsDatabase = new TagsDatabase();
     private PointF roomCoordinates;
-    // private GestureDetector mGestureDetector = new GestureDetector(this);
 
     private Handler handler = new Handler() {
         @SuppressWarnings("unchecked")
@@ -80,7 +73,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
                     PointF readerPosition = navigation.getReaderPosition();
                     mapView.setReaderPosition(readerPosition);
                     if (roomCoordinates != null) {
-                        Path routingPath = dijkstraRouter.findRoute(readerPosition, roomCoordinates);
+                        Path routingPath = dijkstraRouter
+                                .findRoute(readerPosition, roomCoordinates);
                         mapView.setRoute(routingPath);
                     }
                 }
@@ -171,25 +165,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         mapView.setDoors(doors);
         navigation = new Navigation(walls, doors);
 
-        try {
-            readerSerialPort = SerialPort.getSerialPort();
-            readerSerialPort.setSharedPreferences(PreferenceManager
-                    .getDefaultSharedPreferences(this));
-        } catch (InvalidParameterException e) {
-            Log.w(TAG, "SerialPort has to be configured first", e);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Achtung!");
-            builder.setMessage("Serial port has to be configured first. After configuration go back to Your Location Activity");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    startActivity(new Intent(getApplicationContext(), SerialPortPreferences.class));
-                }
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
-            e.printStackTrace();
-        }
-        reader = new Reader(readerSerialPort, handler);
+        reader = new Reader(handler);
         Log.d(TAG, "Reader and serial port were created succesfully");
         // Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
         dijkstraRouter = new DijkstraRouter();

@@ -1,11 +1,11 @@
 package de.unierlangen.like.ui;
 
+import de.unierlangen.like.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 
 public class OptionsMenuActivity extends Activity {
 
@@ -36,33 +36,15 @@ public class OptionsMenuActivity extends Activity {
             startActivity(new Intent(OptionsMenuActivity.this, HelpActivity.class));
             break;
         case R.id.prefs:
+            startActivity(new Intent(OptionsMenuActivity.this, CommunicationPreferences.class));
             break;
         case R.id.info:
-            break;
-        // case R.id.user_prefs:
-        // TODO implement user preferences
-        // break;
-        case R.id.serial_submenu:
-            startActivity(new Intent(this, SerialPortPreferences.class));
-            break;
-        case R.id.readerset_submenu:
-            startActivity(new Intent(this, ReaderPreferences.class));
+            startActivity(new Intent(OptionsMenuActivity.this, CommunicationPreferences.class));
             break;
         default:
             UserMessages.showMsg((String) item.getTitle(), this);
         }
         // return super.onOptionsItemSelected(item);
-        return false;
-    }
-
-    public void onShowPress(MotionEvent e) {
-        float x = e.getX();
-        float y = e.getY();
-
-    }
-
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        // TODO Auto-generated method stub
         return false;
     }
 }
