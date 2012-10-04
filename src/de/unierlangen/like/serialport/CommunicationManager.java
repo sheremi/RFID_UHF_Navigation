@@ -60,21 +60,19 @@ public class CommunicationManager {
         Emulation emulationSimple = new Emulation(true);
         txChannels.put("emulationSimple", emulationSimple);
         publishers.put("emulationSimple", emulationSimple);
-
-        // Here will be created and added one more txChannel to the map - BT
+        
+        Bluetooth bluetooth = new Bluetooth(context);
+        txChannels.put("bluetooth", bluetooth);
+        publishers.put("bluetooth", bluetooth);
 
         // Assigns mTxChannel to the current connection type (it's Proxy, nobody
-        // has
-        // to know exactly, what the current connection type is).
+        // has to know exactly, what the current connection type is).
         ProxyTxChannel proxyTx = new ProxyTxChannel(txChannels, defaultSharedPreferences);
         mTxChannel = proxyTx;
 
-        // Here will be created and added one more publisher to the map - BT
-
         // Assigns mStringPublisher to the current reading thread (it's Proxy,
-        // nobody has
-        // to know exactly, what the current connection type and its reading
-        // thread are).
+        // nobody has to know exactly, what the current connection type and its
+        // reading thread are).
         ProxyReceivingThead proxyStringPublisher = new ProxyReceivingThead(publishers);
         mStringPublisher = proxyStringPublisher;
     }

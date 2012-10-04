@@ -129,8 +129,9 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
         }
     }
 
-    public Bluetooth() {
+    public Bluetooth(Context context) {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mContext = context;
 
         if (mBluetoothAdapter == null) {
             // TODO Device does not support Bluetooth
@@ -166,10 +167,9 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
     }
 
     public void register(Handler handler, int what) {
-        // TODO register handler in our active reading thread.
-        // store the Handler for future use in case we have to start a new
-        // reading thread
-        // e.g. when BT is disconnected and connected again
+        // Register handler in our active reading thread.
+        // Store the Handler for future use in case we have to start a new
+        // reading thread, e.g. when BT is disconnected and connected again
         mHandler = handler;
         mWhat = what;
         if (mReadingThread != null) {
