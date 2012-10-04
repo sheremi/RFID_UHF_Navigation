@@ -8,6 +8,7 @@ import android.util.Log;
 
 public class MapBuilder {
     private static final String TAG = MapBuilder.class.getSimpleName();
+    private static final boolean DBG = false;
     private ArrayList<Wall> walls;
     private ArrayList<Door> doors;
     private float wallX1;
@@ -45,19 +46,25 @@ public class MapBuilder {
                 wallY2 = Float.parseFloat(singlenumber[4]);
                 Wall wall = new Wall(wallX1, wallY1, wallX2, wallY2);
                 alpha = wall.getAlpha();
-                Log.d(TAG, "Created " + wall.toString());
+                if (DBG){
+                    Log.d(TAG, "Created " + wall.toString());
+                }
                 walls.add(wall);
             } else if (singlenumber[0].equals("d")) {
                 Door door = new Door(Float.parseFloat(singlenumber[1]),
                         Float.parseFloat(singlenumber[2]), Float.parseFloat(singlenumber[3]),
                         Float.parseFloat(singlenumber[4]), Float.parseFloat(singlenumber[5]));
-                Log.d(TAG, "Created " + door.toString());
+                if (DBG){
+                    Log.d(TAG, "Created " + door.toString());
+                }
                 doors.add(door);
             } else {
                 Door door = new Door(Float.parseFloat(singlenumber[0]),
                         Float.parseFloat(singlenumber[1]), Float.parseFloat(singlenumber[2]),
                         wallX1, wallY1, alpha);
-                Log.d(TAG, "Created " + door.toString());
+                if (DBG){
+                    Log.d(TAG, "Created " + door.toString());
+                }
                 doors.add(door);
 
             }
