@@ -45,14 +45,16 @@ class ReadingThread extends Thread implements IStringPublisher {
                         msg.what = msgWhat;
                         msg.obj = receivedString;
                         recipientHandler.sendMessage(msg);
+                    } else {
+                        if (DBG) Log.d(TAG, "recipientHandler is null");
                     }
                     receivedString = "";
                 }
             }
         } catch (IOException e) {
-            Log.e(TAG, "IOException in SendingThread", e);
+            Log.e(TAG, "IOException in ReadingThread - " + e.getMessage());
         }
-        super.run();
+        Log.e(TAG, "ReadingThread is finished");
     }
 
     public void register(Handler handler, int what) {

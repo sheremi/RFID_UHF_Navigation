@@ -1,7 +1,8 @@
 package de.unierlangen.like.serialport;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.InputStreamReader;
+import java.nio.CharBuffer;
 import java.util.Set;
 import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
@@ -27,21 +28,23 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
 
     private class BtRxChannel implements IRxChannel {
         private final BluetoothSocket mSocket;
+        private final CharBuffer buffer;
+        private InputStreamReader inputStreamReader;
 
         public BtRxChannel(BluetoothSocket socket) {
             mSocket = socket;
+            buffer = CharBuffer.allocate(4);
+            try {
+                inputStreamReader = new InputStreamReader(mSocket.getInputStream());
+            } catch (IOException e) {
+                Log.d(TAG, "Was not able to create InputStreamReader! - " + e.getMessage());
+            }
         }
 
         public String readString() throws IOException {
-            String receivedString = "";
-            Integer receivedByte = mSocket.getInputStream().read();
-            if (receivedByte != -1) {
-                byte[] bytes = ByteBuffer.allocate(4).putInt(receivedByte).array();
-                receivedString = bytes.toString();
-            } else {
-                throw new RuntimeException(TAG + " - end of the InputStream has been reached");
-            }
-            return receivedString;
+            int size = inputStreamReader.read(buffer);
+            buffer.flip();
+            return new String(buffer.array(), 0, size);
         }
     };
 
@@ -50,20 +53,34 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
     // application started.
     private final BroadcastReceiver deviceFoundIntentReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            mContext = context;
             String action = intent.getAction();
+            Log.d(TAG, "action = " + intent.getAction());
+
             // When discovery finds a device
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)
+                    || intent.getAction().equals(BluetoothDevice.ACTION_FOUND)
+                    || intent.getAction().equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (device.getName().contains("RFID")) {
+
+                if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    // TODO additional checks and state machine!
                     new OpenSocketTask().execute(device);
                 }
+
+                /*
+                 * if (device.getName().contains("RFID")) { Log.d(TAG,
+                 * "BT device RFID was found"); new
+                 * OpenSocketTask().execute(device); }
+                 */
             }
         }
     };
 
     /**
+     * TODO better make a state machine from {@link Handler.Callback}
+     * 
      * Opens an output stream using a given BluetoothDevice.
      */
     private final class OpenSocketTask extends AsyncTask<BluetoothDevice, Void, BluetoothSocket> {
@@ -86,8 +103,10 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
                 // MY_UUID is the app's UUID string, also used by the server
                 // code
                 mSocket = mDevice.createRfcommSocketToServiceRecord(MY_UUID);
+                Log.d(TAG, "Created socket for " + mSocket.getRemoteDevice().getName());
             } catch (IOException e) {
-
+                Log.d(TAG, "was not able to create socket - " + e.getMessage());
+                return null;
             }
 
             // Cancel discovery because it will slow down the connection
@@ -102,7 +121,7 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
                 try {
                     mSocket.close();
                 } catch (IOException closeException) {
-                    Log.d(TAG, "was not able to close", closeException);
+                    Log.d(TAG, "was not able to close" + closeException.getMessage());
                 }
             }
 
@@ -142,14 +161,21 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
         if (pairedDevices.size() > 0) {
             // Loop through paired devices
             for (BluetoothDevice device : pairedDevices) {
-                if (device.getName().contains("RFID")) {
-                    new OpenSocketTask().execute(device);
-                }
+                Log.d(TAG, "BT device was found. Name: " + device.getName());
+                // new OpenSocketTask().execute(device);
+                /*
+                 * if (device.getName().contains("RFID")) { new
+                 * OpenSocketTask().execute(device); }
+                 */
             }
         }
 
         // Register the BroadcastReceiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        IntentFilter filter = new IntentFilter();
+        // filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+
         mContext.registerReceiver(deviceFoundIntentReceiver, filter);
     }
 
@@ -157,8 +183,9 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
         if (mSocket != null) {
             try {
                 mSocket.getOutputStream().write(stringToSend.getBytes());
+                Log.v(TAG, "String " + stringToSend + " was sent to BT socket");
             } catch (IOException e) {
-                Log.d(TAG, "Was not able to write!", e);
+                Log.d(TAG, "Was not able to write! " + e.getMessage());
                 mSocket = null;
             }
         } else {
@@ -167,6 +194,7 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
     }
 
     public void register(Handler handler, int what) {
+        Log.d(TAG, "Registering " + handler);
         // Register handler in our active reading thread.
         // Store the Handler for future use in case we have to start a new
         // reading thread, e.g. when BT is disconnected and connected again
