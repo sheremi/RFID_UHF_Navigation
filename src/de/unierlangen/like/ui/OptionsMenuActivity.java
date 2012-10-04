@@ -38,9 +38,6 @@ public class OptionsMenuActivity extends Activity {
         case R.id.prefs:
             startActivity(new Intent(OptionsMenuActivity.this, CommunicationPreferences.class));
             break;
-        case R.id.info:
-            startActivity(new Intent(OptionsMenuActivity.this, CommunicationPreferences.class));
-            break;
         default:
             UserMessages.showMsg((String) item.getTitle(), this);
         }
