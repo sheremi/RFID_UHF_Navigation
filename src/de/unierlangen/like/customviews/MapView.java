@@ -36,6 +36,7 @@ public class MapView extends View {
     private static final int SMOOTH_TRANSLATION_FRAMES = 30;
     private static final String TAG = MapView.class.getSimpleName();
     public static final int REQUEST_TRANSLATE = 1;
+    private static final boolean DBG = false;
     // Drawing tools
     private Paint debugRectPaint;
     private Paint tagPaint;
@@ -339,8 +340,10 @@ public class MapView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         viewWidth = widthMeasureSpec;
         viewHeight = heightMeasureSpec;
-        Log.d(TAG, "Width spec: " + MeasureSpec.toString(viewWidth));
-        Log.d(TAG, "Height spec: " + MeasureSpec.toString(viewHeight));
+        if (DBG){
+            Log.d(TAG, "Width spec: " + MeasureSpec.toString(viewWidth));
+            Log.d(TAG, "Height spec: " + MeasureSpec.toString(viewHeight));
+        }
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         // if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED)
         // {widthSize=200;}
