@@ -11,7 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import de.unierlangen.like.serialport.CommunicationManager;
-import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
+import de.unierlangen.like.serialport.IStringPublisher;
 import de.unierlangen.like.serialport.TxChannel;
 
 public class Reader /* extends Service */{

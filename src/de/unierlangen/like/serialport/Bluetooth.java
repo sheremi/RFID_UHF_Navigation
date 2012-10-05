@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import de.unierlangen.like.navigation.RoomsDatabase;
-import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
 import de.unierlangen.like.ui.FindRoomActivity;
 
 import android.app.Activity;

@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import de.unierlangen.like.R;
 import de.unierlangen.like.serialport.CommunicationManager;
-import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
+import de.unierlangen.like.serialport.IStringPublisher;
 import de.unierlangen.like.serialport.TxChannel;
 
 /**

@@ -2,7 +2,6 @@ package de.unierlangen.like.serialport;
 
 import java.util.Map;
 import android.os.Handler;
-import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
 
 /**
  * ProxyReceivingThead is a representative for the receiving threads

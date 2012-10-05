@@ -5,9 +5,8 @@ import java.io.IOException;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
 
-class ReceivingThread extends Thread implements IStringPublisher {
+class ReadingThread extends Thread implements IStringPublisher {
     private static final String TAG = "ReceivingThread";
     private static final boolean DBG = true;
 
@@ -24,7 +23,7 @@ class ReceivingThread extends Thread implements IStringPublisher {
      *            user-defined message code so that the recipient can identify
      *            what this message is about
      */
-    public ReceivingThread(RxChannel rxChannel) {
+    public ReadingThread(RxChannel rxChannel) {
         super();
 
         this.rxChannel = rxChannel;

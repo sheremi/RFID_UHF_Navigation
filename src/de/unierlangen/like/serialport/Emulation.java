@@ -6,7 +6,6 @@ import java.util.Iterator;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import de.unierlangen.like.serialport.CommunicationManager.IStringPublisher;
 
 public class Emulation implements TxChannel, IStringPublisher {
 

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 
 /**
@@ -17,35 +15,6 @@ import android.preference.PreferenceManager;
  * 
  */
 public class CommunicationManager {
-
-    /**
-     * This interface is implemented by classes, which are reading strings from
-     * some source (socket, uart, textview, etc.). Such class first concatenates
-     * a string, then put it to a message to be held by handler, which is passed
-     * as a parameter to the method register(Handler handler, int what).
-     * 
-     * @author Kate
-     * 
-     */
-    public interface IStringPublisher {
-        /**
-         * Register a {@link Handler} to receive messages containing published
-         * strings when this strings are read by {@link IStringPublisher}.
-         * 
-         * @param handler
-         *            - a client {@link Handler} which will receive messages
-         * @param what
-         *            - desired message code. Message will have this code as
-         *            {@link Message#what}
-         */
-        public void register(Handler handler, int what);
-
-        /**
-         * 
-         * @param handler
-         */
-        public void unregister(Handler handler);
-    }
 
     static TxChannel mTxChannel;
     static IStringPublisher mStringPublisher;
