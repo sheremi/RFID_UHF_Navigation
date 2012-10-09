@@ -2,18 +2,14 @@ package de.unierlangen.like.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,9 +27,7 @@ import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.TagsDatabase;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.rfid.GenericTag;
-import de.unierlangen.like.rfid.Reader;
 import de.unierlangen.like.rfid.ReaderIntents;
-import de.unierlangen.like.rfid.Reader.ReaderException;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*
                                                                    * OnGestureListener
@@ -57,10 +51,15 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     private final BroadcastReceiver readerReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, intent.getAction());
             if (ReaderIntents.ACTION_TAGS.equals(intent.getAction())) {
-                ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
-                // TODO extract tags from intent
-                // readTagsFromReader = (ArrayList<GenericTag>) msg.obj;
+                // since now we know that Intent action is ACTION_TAGS, we know
+                // that
+                // array of tags is attached to the intent as an extra with key
+                // EXTRA_TAGS
+                ArrayList<GenericTag> readTagsFromReader = intent
+                        .getParcelableArrayListExtra(ReaderIntents.EXTRA_TAGS);
+
                 ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
                 arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
                 if (!arrayOfTags.isEmpty()) {
@@ -112,8 +111,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         try {
             mapBuilder = new MapBuilder("/sdcard/like/map.txt");
         } catch (IOException e) {
-            Toast.makeText(getApplicationContext(),
-                    "Sorry, current file is not readable or not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Sorry, current file is not readable or not found",
+                    Toast.LENGTH_SHORT).show();
             mapBuilder = new MapBuilder("1,1,2,2;2,2,3,3;", true);
             Log.e("TAG", "oops", e);
         }
@@ -123,12 +122,43 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         mapView.setWalls(walls);
         mapView.setDoors(doors);
         navigation = new Navigation(walls, doors);
-
-        // Toast.makeText(getApplicationContext(),"Press Menu button",Toast.LENGTH_SHORT).show();
         dijkstraRouter = new DijkstraRouter();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() in MainYourLocationActivity called");
+        IntentFilter filter = new IntentFilter(ReaderIntents.ACTION_TAGS);
+        registerReceiver(readerReceiver, filter);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(readerReceiver);
+        Log.d(TAG, "onPause() in MainYourLocationActivity called");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Comparison of two floats (checking if resultCode == RESULT_OK)
+        if (Math.abs(resultCode) - Math.abs(Activity.RESULT_OK) < 0.00001f) {
+            String roomName = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
+            RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
+            roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
+            StringBuilder sb = new StringBuilder()
+                    .append("Activity.RESULT_OK; room's name and coordinates: ");
+            sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
+            Log.d(TAG, sb.toString());
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     /*
+     * TODO add scrolling
+     * 
      * @Override public boolean onTouchEvent(MotionEvent event) {
      * mGestureDetector.onTouchEvent(event); // MotionEvent object holds XY
      * values if (event.getAction() == MotionEvent.ACTION_MOVE) { String text =
@@ -148,34 +178,6 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
      * distanceX, float distanceY) { endX = e2.getX(); endY = e2.getY(); }
      */
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume() in MainYourLocationActivity called");
-        // TODO start reading tags
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // TODO stop reading tags
-        Log.d(TAG, "onPause() in MainYourLocationActivity called");
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Comparison of two floats (checking if resultCode == RESULT_OK)
-        if (Math.abs(resultCode) - Math.abs(Activity.RESULT_OK) < 0.00001f) {
-            String roomName = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
-            RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
-            roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
-            StringBuilder sb = new StringBuilder()
-                    .append("Activity.RESULT_OK; room's name and coordinates: ");
-            sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
-            Log.d(TAG, sb.toString());
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
     /*
      * public boolean onDown(MotionEvent e) { // TODO Auto-generated method stub
      * return false; }

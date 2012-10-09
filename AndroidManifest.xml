@@ -28,5 +28,6 @@
 		<activity android:name="de.unierlangen.like.ui.HelpActivity"
 			android:label="@string/help_title" android:theme="@android:style/Theme.Dialog">
 		</activity>
+		<service android:name=".rfid.ReaderService" />
 	</application>
 </manifest>

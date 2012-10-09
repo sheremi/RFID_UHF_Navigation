@@ -1,5 +1,8 @@
 package de.unierlangen.like.rfid;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Class describes generic RFID tag. Objects supposed to be created by reader or
  * its simulation.
@@ -7,7 +10,7 @@ package de.unierlangen.like.rfid;
  * @author Kate Lyavinskova
  * 
  */
-public class GenericTag extends Object {
+public class GenericTag extends Object implements Parcelable {
 
     private String epc;
     private int rssi;
@@ -42,4 +45,35 @@ public class GenericTag extends Object {
     public boolean isRead() {
         return isRead;
     }
+
+    // ----------------- Parcelable API ------------------
+
+    public static final Parcelable.Creator<GenericTag> CREATOR = new Parcelable.Creator<GenericTag>() {
+        public GenericTag createFromParcel(Parcel in) {
+            return new GenericTag(in);
+        }
+    
+        public GenericTag[] newArray(int size) {
+            return new GenericTag[size];
+        }
+    };
+
+    public GenericTag(Parcel in) {
+        epc = in.readString();
+        rssi = in.readInt();
+        isRead = in.readInt() == 1;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(epc);
+        dest.writeInt(rssi);
+        dest.writeInt(isRead ? 1 : 0 );
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    // ----------------- END of Parcelable API ------------------
+
 }
