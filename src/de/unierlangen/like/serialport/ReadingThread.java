@@ -10,7 +10,7 @@ class ReadingThread extends Thread implements IStringPublisher {
     private static final String TAG = "ReceivingThread";
     private static final boolean DBG = true;
 
-    private RxChannel rxChannel;
+    private IRxChannel rxChannel;
     private Handler recipientHandler;
     private int msgWhat;
 
@@ -23,7 +23,7 @@ class ReadingThread extends Thread implements IStringPublisher {
      *            user-defined message code so that the recipient can identify
      *            what this message is about
      */
-    public ReadingThread(RxChannel rxChannel) {
+    public ReadingThread(IRxChannel rxChannel) {
         super();
 
         this.rxChannel = rxChannel;

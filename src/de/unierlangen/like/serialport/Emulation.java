@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-public class Emulation implements TxChannel, IStringPublisher {
+public class Emulation implements ITxChannel, IStringPublisher {
 
     private Handler recipientHandler;
     private int msgWhat;

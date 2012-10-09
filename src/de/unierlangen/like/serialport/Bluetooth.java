@@ -16,7 +16,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 
-public class Bluetooth implements TxChannel, IStringPublisher
+public class Bluetooth implements ITxChannel, IStringPublisher
  {
 
     //private static final String REQUEST_ENABLE_BT = 1;

@@ -6,7 +6,7 @@ import android.os.Message;
 /**
  * This interface is implemented by classes, which are reading strings from
  * some source (socket, uart, textview, etc.). Such class first concatenates
- * a string, then put it to a message to be held by handler, which is passed
+ * a string, then puts it to a message and sends this message to a handler, which is passed
  * as a parameter to the method register(Handler handler, int what).
  * 
  * @author Kate

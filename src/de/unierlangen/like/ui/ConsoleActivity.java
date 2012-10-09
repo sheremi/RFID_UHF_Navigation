@@ -30,7 +30,7 @@ import android.widget.TextView.OnEditorActionListener;
 import de.unierlangen.like.R;
 import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.IStringPublisher;
-import de.unierlangen.like.serialport.TxChannel;
+import de.unierlangen.like.serialport.ITxChannel;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
     private static final int EVENT_STRING_RECEIVED = 1;
     private static final boolean DBG = true;
     /** TxChannel used by console */
-    private TxChannel txChannel;
+    private ITxChannel txChannel;
     /** Displays symbols received */
     private TextView textViewReception;
     /** EditText to send custom strings */

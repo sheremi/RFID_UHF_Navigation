@@ -16,13 +16,13 @@ import android.preference.PreferenceManager;
  */
 public class CommunicationManager {
 
-    static TxChannel mTxChannel;
+    static ITxChannel mTxChannel;
     static IStringPublisher mStringPublisher;
 
     private CommunicationManager() {
     };
 
-    public static TxChannel getTxChannel() {
+    public static ITxChannel getTxChannel() {
         return mTxChannel;
     }
 
@@ -41,7 +41,7 @@ public class CommunicationManager {
         SharedPreferences defaultSharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(context);
         // Creating HashMaps
-        Map<String, TxChannel> txChannels = new HashMap<String, TxChannel>();
+        Map<String, ITxChannel> txChannels = new HashMap<String, ITxChannel>();
         Map<String, IStringPublisher> publishers = new HashMap<String, IStringPublisher>();
 
         /*

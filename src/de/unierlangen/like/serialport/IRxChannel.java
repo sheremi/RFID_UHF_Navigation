@@ -2,7 +2,7 @@ package de.unierlangen.like.serialport;
 
 import java.io.IOException;
 
-public interface RxChannel {
+public interface IRxChannel {
     /**
      * 
      * @return

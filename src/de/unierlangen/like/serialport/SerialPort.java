@@ -27,7 +27,7 @@ import java.security.InvalidParameterException;
 import android.util.Log;
 
 /** Describes serial port */
-public class SerialPort implements RxChannel, TxChannel {
+public class SerialPort implements IRxChannel, ITxChannel {
 
     private static final String TAG = "SerialPort";
     // Serial port parameters

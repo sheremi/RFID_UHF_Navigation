@@ -5,7 +5,7 @@ package de.unierlangen.like.serialport;
  * @author Kate
  *
  */
-public interface TxChannel {
+public interface ITxChannel {
     /**
      * 
      * @param string

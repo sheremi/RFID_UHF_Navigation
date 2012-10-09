@@ -12,7 +12,7 @@ import android.os.Message;
 import android.util.Log;
 import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.IStringPublisher;
-import de.unierlangen.like.serialport.TxChannel;
+import de.unierlangen.like.serialport.ITxChannel;
 
 public class Reader /* extends Service */{
 
@@ -25,7 +25,7 @@ public class Reader /* extends Service */{
     public static final int WARNING = -2;
     private static final int EVENT_STRING_RECEIVED = 1;
 
-    private TxChannel txChannel;
+    private ITxChannel txChannel;
     private IStringPublisher stringPublisher;
     private int amountOfTags;
 

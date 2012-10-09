@@ -14,11 +14,11 @@ import android.util.Log;
  * @author lyavinskova
  * 
  */
-public class ProxyTxChannel implements TxChannel, OnSharedPreferenceChangeListener {
+public class ProxyTxChannel implements ITxChannel, OnSharedPreferenceChangeListener {
 
     private static final String COMM_TYPE = "COMM_TYPE";
-    private TxChannel activeTxChannel;
-    Map<String, TxChannel> txChannels;
+    private ITxChannel activeTxChannel;
+    Map<String, ITxChannel> txChannels;
 
     /**
      * User can choose a connection type in preferences. Proxy becomes chosen
@@ -29,7 +29,7 @@ public class ProxyTxChannel implements TxChannel, OnSharedPreferenceChangeListen
      * @param sp
      *            SharedPreferences containing {@link ProxyTxChannel#COMM_TYPE}
      */
-    public ProxyTxChannel(Map<String, TxChannel> txChannels, SharedPreferences sp) {
+    public ProxyTxChannel(Map<String, ITxChannel> txChannels, SharedPreferences sp) {
         this.txChannels = txChannels;
         String activeTxChannelName = sp.getString(COMM_TYPE, "emulation");
         activeTxChannel = txChannels.get(activeTxChannelName);
