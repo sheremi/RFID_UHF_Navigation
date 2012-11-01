@@ -29,8 +29,14 @@ public class Reader /* extends Service */{
     private IStringPublisher stringPublisher;
     private int amountOfTags;
 
+    /**
+     * FIXME write comment!!!
+     */
     private Handler registrantHandler;
 
+    /**
+     * FIXME write comment!!!
+     */
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -56,10 +62,15 @@ public class Reader /* extends Service */{
     };
 
     public class ReaderException extends Exception {
+        private String string;
         public ReaderException(String string) {
             super(string);
+            this.string = string;
         }
-
+        
+        public String getString() {
+            return string;
+        }
         private static final long serialVersionUID = 1L;
     }
 
