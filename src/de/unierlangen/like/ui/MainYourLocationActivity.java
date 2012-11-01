@@ -2,6 +2,9 @@ package de.unierlangen.like.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -80,11 +83,15 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     };
 
     // ** Called when the activity is first created. *//
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_your_location);
         mapView = (MapView) findViewById(R.id.mapView);
+        
+        final ActionBar bar = getActionBar();
+        bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
         mapView.setOnLongClickListener(new OnLongClickListener() {
             public boolean onLongClick(View v) {
