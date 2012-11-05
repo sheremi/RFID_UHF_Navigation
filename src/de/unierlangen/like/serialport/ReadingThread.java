@@ -10,9 +10,12 @@ class ReadingThread extends Thread implements IStringPublisher {
     private static final String TAG = "ReceivingThread";
     private static final boolean DBG = true;
 
-    private IRxChannel rxChannel;
+    private final IRxChannel rxChannel;
     private Handler recipientHandler;
     private int msgWhat;
+
+    private Handler finishedHandler;
+    private int msgWhatFinished;
 
     /**
      * 
@@ -38,30 +41,47 @@ class ReadingThread extends Thread implements IStringPublisher {
                 String receivedStringSymbol = rxChannel.readString();
                 receivedString = receivedString.concat(receivedStringSymbol);
                 if (receivedString.contains("\n")) {
-                    if (DBG) Log.d(TAG, "Received string: " + receivedString);
+                    if (DBG) {
+                        Log.d(TAG, "Received string: " + receivedString);
+                    }
                     Message msg;
                     if (recipientHandler != null) {
                         msg = recipientHandler.obtainMessage();
                         msg.what = msgWhat;
                         msg.obj = receivedString;
                         recipientHandler.sendMessage(msg);
+                    } else {
+                        if (DBG) {
+                            Log.d(TAG, "recipientHandler is null");
+                        }
                     }
                     receivedString = "";
                 }
             }
         } catch (IOException e) {
-            Log.e(TAG, "IOException in SendingThread", e);
+            Log.e(TAG, "IOException in ReadingThread - " + e.getMessage());
         }
-        super.run();
+        Log.e(TAG, "ReadingThread is finished");
+        if (finishedHandler != null) {
+            finishedHandler.sendEmptyMessage(msgWhatFinished);
+        }
+
     }
 
     public void register(Handler handler, int what) {
         this.recipientHandler = handler;
         this.msgWhat = what;
         if (!isAlive()) {
-            if (DBG) Log.d(TAG, "start");
+            if (DBG) {
+                Log.d(TAG, "start");
+            }
             start();
         }
+    }
+
+    public void registerFinished(Handler handler, int what) {
+        finishedHandler = handler;
+        msgWhatFinished = what;
     }
 
     public void unregister(Handler handler) {

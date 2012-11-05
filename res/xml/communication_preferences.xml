@@ -2,24 +2,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="Preferences" >
 
-    <PreferenceCategory android:title="Communication type" >
-        <ListPreference
-            android:entries="@array/comm_types_name"
-            android:entryValues="@array/comm_types_value"
-            android:key="COMM_TYPE"
-            android:persistent="true"
-            android:title="Communication type" >
-        </ListPreference>
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/prefs_bluetooth_settings_title">
-        <PreferenceScreen 
-            android:title="@string/prefs_bluetooth_settings_title" 
-            android:summary="@string/prefs_bluetooth_settings_summary">
-                 <intent android:action="android.intent.action.MAIN" 
-                    android:targetClass="com.android.settings.bluetooth.BluetoothSettings" 
-                    android:targetPackage="com.android.settings" /> 
-        </PreferenceScreen>
-    </PreferenceCategory>
+     <ListPreference
+         android:entries="@array/comm_types_name"
+         android:entryValues="@array/comm_types_value"
+         android:key="COMM_TYPE"
+         android:persistent="true"
+         android:title="@string/prefs_comm_type_title" >
+     </ListPreference>
+ 
+     <Preference
+         android:summary="@string/prefs_bluetooth_settings_summary"
+         android:title="@string/prefs_bluetooth_settings_title" >
+         <intent
+             android:action="android.intent.action.MAIN"
+             android:targetClass="com.android.settings.bluetooth.BluetoothSettings"
+             android:targetPackage="com.android.settings" />
+     </Preference>
 
 </PreferenceScreen>

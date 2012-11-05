@@ -85,4 +85,5 @@
 	<string name="minus_label"> - </string>
 	<string name="prefs_bluetooth_settings_title">Bluetooth</string>
 	<string name="prefs_bluetooth_settings_summary">go to Bluetooth System Settings&#8230;</string>
+	<string name="prefs_comm_type_title">Communication type</string>
 </resources>
