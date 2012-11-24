@@ -1,11 +1,14 @@
 package de.unierlangen.like.rfid;
 
 import java.util.ArrayList;
+
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+
 import com.better.wakelock.Logger;
+
 import de.unierlangen.like.rfid.Reader.ReaderException;
 
 public class ReaderService extends IntentService implements Handler.Callback {
@@ -44,16 +47,17 @@ public class ReaderService extends IntentService implements Handler.Callback {
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public boolean handleMessage(Message msg) {
-     // Logger.d ("handleMessage(" + msg.what + ")");
+        // Logger.d ("handleMessage(" + msg.what + ")");
         switch (msg.what) {
         case Reader.RESPONSE_TAGS:
         case Reader.EVENT_TAGS:
             ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
             readTagsFromReader = (ArrayList<GenericTag>) msg.obj;
             if (!readTagsFromReader.isEmpty()) {
-                Intent intent =  new Intent(ReaderIntents.ACTION_TAGS);
+                Intent intent = new Intent(ReaderIntents.ACTION_TAGS);
                 intent.putParcelableArrayListExtra(ReaderIntents.EXTRA_TAGS, readTagsFromReader);
                 sendBroadcast(intent);
             }

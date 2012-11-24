@@ -20,13 +20,15 @@ package de.unierlangen.like.ui;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import com.better.wakelock.Logger;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import com.better.wakelock.Logger;
+
 import de.unierlangen.like.R;
 import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.IStringPublisher;
@@ -37,11 +39,12 @@ import de.unierlangen.like.serialport.ITxChannel;
  * @author Ekaterina Lyavinskova and Yuriy Kulikov
  * 
  */
-public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActionListener, OnLongClickListener {
+public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActionListener,
+        OnLongClickListener {
 
     private static final String TAG = "ConsoleActivity";
     private static final int EVENT_STRING_RECEIVED = 1;
-    
+
     /** TxChannel used by console */
     private ITxChannel txChannel;
     /** Displays symbols received */
@@ -49,7 +52,7 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
     /** EditText to send custom strings */
     private EditText editTextEmission;
     /* Concurrency - AsyncTasks, Threads and Handlers */
-    /** activePublisher (ReadingThread), used by current txChannel*/
+    /** activePublisher (ReadingThread), used by current txChannel */
     private IStringPublisher stringPublisher;
     /** UI thread handler, use it to post runnables on UI thread */
     Handler handler = new Handler() {
@@ -58,7 +61,7 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
             Logger.d("handleMessage(" + msg.what + ")");
             switch (msg.what) {
             case EVENT_STRING_RECEIVED:
-                textViewReception.append((String)msg.obj);
+                textViewReception.append((String) msg.obj);
                 break;
 
             default:
@@ -68,16 +71,19 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
         }
     };
 
+    @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         txChannel.sendString(v.getText().toString());// +"\n");
         return false;
     }
 
+    @Override
     public boolean onLongClick(View v) {
         textViewReception.setText("Reception cleaned");
         return false;
 
     }
+
     /* Override lifecycle methods */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

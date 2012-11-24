@@ -9,7 +9,9 @@ import java.util.List;
 
 import android.os.Handler;
 import android.os.Message;
+
 import com.better.wakelock.Logger;
+
 import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.IStringPublisher;
 import de.unierlangen.like.serialport.ITxChannel;
@@ -17,7 +19,7 @@ import de.unierlangen.like.serialport.ITxChannel;
 public class Reader /* extends Service */{
 
     private static final String TAG = "Reader";
-    
+
     public static final int EVENT_TAGS = 1;
     public static final int RESPONSE_TAGS = 2;
     public static final int RESPONSE_REGS = 3;
@@ -25,19 +27,19 @@ public class Reader /* extends Service */{
     public static final int WARNING = -2;
     private static final int EVENT_STRING_RECEIVED = 1;
 
-    private ITxChannel txChannel;
-    private IStringPublisher stringPublisher;
+    private final ITxChannel txChannel;
+    private final IStringPublisher stringPublisher;
     private int amountOfTags;
 
     /**
      * FIXME write comment!!!
      */
-    private Handler registrantHandler;
+    private final Handler registrantHandler;
 
     /**
      * FIXME write comment!!!
      */
-    private Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             Logger.d("handleMessage(" + msg.what + ")");
@@ -62,15 +64,17 @@ public class Reader /* extends Service */{
     };
 
     public class ReaderException extends Exception {
-        private String string;
+        private final String string;
+
         public ReaderException(String string) {
             super(string);
             this.string = string;
         }
-        
+
         public String getString() {
             return string;
         }
+
         private static final long serialVersionUID = 1L;
     }
 

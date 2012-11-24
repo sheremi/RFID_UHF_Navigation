@@ -84,9 +84,10 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
         return layout;
     }
 
+    @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-        progress = Math.round(((float) progress) / interval) * interval;
+        progress = Math.round((float) progress / interval) * interval;
 
         if (!callChangeListener(progress)) {
             seekBar.setProgress((int) this.oldValue);
@@ -101,9 +102,11 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
         notifyChanged();
     }
 
+    @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
     }
 
+    @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
     }
 
@@ -120,18 +123,22 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
 
         int temp = restoreValue ? getPersistedInt(50) : (Integer) defaultValue;
 
-        if (!restoreValue) persistInt(temp);
+        if (!restoreValue) {
+            persistInt(temp);
+        }
 
         this.oldValue = temp;
     }
 
     private int validateValue(int value) {
 
-        if (value > maximum)
+        if (value > maximum) {
             value = maximum;
-        else if (value < 0)
+        } else if (value < 0) {
             value = 0;
-        else if (value % interval != 0) value = Math.round(((float) value) / interval) * interval;
+        } else if (value % interval != 0) {
+            value = Math.round((float) value / interval) * interval;
+        }
 
         return value;
     }

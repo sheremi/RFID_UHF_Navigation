@@ -3,7 +3,7 @@ package de.unierlangen.like.serialport;
 /**
  * 
  * @author Kate
- *
+ * 
  */
 public interface ITxChannel {
     /**

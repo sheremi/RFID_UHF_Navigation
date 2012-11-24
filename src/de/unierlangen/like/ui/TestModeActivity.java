@@ -40,6 +40,7 @@ public class TestModeActivity extends OptionsMenuActivity implements OnClickList
 
     }
 
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
         case R.id.analogGauge1:

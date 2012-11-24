@@ -1,8 +1,8 @@
 package de.unierlangen.like.ui;
 
-import de.unierlangen.like.R;
 import android.os.Bundle;
 import android.widget.Button;
+import de.unierlangen.like.R;
 
 public class ReaderRegistersListActivity extends OptionsMenuActivity {
 

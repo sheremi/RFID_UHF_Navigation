@@ -6,7 +6,7 @@ public interface IRxChannel {
     /**
      * 
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     String readString() throws IOException;
 }

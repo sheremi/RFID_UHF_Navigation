@@ -2,6 +2,7 @@ package de.unierlangen.like.serialport;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -60,7 +61,7 @@ public class CommunicationManager {
         Emulation emulationSimple = new Emulation(true);
         txChannels.put("emulationSimple", emulationSimple);
         publishers.put("emulationSimple", emulationSimple);
-        
+
         Bluetooth bluetooth = new Bluetooth(context);
         txChannels.put("bluetooth", bluetooth);
         publishers.put("bluetooth", bluetooth);

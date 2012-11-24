@@ -5,11 +5,11 @@ import android.graphics.RectF;
 
 public class Door extends Obstacle {
     // private static final String TAG = Door.class.getSimpleName();
-    private float xAxle;
-    private float yAxle;
-    private float length;
-    private float startAngle;
-    private float sweepAngle;
+    private final float xAxle;
+    private final float yAxle;
+    private final float length;
+    private final float startAngle;
+    private final float sweepAngle;
     private PointF intersection;
 
     // Constructors
@@ -29,9 +29,9 @@ public class Door extends Obstacle {
         super();
         this.length = length;
         this.sweepAngle = sweepAngle;
-        this.xAxle = (float) (Math.cos(alpha)) * distanceToAxle + wallX1;
-        this.yAxle = (float) (Math.sin(alpha)) * distanceToAxle + wallY1;
-        this.startAngle = (float) (alpha) * 57.2974f;
+        this.xAxle = (float) Math.cos(alpha) * distanceToAxle + wallX1;
+        this.yAxle = (float) Math.sin(alpha) * distanceToAxle + wallY1;
+        this.startAngle = (float) alpha * 57.2974f;
     }
 
     // Getters and setters

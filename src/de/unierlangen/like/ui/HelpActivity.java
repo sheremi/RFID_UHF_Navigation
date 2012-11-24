@@ -1,11 +1,11 @@
 package de.unierlangen.like.ui;
 
-import de.unierlangen.like.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import de.unierlangen.like.R;
 
 public class HelpActivity extends Activity {
 
@@ -17,6 +17,7 @@ public class HelpActivity extends Activity {
         Button ok = (Button) findViewById(R.id.ok_button);
         ok.setOnClickListener(new OnClickListener() {
 
+            @Override
             public void onClick(View v) {
                 HelpActivity.this.finish();
             }

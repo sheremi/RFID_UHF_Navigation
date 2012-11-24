@@ -37,8 +37,8 @@ public class Zone {
         Logger.d("Creating a zone with center in (0f, 0f) and radius of 1f");
         points = new ArrayList<PointF>(AMOUNT_OF_POINTS_PER_ZONE);
         for (int i = 0; i < AMOUNT_OF_POINTS_PER_ZONE; i++) {
-            float x = (float) (Math.cos((i * 6.283) / AMOUNT_OF_POINTS_PER_ZONE));
-            float y = (float) (Math.sin((i * 6.283) / AMOUNT_OF_POINTS_PER_ZONE));
+            float x = (float) Math.cos(i * 6.283 / AMOUNT_OF_POINTS_PER_ZONE);
+            float y = (float) Math.sin(i * 6.283 / AMOUNT_OF_POINTS_PER_ZONE);
             points.add(new PointF(x, y));
         }
     }

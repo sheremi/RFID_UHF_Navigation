@@ -1,11 +1,11 @@
 package de.unierlangen.like.ui;
 
-import de.unierlangen.like.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import de.unierlangen.like.R;
 
 public class OptionsMenuActivity extends Activity {
 

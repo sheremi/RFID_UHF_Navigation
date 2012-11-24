@@ -15,7 +15,7 @@ public class FindRoomActivity extends Activity {
 
     public static final String ROOM_NAME_EXTRA = "ROOM_NAME";
 
-    private RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
+    private final RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
     private Button buttonClear;
     private Button buttonOK;
     private AutoCompleteTextView textView;
@@ -31,11 +31,13 @@ public class FindRoomActivity extends Activity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, strings);
         textView.setAdapter(adapter);
         buttonClear.setOnClickListener(new OnClickListener() {
+            @Override
             public void onClick(View v) {
                 textView.setText("");
             }
         });
         buttonOK.setOnClickListener(new OnClickListener() {
+            @Override
             public void onClick(View v) {
                 String chosenRoomName = textView.getText().toString();
                 if (roomsDatabase.getRoomsNamesSet().contains(chosenRoomName)) {

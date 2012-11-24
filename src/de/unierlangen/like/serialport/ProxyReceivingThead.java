@@ -1,6 +1,7 @@
 package de.unierlangen.like.serialport;
 
 import java.util.Map;
+
 import android.os.Handler;
 
 /**
@@ -14,7 +15,7 @@ import android.os.Handler;
  */
 public class ProxyReceivingThead implements IStringPublisher {
 
-    private Map<String, IStringPublisher> publishers;
+    private final Map<String, IStringPublisher> publishers;
 
     /**
      * 
@@ -27,6 +28,7 @@ public class ProxyReceivingThead implements IStringPublisher {
         this.publishers = publishers;
     }
 
+    @Override
     public void register(Handler handler, int what) {
         // publishers.get("serial").register(handler, what);
         publishers.get("emulation").register(handler, what);
@@ -35,6 +37,7 @@ public class ProxyReceivingThead implements IStringPublisher {
 
     }
 
+    @Override
     public void unregister(Handler handler) {
         // publishers.get("serial").unregister(handler);
         publishers.get("emulation").unregister(handler);
