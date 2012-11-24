@@ -4,7 +4,8 @@ import java.util.Map;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.util.Log;
+
+import com.better.wakelock.Logger;
 
 /**
  * ProxyTxChannel is a representative for the connection type Tx (Serial port,
@@ -36,15 +37,17 @@ public class ProxyTxChannel implements ITxChannel, OnSharedPreferenceChangeListe
         sp.registerOnSharedPreferenceChangeListener(this);
     }
 
+    @Override
     public void sendString(String stringToSend) {
         activeTxChannel.sendString(stringToSend);
     }
 
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
         if (key.equals(COMM_TYPE)) {
             String activeTxChannelName = sp.getString(COMM_TYPE, "emulation");
             activeTxChannel = txChannels.get(activeTxChannelName);
-            Log.d("ProxyTxChannel", "activeTxChannelName = " + activeTxChannel);
+            Logger.d("activeTxChannelName = " + activeTxChannel);
         }
 
     }

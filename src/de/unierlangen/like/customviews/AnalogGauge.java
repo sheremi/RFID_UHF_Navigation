@@ -17,12 +17,13 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+
+import com.better.wakelock.Logger;
+
 import de.unierlangen.like.R;
 
 public final class AnalogGauge extends View {
-    private static final String TAG = AnalogGauge.class.getSimpleName();
     // drawing tools
     private RectF rimRect;
     private Paint rimPaint;
@@ -55,20 +56,20 @@ public final class AnalogGauge extends View {
 
     // default scale configuration, use configureScale to change values
     /** int minValue represents lowest possible value */
-    private int minValue = -20;
+    private final int minValue = -20;
     /** int maxValue represents highest possible value */
-    private int maxValue = 120;
+    private final int maxValue = 120;
     /**
      * int sweepAngle represents angle between min and max. Should be less than
      * 270
      */
-    private int sweepAngle = 180;
+    private final int sweepAngle = 180;
     /** Represents how many values are between two tags */
     int tagValueRange = 10;
     /** int nicksPerTag represent amount of nicks between two tags */
     private int nicksPerTag = 2;
     /** String units is used to print unit of measurement */
-    private String units = "dBm";
+    private final String units = "dBm";
     // hand dynamics -- all are angular
     private boolean handInitialized = false;
 
@@ -312,7 +313,7 @@ public final class AnalogGauge extends View {
 
     private void drawBackground(Canvas canvas) {
         if (background == null) {
-            Log.w(TAG, "Background not created");
+            Logger.w("Background not created");
         } else {
             canvas.drawBitmap(background, 0, 0, backgroundPaint);
         }
@@ -336,9 +337,7 @@ public final class AnalogGauge extends View {
 
     /** Hand movement */
     private void moveHand() {
-        if (!handNeedsToMove()) {
-            return;
-        }
+        if (!handNeedsToMove()) return;
 
         if (lastHandMoveTime != -1L) {
             long currentTime = System.currentTimeMillis();
@@ -370,8 +369,8 @@ public final class AnalogGauge extends View {
     // Override View's methods
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.d(TAG, "Width spec: " + MeasureSpec.toString(widthMeasureSpec));
-        Log.d(TAG, "Height spec: " + MeasureSpec.toString(heightMeasureSpec));
+        Logger.d("Width spec: " + MeasureSpec.toString(widthMeasureSpec));
+        Logger.d("Height spec: " + MeasureSpec.toString(heightMeasureSpec));
 
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {
@@ -408,7 +407,7 @@ public final class AnalogGauge extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        Log.d(TAG, "Size changed to " + w + "x" + h);
+        Logger.d("Size changed to " + w + "x" + h);
         // redraw all constant graphics
         // free the old bitmap
         if (background != null) {

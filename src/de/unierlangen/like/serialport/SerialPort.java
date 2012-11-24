@@ -24,7 +24,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.InvalidParameterException;
-import android.util.Log;
+
+import com.better.wakelock.Logger;
 
 /** Describes serial port */
 public class SerialPort implements IRxChannel, ITxChannel {
@@ -36,7 +37,7 @@ public class SerialPort implements IRxChannel, ITxChannel {
 
     /** mFd is used in native method close() as a reference. */
     private FileDescriptor mFd;
-    private ByteBuffer buffer;
+    private final ByteBuffer buffer;
     private FileChannel serialInputChannel;
     private FileChannel serialOutputChannel;
 
@@ -51,18 +52,19 @@ public class SerialPort implements IRxChannel, ITxChannel {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static SerialPort getSerialPort() throws SerialPortException{
+    public static SerialPort getSerialPort() throws SerialPortException {
         if (instance == null) {
             instance = new SerialPort(path, baudrate);
         }
         return instance;
     }
-    
+
     public class SerialPortException extends Exception {
         public SerialPortException(String string) {
             super(string);
         }
     }
+
     /**
      * Serial port constructor. To receive data use
      * {@link de.unierlangen.like.serialport.SerialPort#setOnStringReceivedListener
@@ -74,7 +76,7 @@ public class SerialPort implements IRxChannel, ITxChannel {
      * @throws IOException
      */
     private SerialPort(String path, int baudrate) {
-        Log.d(TAG, "SerialPort(" + path + ", " + baudrate + ")");
+        Logger.d("SerialPort(" + path + ", " + baudrate + ")");
         buffer = ByteBuffer.allocate(64);
         openPort(path, baudrate);
     }
@@ -94,13 +96,14 @@ public class SerialPort implements IRxChannel, ITxChannel {
      * @return String read from the port
      * @throws IOException
      */
+    @Override
     public String readString() throws IOException {
         /** Here exception could be generated */
         int size = serialInputChannel.read(buffer);
         buffer.flip();
         return new String(buffer.array(), 0, size);
     }
-    
+
     /** Configures and opens serial port */
     private native static FileDescriptor open(String path, int baudrate);
 
@@ -113,11 +116,12 @@ public class SerialPort implements IRxChannel, ITxChannel {
     }
 
     /** Writes single string to the serial port */
+    @Override
     public void sendString(String stringToSend) {
         try {
             serialOutputChannel.write(ByteBuffer.wrap(stringToSend.getBytes()));
         } catch (IOException e) {
-            Log.d(TAG, "Was not able to write", e);
+            Logger.e("Was not able to write", e);
         }
     }
 }

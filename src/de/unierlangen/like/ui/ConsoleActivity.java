@@ -20,7 +20,7 @@ package de.unierlangen.like.ui;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import com.better.wakelock.Logger;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -41,7 +41,7 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
 
     private static final String TAG = "ConsoleActivity";
     private static final int EVENT_STRING_RECEIVED = 1;
-    private static final boolean DBG = true;
+    
     /** TxChannel used by console */
     private ITxChannel txChannel;
     /** Displays symbols received */
@@ -55,14 +55,14 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (DBG) Log.d(TAG, "handleMessage(" + msg.what + ")");
+            Logger.d("handleMessage(" + msg.what + ")");
             switch (msg.what) {
             case EVENT_STRING_RECEIVED:
                 textViewReception.append((String)msg.obj);
                 break;
 
             default:
-                Log.d(TAG, "unknown data");
+                Logger.d("unknown data");
                 break;
             }
         }

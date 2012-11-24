@@ -50,7 +50,7 @@ public class CommunicationManager {
          * serialPortPublisher = new ReceivingThread(serialPort);
          * publishers.put("serial", serialPortPublisher); } catch
          * (SerialPortException e) { e.printStackTrace();
-         * Log.e("CommunicationManager", "SerialPort is not created"); }
+         * Logger.e("CommunicationManager", "SerialPort is not created"); }
          */
 
         Emulation emulation = new Emulation(false);

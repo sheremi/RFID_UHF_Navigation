@@ -4,11 +4,11 @@ import java.io.IOException;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
-class ReadingThread extends Thread implements IStringPublisher {
+import com.better.wakelock.Logger;
+
+public class ReadingThread extends Thread implements IStringPublisher {
     private static final String TAG = "ReceivingThread";
-    private static final boolean DBG = true;
 
     private final IRxChannel rxChannel;
     private Handler recipientHandler;
@@ -41,8 +41,8 @@ class ReadingThread extends Thread implements IStringPublisher {
                 String receivedStringSymbol = rxChannel.readString();
                 receivedString = receivedString.concat(receivedStringSymbol);
                 if (receivedString.contains("\n")) {
-                    if (DBG) {
-                        Log.d(TAG, "Received string: " + receivedString);
+                    {
+                        Logger.d("Received string: " + receivedString);
                     }
                     Message msg;
                     if (recipientHandler != null) {
@@ -51,29 +51,30 @@ class ReadingThread extends Thread implements IStringPublisher {
                         msg.obj = receivedString;
                         recipientHandler.sendMessage(msg);
                     } else {
-                        if (DBG) {
-                            Log.d(TAG, "recipientHandler is null");
+                        {
+                            Logger.d("recipientHandler is null");
                         }
                     }
                     receivedString = "";
                 }
             }
         } catch (IOException e) {
-            Log.e(TAG, "IOException in ReadingThread - " + e.getMessage());
+            Logger.e("IOException in ReadingThread - " + e.getMessage());
         }
-        Log.e(TAG, "ReadingThread is finished");
+        Logger.e("ReadingThread is finished");
         if (finishedHandler != null) {
             finishedHandler.sendEmptyMessage(msgWhatFinished);
         }
 
     }
 
+    @Override
     public void register(Handler handler, int what) {
         this.recipientHandler = handler;
         this.msgWhat = what;
         if (!isAlive()) {
-            if (DBG) {
-                Log.d(TAG, "start");
+            {
+                Logger.d("start");
             }
             start();
         }
@@ -84,6 +85,7 @@ class ReadingThread extends Thread implements IStringPublisher {
         msgWhatFinished = what;
     }
 
+    @Override
     public void unregister(Handler handler) {
         recipientHandler = null;
 

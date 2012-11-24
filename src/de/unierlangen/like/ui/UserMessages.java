@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
-import android.util.Log;
+import com.better.wakelock.Logger;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -20,7 +20,7 @@ public class UserMessages {
      */
     public static void displayErrorAndSendErrorMessage(int resourceId, Context context,
             final Handler handler) {
-        Log.d(TAG, "displayError() called");
+        Logger.d("displayError() called");
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Error");
         builder.setMessage(resourceId);
@@ -40,7 +40,7 @@ public class UserMessages {
      * @param context
      */
     public static void displayAlertDialog(int resourceId, Context context) {
-        Log.d(TAG, "displayError() called");
+        Logger.d("displayError() called");
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Alert");
         builder.setMessage(resourceId);

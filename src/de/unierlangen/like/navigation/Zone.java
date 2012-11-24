@@ -4,11 +4,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import android.graphics.PointF;
-import android.util.Log;
+
+import com.better.wakelock.Logger;
 
 public class Zone {
     private static final String TAG = "Zone";
-    private static final boolean DBG = false;
+
     private static final int AMOUNT_OF_POINTS_PER_ZONE = 72;
     private ArrayList<PointF> points;
     private static Zone instance;
@@ -33,7 +34,7 @@ public class Zone {
      * Creates a zone with center in (0f, 0f) and radius of 1f
      */
     private Zone() {
-        if (DBG) Log.d(TAG, "Creating a zone with center in (0f, 0f) and radius of 1f");
+        Logger.d("Creating a zone with center in (0f, 0f) and radius of 1f");
         points = new ArrayList<PointF>(AMOUNT_OF_POINTS_PER_ZONE);
         for (int i = 0; i < AMOUNT_OF_POINTS_PER_ZONE; i++) {
             float x = (float) (Math.cos((i * 6.283) / AMOUNT_OF_POINTS_PER_ZONE));

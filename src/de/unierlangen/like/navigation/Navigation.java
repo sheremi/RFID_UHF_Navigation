@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
+
+import com.better.wakelock.Logger;
 
 public class Navigation {
 
     // Fields
-    private ArrayList<Wall> mWalls;
-    private ArrayList<Door> mDoors;
+    private final ArrayList<Wall> mWalls;
+    private final ArrayList<Door> mDoors;
     // Tools for navigation
     private ArrayList<Tag> arrayOfTags;
     // Geometry parameters
@@ -76,7 +77,7 @@ public class Navigation {
         PointF readerPosition = new PointF();
         /* TODO modify */
         if (this.arrayOfTags.size() == 0) {
-            Log.d("Navigation", "There are no any tags in the reading area or they weren't found");
+            Logger.d("There are no any tags in the reading area or they weren't found");
         }
         if (this.arrayOfTags.size() == 1) {
             readerPosition.x = arrayOfTags.get(0).x;

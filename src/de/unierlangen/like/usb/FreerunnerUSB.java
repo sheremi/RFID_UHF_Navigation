@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import android.util.Log;
+import com.better.wakelock.Logger;
 
 /**
  * Used to control Freerunner's USB
@@ -17,9 +17,6 @@ import android.util.Log;
  * @author kulikov
  */
 public class FreerunnerUSB {
-
-    private static final String TAG = "FreerunnerUSB";
-
     /**
      * Sets USB state to "host" if isHost is true and to "device" if isHost is
      * false
@@ -52,9 +49,9 @@ public class FreerunnerUSB {
             powerDriverOutputChannel.close();
 
         } catch (FileNotFoundException e) {
-            Log.d(TAG, "Catched: ", e);
+            Logger.e("Catched: ", e);
         } catch (IOException e) {
-            Log.d(TAG, "Catched: ", e);
+            Logger.e("Catched: ", e);
             throw e;
         }
 

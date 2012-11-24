@@ -6,7 +6,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import android.graphics.PointF;
-import android.util.Log;
+
+import com.better.wakelock.Logger;
 
 public class RoomsDatabase {
 
@@ -34,7 +35,7 @@ public class RoomsDatabase {
                 hashMap.put(roomName, new PointF(x, y));
             }
         } catch (IOException e) {
-            Log.e("RoomsDatabase", "file with rooms is not found", e);
+            Logger.e("file with rooms is not found", e);
         }
 
     }
@@ -45,7 +46,7 @@ public class RoomsDatabase {
 
     public String[] getRoomsNamesArray() {
         Set<String> keySet = getRoomsNamesSet();
-        return (String[]) keySet.toArray(new String[keySet.size()]);
+        return keySet.toArray(new String[keySet.size()]);
     }
 
     public PointF getRoomCoordinates(String roomName) {
