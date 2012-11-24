@@ -201,10 +201,10 @@ public class MapView extends View {
         // TODO Here we can optimize the speed of translate
         for (int i = 1; i <= SMOOTH_TRANSLATION_FRAMES; i++) {
             RectF rectF = new RectF(this.rectFTags);
-            rectF.left += (diffLeft / SMOOTH_TRANSLATION_FRAMES) * i;
-            rectF.top += (diffTop / SMOOTH_TRANSLATION_FRAMES) * i;
-            rectF.right += (diffRight / SMOOTH_TRANSLATION_FRAMES) * i;
-            rectF.bottom += (diffBottom / SMOOTH_TRANSLATION_FRAMES) * i;
+            rectF.left += diffLeft / SMOOTH_TRANSLATION_FRAMES * i;
+            rectF.top += diffTop / SMOOTH_TRANSLATION_FRAMES * i;
+            rectF.right += diffRight / SMOOTH_TRANSLATION_FRAMES * i;
+            rectF.bottom += diffBottom / SMOOTH_TRANSLATION_FRAMES * i;
             Message msg = Message.obtain(handler, REQUEST_TRANSLATE, rectF);
             handler.sendMessageDelayed(msg, 50 * i);
         }
@@ -249,10 +249,10 @@ public class MapView extends View {
 
         if (currentRSSI < avarageRSSI) {
             position = 1f * (avarageRSSI - currentRSSI) / (avarageRSSI - Tag.minRSSI);
-            filterColor |= (int) ((0xf0) * position); // blue
+            filterColor |= (int) (0xf0 * position); // blue
         } else {
             position = 1f * (currentRSSI - avarageRSSI) / (Tag.maxRSSI - avarageRSSI);
-            filterColor |= ((int) ((0xf0) * position)) << 16; // red
+            filterColor |= (int) (0xf0 * position) << 16; // red
         }
 
         paint.setColorFilter(new LightingColorFilter(0xff338822, filterColor));

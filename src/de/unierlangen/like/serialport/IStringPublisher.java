@@ -4,10 +4,10 @@ import android.os.Handler;
 import android.os.Message;
 
 /**
- * This interface is implemented by classes, which are reading strings from
- * some source (socket, uart, textview, etc.). Such class first concatenates
- * a string, then puts it to a message and sends this message to a handler, which is passed
- * as a parameter to the method register(Handler handler, int what).
+ * This interface is implemented by classes, which are reading strings from some
+ * source (socket, uart, textview, etc.). Such class first concatenates a
+ * string, then puts it to a message and sends this message to a handler, which
+ * is passed as a parameter to the method register(Handler handler, int what).
  * 
  * @author Kate
  * 

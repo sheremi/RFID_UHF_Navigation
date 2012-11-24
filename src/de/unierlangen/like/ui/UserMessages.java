@@ -4,9 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
-import com.better.wakelock.Logger;
 import android.view.Gravity;
 import android.widget.Toast;
+
+import com.better.wakelock.Logger;
 
 public class UserMessages {
     private static final String TAG = "UserMessages";
@@ -25,6 +26,7 @@ public class UserMessages {
         builder.setTitle("Error");
         builder.setMessage(resourceId);
         builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
                 handler.sendEmptyMessage(-1);
@@ -45,6 +47,7 @@ public class UserMessages {
         builder.setTitle("Alert");
         builder.setMessage(resourceId);
         builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }

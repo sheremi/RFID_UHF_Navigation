@@ -12,10 +12,10 @@ import android.os.Parcelable;
  */
 public class GenericTag extends Object implements Parcelable {
 
-    private String epc;
-    private int rssi;
+    private final String epc;
+    private final int rssi;
     /** Describes whether tag was or was not read(in range) */
-    private boolean isRead;
+    private final boolean isRead;
 
     /**
      * Debug constructor used to create tags with certain RSSI value and
@@ -49,10 +49,12 @@ public class GenericTag extends Object implements Parcelable {
     // ----------------- Parcelable API ------------------
 
     public static final Parcelable.Creator<GenericTag> CREATOR = new Parcelable.Creator<GenericTag>() {
+        @Override
         public GenericTag createFromParcel(Parcel in) {
             return new GenericTag(in);
         }
-    
+
+        @Override
         public GenericTag[] newArray(int size) {
             return new GenericTag[size];
         }
@@ -64,12 +66,14 @@ public class GenericTag extends Object implements Parcelable {
         isRead = in.readInt() == 1;
     }
 
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(epc);
         dest.writeInt(rssi);
-        dest.writeInt(isRead ? 1 : 0 );
+        dest.writeInt(isRead ? 1 : 0);
     }
 
+    @Override
     public int describeContents() {
         return 0;
     }

@@ -1,6 +1,5 @@
 package de.unierlangen.like.ui;
 
-import de.unierlangen.like.R;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -11,6 +10,7 @@ import android.preference.PreferenceActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import de.unierlangen.like.R;
 
 public class CommunicationPreferences extends PreferenceActivity implements
         OnSharedPreferenceChangeListener {
@@ -51,6 +51,7 @@ public class CommunicationPreferences extends PreferenceActivity implements
                 this);
     }
 
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         // Set summary, when preference value changes
         if (key.equals(KEY_COMM_TYPE_PREFERENCE)) {

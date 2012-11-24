@@ -86,8 +86,8 @@ public class DijkstraRouter {
                 sb.append("vertexCoordinates: " + vertexCoordinates.x + "; " + vertexCoordinates.y
                         + "; ");
             }
-            float distToPoint = (float) Math.sqrt(Math.pow((vertexCoordinates.x - point.x), 2)
-                    + Math.pow((vertexCoordinates.y - point.y), 2));
+            float distToPoint = (float) Math.sqrt(Math.pow(vertexCoordinates.x - point.x, 2)
+                    + Math.pow(vertexCoordinates.y - point.y, 2));
             {
                 sb.append(" distToPoint: " + distToPoint);
                 Logger.d(sb.toString());
@@ -140,7 +140,7 @@ public class DijkstraRouter {
             float calculatedOutVertexDist = (Float) edge.getOutVertex().getProperty(KEY_DISTANCE);
             float calculatedEdgeDist = (Float) edge.getProperty(KEY_DISTANCE);
             // Check if sum of OutVertexDist and EdgeDist equals to InVertexDist
-            if (Math.abs((calculatedOutVertexDist + calculatedEdgeDist) - calculatedInVertexDist) < 0.0001f) {
+            if (Math.abs(calculatedOutVertexDist + calculatedEdgeDist - calculatedInVertexDist) < 0.0001f) {
                 route.add(edge.getOutVertex());
                 {
                     StringBuilder sb = new StringBuilder()

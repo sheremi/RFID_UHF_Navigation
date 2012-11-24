@@ -171,7 +171,7 @@ public final class AnalogGauge extends View {
         logoPaint.setFilterBitmap(true);
         logo = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
         logoMatrix = new Matrix();
-        logoScale = (1.0f / logo.getWidth()) * 0.3f;
+        logoScale = 1.0f / logo.getWidth() * 0.3f;
         ;
         logoMatrix.setScale(logoScale, logoScale);
 
@@ -287,10 +287,10 @@ public final class AnalogGauge extends View {
 
         if (handCurrentPosition < centerDegree) {
             position = 1f * (centerDegree - handCurrentPosition) / (centerDegree - minValue);
-            filterColor |= (int) ((0xf0) * position); // blue
+            filterColor |= (int) (0xf0 * position); // blue
         } else {
             position = 1f * (handCurrentPosition - centerDegree) / (maxValue - centerDegree);
-            filterColor |= ((int) ((0xf0) * position)) << 16; // red
+            filterColor |= (int) (0xf0 * position) << 16; // red
         }
 
         logoPaint.setColorFilter(new LightingColorFilter(0xff338822, filterColor));
@@ -327,7 +327,7 @@ public final class AnalogGauge extends View {
      */
     private float valueToAngle(int value) {
         float offset = -sweepAngle / 2F;// offset to the left
-        return (1.0f * (value - minValue) / (maxValue - minValue) * sweepAngle + offset);
+        return 1.0f * (value - minValue) / (maxValue - minValue) * sweepAngle + offset;
     }
 
     /** Decides whether there is a need to move the hand */

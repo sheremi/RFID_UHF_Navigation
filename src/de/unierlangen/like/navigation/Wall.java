@@ -4,13 +4,13 @@ import android.graphics.PointF;
 
 public class Wall extends Obstacle {
 
-    private float x1_wall;
-    private float y1_wall;
-    private float x2_wall;
-    private float y2_wall;
-    private float gradient;
+    private final float x1_wall;
+    private final float y1_wall;
+    private final float x2_wall;
+    private final float y2_wall;
+    private final float gradient;
     // The deviation's angle of the wall's line from the X axis
-    private double alpha;
+    private final double alpha;
     private PointF intersection;
 
     public Wall(float x1, float y1, float x2, float y2) {
@@ -66,6 +66,7 @@ public class Wall extends Obstacle {
      *            Object of the regarded tag
      * @return Coordinates of the found intersection
      */
+    @Override
     public PointF getIntersection(Tag tag, float x, float y) {
         float x_cross;
         float y_cross;
@@ -91,9 +92,9 @@ public class Wall extends Obstacle {
         float xTagPoint_max = Math.max(tag.getX(), x) + 0.1f;
         float yTagPoint_min = Math.min(tag.getY(), y) - 0.1f;
         float yTagPoint_max = Math.max(tag.getY(), y) + 0.1f;
-        if ((xWall_min <= x_cross) && (xWall_max >= x_cross) && (xTagPoint_min <= x_cross)
-                && (xTagPoint_max >= x_cross) && (yWall_min <= y_cross) && (yWall_max >= y_cross)
-                && (yTagPoint_min <= y_cross) && (yTagPoint_max >= y_cross)) {
+        if (xWall_min <= x_cross && xWall_max >= x_cross && xTagPoint_min <= x_cross
+                && xTagPoint_max >= x_cross && yWall_min <= y_cross && yWall_max >= y_cross
+                && yTagPoint_min <= y_cross && yTagPoint_max >= y_cross) {
             intersection = new PointF(x_cross, y_cross);
             return intersection;
         }

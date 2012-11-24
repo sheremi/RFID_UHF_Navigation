@@ -54,7 +54,7 @@ public class Tag extends GenericTag {
      * @return
      */
     public double getDistanceTo(PointF point) {
-        return (Math.hypot((this.x - point.x), (this.y - point.y)));
+        return Math.hypot(this.x - point.x, this.y - point.y);
     }
 
 }

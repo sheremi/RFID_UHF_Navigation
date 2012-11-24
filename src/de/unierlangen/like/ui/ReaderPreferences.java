@@ -1,6 +1,5 @@
 package de.unierlangen.like.ui;
 
-import de.unierlangen.like.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -9,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+import de.unierlangen.like.R;
 
 public class ReaderPreferences extends PreferenceActivity /*
                                                            * implements

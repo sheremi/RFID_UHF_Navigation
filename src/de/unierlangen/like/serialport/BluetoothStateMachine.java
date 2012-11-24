@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Message;
+
 import com.better.wakelock.Logger;
 
 /**
@@ -69,6 +70,7 @@ public class BluetoothStateMachine implements Handler.Callback {
     }
 
     State inactive = new State() {
+        @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
             case FOUND:
@@ -101,6 +103,7 @@ public class BluetoothStateMachine implements Handler.Callback {
 
         private int retriesLeft;
 
+        @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
             case DISCOVER:
@@ -157,6 +160,7 @@ public class BluetoothStateMachine implements Handler.Callback {
     State connecting = new State() {
         private final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
+        @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
             case SOCKET_OPENED:
@@ -228,6 +232,7 @@ public class BluetoothStateMachine implements Handler.Callback {
             msg.sendToTarget();
         };
 
+        @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
             case SOCKET_DIED:
@@ -261,6 +266,7 @@ public class BluetoothStateMachine implements Handler.Callback {
         mWhatCLosed = whatClosed;
     }
 
+    @Override
     public boolean handleMessage(Message msg) {
         Logger.d("got " + whatToName(msg.what));
         boolean handled = mState.handleMessage(msg);
