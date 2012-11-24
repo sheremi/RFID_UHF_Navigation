@@ -277,7 +277,7 @@ public class BluetoothStateMachine implements Handler.Callback {
     }
 
     private void handleDeviceFound(BluetoothDevice device) {
-        boolean nameFits = device.getName().contains("linvor");
+        boolean nameFits = "linvor".equals(device.getName());
         if (nameFits) {
             if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                 transitTo(connecting, device);
