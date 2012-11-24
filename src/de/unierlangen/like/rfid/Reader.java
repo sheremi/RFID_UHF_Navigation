@@ -9,7 +9,7 @@ import java.util.List;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import com.better.wakelock.Logger;
 import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.IStringPublisher;
 import de.unierlangen.like.serialport.ITxChannel;
@@ -17,7 +17,7 @@ import de.unierlangen.like.serialport.ITxChannel;
 public class Reader /* extends Service */{
 
     private static final String TAG = "Reader";
-    private static final boolean DBG = true;
+    
     public static final int EVENT_TAGS = 1;
     public static final int RESPONSE_TAGS = 2;
     public static final int RESPONSE_REGS = 3;
@@ -40,7 +40,7 @@ public class Reader /* extends Service */{
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (DBG) Log.d(TAG, "handleMessage(" + msg.what + ")");
+            Logger.d("handleMessage(" + msg.what + ")");
             switch (msg.what) {
             case EVENT_STRING_RECEIVED:
                 Message message = analyzeResponse((String) msg.obj);
@@ -50,7 +50,7 @@ public class Reader /* extends Service */{
                 break;
 
             default:
-                Log.d(TAG, "unknown data");
+                Logger.d("unknown data");
                 break;
             }
 
@@ -132,7 +132,7 @@ public class Reader /* extends Service */{
      */
     private Message analyzeResponse(String response) {
         Message msg = Message.obtain();
-        if (DBG) Log.d(TAG, "response = " + response);
+        Logger.d("response = " + response);
         List<String> strings = Arrays.asList(response.split(","));
         if (strings.size() > 1) {
             strings = strings.subList(0, strings.size() - 1);
@@ -188,7 +188,7 @@ public class Reader /* extends Service */{
         }
         // TODO use amountOfTags where it should be used
         amountOfTags = tags.size();
-        if (DBG) Log.d(TAG, "amountOfTags = " + amountOfTags);
+        Logger.d("amountOfTags = " + amountOfTags);
         return tags;
     }
 

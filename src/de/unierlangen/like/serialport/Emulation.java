@@ -5,14 +5,15 @@ import java.util.Iterator;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+
+import com.better.wakelock.Logger;
 
 public class Emulation implements ITxChannel, IStringPublisher {
 
     private Handler recipientHandler;
     private int msgWhat;
-    private boolean isSimplified;
-    private ArrayList<String> responses;
+    private final boolean isSimplified;
+    private final ArrayList<String> responses;
     private Iterator<String> iterator;
 
     public Emulation(boolean isSimplified) {
@@ -32,15 +33,18 @@ public class Emulation implements ITxChannel, IStringPublisher {
         this.isSimplified = isSimplified;
     }
 
+    @Override
     public void register(Handler handler, int what) {
         this.recipientHandler = handler;
         this.msgWhat = what;
     }
 
+    @Override
     public void unregister(Handler handler) {
         recipientHandler = null;
     }
 
+    @Override
     public void sendString(String stringToSend) {
         if (recipientHandler != null) {
             Message msg;
@@ -51,11 +55,11 @@ public class Emulation implements ITxChannel, IStringPublisher {
                 receivedString = "medved";
             } else if (stringToSend.contains("rdr get tags")) {
                 if (isSimplified == true) {
-                    Log.d("Emulation", "isSimplified == true");
+                    Logger.d("isSimplified == true");
                     receivedString = responses.get(0);
                 } else {
-                    Log.d("Emulation", "isSimplified == false");
-                    if (! iterator.hasNext()){
+                    Logger.d("isSimplified == false");
+                    if (!iterator.hasNext()) {
                         iterator = responses.iterator();
                     }
                     receivedString = iterator.next();

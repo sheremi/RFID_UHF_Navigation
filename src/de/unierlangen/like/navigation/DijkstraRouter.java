@@ -10,21 +10,19 @@ import java.util.PriorityQueue;
 
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.util.Log;
 
+import com.better.wakelock.Logger;
 import com.tinkerpop.blueprints.pgm.Edge;
 import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.impls.tg.TinkerGraph;
 
 public class DijkstraRouter {
-    private static final boolean DBG = false;
-    private static final String TAG = "DijkstraRouter";
     private static final String STATUS_VISITED = "visited";
     private static final String STATUS_UNVISITED = "unvisited";
     private static final String KEY_COORDINATES = "coordinates";
     private static final String KEY_STATUS = "status";
     private static final String KEY_DISTANCE = "dist";
-    private FileReader fileReader = new FileReader();
+    private final FileReader fileReader = new FileReader();
 
     private TinkerGraph graph;
     private PriorityQueue<Vertex> queue;
@@ -35,13 +33,13 @@ public class DijkstraRouter {
     public DijkstraRouter() {
         graph = new TinkerGraph();
         queue = new PriorityQueue<Vertex>(10, new Comparator<Vertex>() {
+            @Override
             public int compare(Vertex vertex1, Vertex vertex2) {
                 if ((Float) vertex1.getProperty(KEY_DISTANCE) > (Float) vertex2
-                        .getProperty(KEY_DISTANCE)) {
+                        .getProperty(KEY_DISTANCE))
                     return 1;
-                } else {
+                else
                     return -1;
-                }
             }
         });
 
@@ -54,7 +52,7 @@ public class DijkstraRouter {
 
         fillGraphWithEdges();
 
-        if (DBG) {
+        {
             dumpGraph(true);
         }
 
@@ -76,33 +74,33 @@ public class DijkstraRouter {
     private Vertex findClosestVertexTo(PointF point) {
         Vertex closestVertex = graph.getVertex("1");
         float shortestDist = Float.MAX_VALUE;
-        if (DBG) {
-            Log.d(TAG, "Search of the closest vertex to the point " + "{" + point.x + "; "
-                    + point.y + "} " + "was initiated.");
+        {
+            Logger.d("Search of the closest vertex to the point " + "{" + point.x + "; " + point.y
+                    + "} " + "was initiated.");
         }
         for (Vertex vertex : graph.getVertices()) {
             PointF vertexCoordinates = (PointF) vertex.getProperty(KEY_COORDINATES);
             StringBuilder sb = new StringBuilder();
-            if (DBG) {
+            {
                 sb.append("Vertex " + vertex.getId() + "; ");
                 sb.append("vertexCoordinates: " + vertexCoordinates.x + "; " + vertexCoordinates.y
                         + "; ");
             }
             float distToPoint = (float) Math.sqrt(Math.pow((vertexCoordinates.x - point.x), 2)
                     + Math.pow((vertexCoordinates.y - point.y), 2));
-            if (DBG) {
+            {
                 sb.append(" distToPoint: " + distToPoint);
-                Log.d(TAG, sb.toString());
+                Logger.d(sb.toString());
             }
             if (distToPoint < shortestDist) {
                 shortestDist = distToPoint;
                 closestVertex = vertex;
             }
         }
-        if (DBG) {
+        {
             StringBuilder sb1 = new StringBuilder().append("ShortestDist: " + shortestDist + "; "
                     + "closestVertex: " + closestVertex.getId());
-            Log.d(TAG, sb1.toString());
+            Logger.d(sb1.toString());
         }
         return closestVertex;
     }
@@ -120,12 +118,12 @@ public class DijkstraRouter {
         route.add(destination);
         addNextVertexToRoute(destination, route);
         // Display debug information to the Log
-        if (DBG) {
+        {
             StringBuilder sb = new StringBuilder().append("Route: ");
             for (Vertex vertex : route) {
                 sb.append(vertex.getId()).append(" ");
             }
-            Log.d(TAG, sb.toString());
+            Logger.d(sb.toString());
         }
         return route;
     }
@@ -144,11 +142,11 @@ public class DijkstraRouter {
             // Check if sum of OutVertexDist and EdgeDist equals to InVertexDist
             if (Math.abs((calculatedOutVertexDist + calculatedEdgeDist) - calculatedInVertexDist) < 0.0001f) {
                 route.add(edge.getOutVertex());
-                if (DBG) {
+                {
                     StringBuilder sb = new StringBuilder()
                             .append("to the route was added vertex: ");
                     sb.append(edge.getOutVertex().getId()).append(" ");
-                    Log.d(TAG, sb.toString());
+                    Logger.d(sb.toString());
                 }
                 if (calculatedOutVertexDist > 0.0001f) {
                     addNextVertexToRoute(edge.getOutVertex(), route);
@@ -175,7 +173,7 @@ public class DijkstraRouter {
             Vertex nextVertexToVisit = queue.poll();
             addAdjacentVerticesToQueue(nextVertexToVisit);
             nextVertexToVisit.setProperty(KEY_STATUS, STATUS_VISITED);
-            if (DBG) {
+            {
                 dumpGraph(false);
             }
         }
@@ -217,18 +215,18 @@ public class DijkstraRouter {
 	 * 
 	 */
     private void dumpGraph(boolean verbose) {
-        Log.d(TAG, "Graph: ");
+        Logger.d("Graph: ");
         for (Vertex vertex : graph.getVertices()) {
             StringBuilder sb = new StringBuilder();
             sb.append(" Vertex ").append(vertex.getId()).append("; ");
             sb.append(" status: ").append(vertex.getProperty(KEY_STATUS).toString()).append("; ");
             PointF vCoord = (PointF) vertex.getProperty(KEY_COORDINATES);
             sb.append(" coordinates: ").append("{" + vCoord.x + "; " + vCoord.y + "}");
-            Log.d(TAG, sb.toString());
+            Logger.d(sb.toString());
             if (verbose) {
-                Log.d(TAG, "  InEdges: ");
+                Logger.d("  InEdges: ");
                 dumpEdges(vertex.getInEdges(new String[0]));
-                Log.d(TAG, "  OutEdges: ");
+                Logger.d("  OutEdges: ");
                 dumpEdges(vertex.getOutEdges(new String[0]));
             }
         }
@@ -246,7 +244,7 @@ public class DijkstraRouter {
             for (String key : edge.getPropertyKeys()) {
                 sbEdge.append(key).append(" ").append(edge.getProperty(key).toString());
             }
-            Log.d(TAG, sbEdge.toString());
+            Logger.d(sbEdge.toString());
         }
     }
 
@@ -265,7 +263,7 @@ public class DijkstraRouter {
                 }
             }
         } catch (IOException e) {
-            Log.e("DijkstraRouter", "file with vertices vertices.txt is not found", e);
+            Logger.e("file with vertices vertices.txt is not found", e);
         }
     }
 
@@ -288,15 +286,19 @@ public class DijkstraRouter {
                         graph.addEdge(edgeNumber + "a", edgeOutVertex, edgeInVertex,
                                 edgeNumber + "a").setProperty(KEY_DISTANCE, edgeLength);
                     } catch (NullPointerException e) {
-                        Log.d(TAG, "edgeNumber " + edgeNumber + " failed to get vertex");
-                        if (edgeInVertex == null) Log.d(TAG, "edgeInVertex == null");
-                        if (edgeOutVertex == null) Log.d(TAG, "edgeOutVertex == null");
+                        Logger.d("edgeNumber " + edgeNumber + " failed to get vertex");
+                        if (edgeInVertex == null) {
+                            Logger.d("edgeInVertex == null");
+                        }
+                        if (edgeOutVertex == null) {
+                            Logger.d("edgeOutVertex == null");
+                        }
                         e.printStackTrace();
                     }
                 }
             }
         } catch (IOException e) {
-            Log.e("DijkstraRouter", "file with edges edges.txt is not found", e);
+            Logger.e("file with edges edges.txt is not found", e);
         }
     }
 

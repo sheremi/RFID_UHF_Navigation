@@ -52,6 +52,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>AndroidUtils_src</name>
+			<type>2</type>
+			<locationURI>WORKSPACE_LOC/AndroidUtils/src</locationURI>
+		</link>
+		<link>
 			<name>blueprints_src</name>
 			<type>2</type>
 			<locationURI>WORKSPACE_LOC/TinkerGraph/blueprints-core/src/main/java</locationURI>

@@ -5,7 +5,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import com.better.wakelock.Logger;
 import de.unierlangen.like.rfid.Reader.ReaderException;
 
 public class ReaderService extends IntentService implements Handler.Callback {
@@ -28,7 +28,7 @@ public class ReaderService extends IntentService implements Handler.Callback {
     public void onCreate() {
         handler = new Handler(this);
         reader = new Reader(handler);
-        Log.d(TAG, "Reader and serial port were created succesfully");
+        Logger.d("Reader and serial port were created succesfully");
 
         handler.sendEmptyMessage(THREAD_EVENT_READ_TAGS);
 
@@ -46,7 +46,7 @@ public class ReaderService extends IntentService implements Handler.Callback {
 
     @SuppressWarnings("unchecked")
     public boolean handleMessage(Message msg) {
-     // Log.d (TAG, "handleMessage(" + msg.what + ")");
+     // Logger.d ("handleMessage(" + msg.what + ")");
         switch (msg.what) {
         case Reader.RESPONSE_TAGS:
         case Reader.EVENT_TAGS:
@@ -63,7 +63,7 @@ public class ReaderService extends IntentService implements Handler.Callback {
             break;
         case Reader.WARNING:
             ReaderException e = (ReaderException) msg.obj;
-            Log.d(TAG, e.getString());
+            Logger.d(e.getString());
             break;
         case THREAD_EVENT_READ_TAGS:
             reader.performRound();

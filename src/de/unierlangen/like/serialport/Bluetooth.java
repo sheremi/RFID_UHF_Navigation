@@ -12,10 +12,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
-import android.util.Log;
+
+import com.better.wakelock.Logger;
 
 public class Bluetooth implements ITxChannel, IStringPublisher {
-    private static final String TAG = "Bluetooth";
     private BluetoothSocket mSocket;
 
     private final Context mContext;
@@ -44,7 +44,7 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
                 break;
 
             case 3333:
-                Log.d(TAG, "Reading thread exited");
+                Logger.d("Reading thread exited");
                 stateMachine.onSocketFailed();
                 break;
 
@@ -69,10 +69,11 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
             try {
                 inputStreamReader = new InputStreamReader(mSocket.getInputStream());
             } catch (IOException e) {
-                Log.d(TAG, "Was not able to create InputStreamReader! - " + e.getMessage());
+                Logger.d("Was not able to create InputStreamReader! - " + e.getMessage());
             }
         }
 
+        @Override
         public String readString() throws IOException {
             int size = inputStreamReader.read(buffer);
             buffer.flip();
@@ -87,7 +88,7 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG, "action = " + action);
+            Logger.d("action = " + action);
             // TODO handle disconnects gracefully
 
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
@@ -117,23 +118,25 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
         mContext.registerReceiver(deviceFoundIntentReceiver, filter);
     }
 
+    @Override
     public void sendString(String stringToSend) {
         if (mSocket != null) {
             try {
                 mSocket.getOutputStream().write(stringToSend.getBytes());
-                Log.v(TAG, "String " + stringToSend + " was sent to BT socket");
+                Logger.d("String " + stringToSend + " was sent to BT socket");
             } catch (IOException e) {
-                Log.d(TAG, "Was not able to write! " + e.getMessage());
+                Logger.d("Was not able to write! " + e.getMessage());
                 stateMachine.onSocketFailed();
                 mSocket = null;
             }
         } else {
-            Log.d(TAG, "No socket is present!");
+            Logger.d("No socket is present!");
         }
     }
 
+    @Override
     public void register(Handler handler, int what) {
-        Log.d(TAG, "Registering " + handler);
+        Logger.d("Registering " + handler);
         // Register handler in our active reading thread.
         // Store the Handler for future use in case we have to start a new
         // reading thread, e.g. when BT is disconnected and connected again
@@ -145,6 +148,7 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
 
     }
 
+    @Override
     public void unregister(Handler handler) {
         if (mReadingThread != null) {
             mReadingThread.unregister(handler);

@@ -13,12 +13,14 @@ import android.content.IntentFilter;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 import android.widget.ZoomControls;
+
+import com.better.wakelock.Logger;
+
 import de.unierlangen.like.R;
 import de.unierlangen.like.customviews.MapView;
 import de.unierlangen.like.navigation.DijkstraRouter;
@@ -48,13 +50,13 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     private MapBuilder mapBuilder;
     private ZoomControls zoomControls;
 
-    private TagsDatabase tagsDatabase = new TagsDatabase();
+    private final TagsDatabase tagsDatabase = new TagsDatabase();
     private PointF roomCoordinates;
 
     private final BroadcastReceiver readerReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, intent.getAction());
+            Logger.d(intent.getAction());
             if (ReaderIntents.ACTION_TAGS.equals(intent.getAction())) {
                 // since now we know that Intent action is ACTION_TAGS, we know
                 // that
@@ -89,11 +91,12 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_your_location);
         mapView = (MapView) findViewById(R.id.mapView);
-        
+
         final ActionBar bar = getActionBar();
         bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
         mapView.setOnLongClickListener(new OnLongClickListener() {
+            @Override
             public boolean onLongClick(View v) {
                 Intent intent = new Intent(MainYourLocationActivity.this, FindRoomActivity.class);
                 startActivityForResult(intent, REQUEST_ROOM);
@@ -104,12 +107,14 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         // Control elements for zooming
         zoomControls = (ZoomControls) findViewById(R.id.zoomcontrols);
         zoomControls.setOnZoomInClickListener(new OnClickListener() {
+            @Override
             public void onClick(View v) {
                 mapView.setAreaPadding(mapView.getPadding() - 2.0f);
             }
         });
 
         zoomControls.setOnZoomOutClickListener(new OnClickListener() {
+            @Override
             public void onClick(View v) {
                 mapView.setAreaPadding(mapView.getPadding() + 2.0f);
             }
@@ -121,7 +126,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
             Toast.makeText(this, "Sorry, current file is not readable or not found",
                     Toast.LENGTH_SHORT).show();
             mapBuilder = new MapBuilder("1,1,2,2;2,2,3,3;", true);
-            Log.e("TAG", "oops", e);
+            Logger.e("oops", e);
         }
 
         ArrayList<Wall> walls = mapBuilder.getWalls();
@@ -135,7 +140,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume() in MainYourLocationActivity called");
+        Logger.d("onResume() in MainYourLocationActivity called");
         IntentFilter filter = new IntentFilter(ReaderIntents.ACTION_TAGS);
         registerReceiver(readerReceiver, filter);
 
@@ -145,7 +150,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     protected void onPause() {
         super.onPause();
         unregisterReceiver(readerReceiver);
-        Log.d(TAG, "onPause() in MainYourLocationActivity called");
+        Logger.d("onPause() in MainYourLocationActivity called");
     }
 
     @Override
@@ -158,7 +163,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
             StringBuilder sb = new StringBuilder()
                     .append("Activity.RESULT_OK; room's name and coordinates: ");
             sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
-            Log.d(TAG, sb.toString());
+            Logger.d(sb.toString());
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -170,13 +175,13 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
      * mGestureDetector.onTouchEvent(event); // MotionEvent object holds XY
      * values if (event.getAction() == MotionEvent.ACTION_MOVE) { String text =
      * "You clicked at x = " + event.getRawX() + " and y = " + event.getRawY();
-     * Log.d(TAG, text); Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-     * } return super.onTouchEvent(event); }
+     * Logger.d(text); Toast.makeText(this, text, Toast.LENGTH_SHORT).show(); }
+     * return super.onTouchEvent(event); }
      */
 
     /*
      * @Override public void onShowPress(MotionEvent e) { String text =
-     * "You click at x = " + e.getX() + " and y = " + e.getY(); Log.d(TAG,
+     * "You click at x = " + e.getX() + " and y = " + e.getY(); Logger.d(TAG,
      * text); Toast.makeText(this, text, Toast.LENGTH_LONG).show();
      * 
      * }

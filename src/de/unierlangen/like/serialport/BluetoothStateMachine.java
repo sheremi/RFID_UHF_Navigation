@@ -9,7 +9,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import com.better.wakelock.Logger;
 
 /**
  * This class is a model for a Bluetooth connection. Manages connection,
@@ -87,7 +87,7 @@ public class BluetoothStateMachine implements Handler.Callback {
 
         @Override
         public void onEnter(Object object) {
-            Log.d(TAG, "allrighty, now we wait until retry");
+            Logger.d("allrighty, now we wait until retry");
             mHander.sendEmptyMessageDelayed(DISCOVER, 15000);
         }
 
@@ -135,7 +135,7 @@ public class BluetoothStateMachine implements Handler.Callback {
             Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
             // Loop through paired devices
             for (BluetoothDevice device : pairedDevices) {
-                Log.d(TAG, "BT device was found. Name: " + device.getName());
+                Logger.d("BT device was found. Name: " + device.getName());
                 if (device.getName().contains("linvor")) {
                     deviceToConnect = device;
                     break;
@@ -192,7 +192,7 @@ public class BluetoothStateMachine implements Handler.Callback {
 
             @Override
             public void run() {
-                Log.d(TAG, "Opening socket from " + mDevice.getName());
+                Logger.d("Opening socket from " + mDevice.getName());
                 // Get a BluetoothSocket to connect with the given
                 // BluetoothDevice
                 try {
@@ -200,7 +200,7 @@ public class BluetoothStateMachine implements Handler.Callback {
                     // server
                     // code
                     BluetoothSocket socket = mDevice.createRfcommSocketToServiceRecord(MY_UUID);
-                    Log.d(TAG, "Created socket for " + socket.getRemoteDevice().getName());
+                    Logger.d("Created socket for " + socket.getRemoteDevice().getName());
                     // Connect the device through the socket. This will
                     // block
                     // until it succeeds or throws an exception
@@ -211,7 +211,7 @@ public class BluetoothStateMachine implements Handler.Callback {
                     mCallback.arg1 = -1;
                     mCallback.obj = e;
                     mCallback.sendToTarget();
-                    Log.d(TAG, "was not able to create socket - " + e.getMessage());
+                    Logger.d("was not able to create socket - " + e.getMessage());
                 }
             };
         }
@@ -234,7 +234,7 @@ public class BluetoothStateMachine implements Handler.Callback {
                 try {
                     mSocket.close();
                 } catch (IOException e) {
-                    Log.d(TAG, "failed to close the socket");
+                    Logger.d("failed to close the socket");
                 }
                 mSocket = null;
                 transitTo(inactive, null);
@@ -262,10 +262,10 @@ public class BluetoothStateMachine implements Handler.Callback {
     }
 
     public boolean handleMessage(Message msg) {
-        Log.d(TAG, "got " + whatToName(msg.what));
+        Logger.d("got " + whatToName(msg.what));
         boolean handled = mState.handleMessage(msg);
         if (handled == false) {
-            Log.d(TAG, mState + " did not handle " + whatToName(msg.what));
+            Logger.d(mState + " did not handle " + whatToName(msg.what));
         }
         return true;
     }
@@ -276,7 +276,7 @@ public class BluetoothStateMachine implements Handler.Callback {
             if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                 transitTo(connecting, device);
             } else {
-                Log.d(TAG, "not paired. Has to be paired manually");
+                Logger.d("not paired. Has to be paired manually");
             }
         }
     }

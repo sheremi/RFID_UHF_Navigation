@@ -17,8 +17,10 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+
+import com.better.wakelock.Logger;
+
 import de.unierlangen.like.R;
 import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.RoomsDatabase;
@@ -36,7 +38,7 @@ public class MapView extends View {
     private static final int SMOOTH_TRANSLATION_FRAMES = 30;
     private static final String TAG = MapView.class.getSimpleName();
     public static final int REQUEST_TRANSLATE = 1;
-    private static final boolean DBG = false;
+
     // Drawing tools
     private Paint debugRectPaint;
     private Paint tagPaint;
@@ -78,7 +80,7 @@ public class MapView extends View {
     // This handles handles a request to make a new translate
     // (when the view should be moved because of the changing of reader's
     // position)
-    private Handler handler = new Handler() {
+    private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -181,7 +183,7 @@ public class MapView extends View {
     }
 
     public void setWalls(ArrayList<Wall> walls) {
-        Log.d(TAG, "Received " + walls.size() + " walls.");
+        Logger.d("Received " + walls.size() + " walls.");
         this.walls = walls;
         invalidate();
     }
@@ -277,7 +279,7 @@ public class MapView extends View {
         path.close();
         path.setFillType(FillType.WINDING);
         canvas.drawPath(path, paint);
-        // Log.d("drawZone","zone has been drawn");
+        // Logger.d("drawZone","zone has been drawn");
     }
 
     private void drawRoute(Canvas canvas, Paint paint, Path routingPath) {
@@ -340,10 +342,8 @@ public class MapView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         viewWidth = widthMeasureSpec;
         viewHeight = heightMeasureSpec;
-        if (DBG){
-            Log.d(TAG, "Width spec: " + MeasureSpec.toString(viewWidth));
-            Log.d(TAG, "Height spec: " + MeasureSpec.toString(viewHeight));
-        }
+        Logger.d("Width spec: " + MeasureSpec.toString(viewWidth));
+        Logger.d("Height spec: " + MeasureSpec.toString(viewHeight));
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         // if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED)
         // {widthSize=200;}

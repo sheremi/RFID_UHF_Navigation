@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import android.util.Log;
+import com.better.wakelock.Logger;
 
 public class MapBuilder {
-    private static final String TAG = MapBuilder.class.getSimpleName();
-    private static final boolean DBG = false;
     private ArrayList<Wall> walls;
     private ArrayList<Door> doors;
     private float wallX1;
@@ -16,7 +14,7 @@ public class MapBuilder {
     private float wallX2;
     private float wallY2;
     private double alpha;
-    private FileReader fileReader = new FileReader();
+    private final FileReader fileReader = new FileReader();
 
     public MapBuilder(String path) throws IOException {
         /** Create input channel and read from the file */
@@ -46,25 +44,19 @@ public class MapBuilder {
                 wallY2 = Float.parseFloat(singlenumber[4]);
                 Wall wall = new Wall(wallX1, wallY1, wallX2, wallY2);
                 alpha = wall.getAlpha();
-                if (DBG){
-                    Log.d(TAG, "Created " + wall.toString());
-                }
+                Logger.d("Created " + wall.toString());
                 walls.add(wall);
             } else if (singlenumber[0].equals("d")) {
                 Door door = new Door(Float.parseFloat(singlenumber[1]),
                         Float.parseFloat(singlenumber[2]), Float.parseFloat(singlenumber[3]),
                         Float.parseFloat(singlenumber[4]), Float.parseFloat(singlenumber[5]));
-                if (DBG){
-                    Log.d(TAG, "Created " + door.toString());
-                }
+                Logger.d("Created " + door.toString());
                 doors.add(door);
             } else {
                 Door door = new Door(Float.parseFloat(singlenumber[0]),
                         Float.parseFloat(singlenumber[1]), Float.parseFloat(singlenumber[2]),
                         wallX1, wallY1, alpha);
-                if (DBG){
-                    Log.d(TAG, "Created " + door.toString());
-                }
+                Logger.d("Created " + door.toString());
                 doors.add(door);
 
             }
