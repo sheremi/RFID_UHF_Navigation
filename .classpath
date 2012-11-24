@@ -3,6 +3,7 @@
 	<classpathentry excluding="de/unierlangen/like/navigation/LoopbackActivity.java" kind="src" path="src"/>
 	<classpathentry excluding="com/tinkerpop/blueprints/pgm/util/graphml/|com/tinkerpop/blueprints/pgm/util/json/|com/tinkerpop/blueprints/pgm/oupls/|com/tinkerpop/blueprints/pgm/impls/event/|com/tinkerpop/blueprints/pgm/impls/readonly/|com/tinkerpop/blueprints/pgm/impls/sail/|com/tinkerpop/blueprints/pgm/impls/wrapped/" kind="src" path="blueprints_src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="src" path="AndroidUtils_src"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
