@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import android.os.Handler;
 import android.os.Message;
@@ -16,7 +19,15 @@ import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.IStringPublisher;
 import de.unierlangen.like.serialport.ITxChannel;
 
-public class Reader /* extends Service */{
+public class Reader implements Handler.Callback {
+
+    public interface ReaderClient {
+        public void onTagsReceived(ArrayList<GenericTag> readTagsFromReader);
+
+        public void onRegsReceived(Map<String, String> registers);
+
+        public void onReaderStatus(ReaderStatus status);
+    }
 
     private static final String TAG = "Reader";
 
@@ -31,52 +42,36 @@ public class Reader /* extends Service */{
     private final IStringPublisher stringPublisher;
     private int amountOfTags;
 
-    /**
-     * FIXME write comment!!!
-     */
-    private final Handler registrantHandler;
+    private final ReaderClient readerClient;
 
     /**
-     * FIXME write comment!!!
+     * This handler is the internal Handler of the reader. It uses
+     * {@link ReaderService#handleMessage(Message)} as a message handling
+     * strategy.
      */
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Logger.d("handleMessage(" + msg.what + ")");
-            switch (msg.what) {
-            case EVENT_STRING_RECEIVED:
-                Message message = analyzeResponse((String) msg.obj);
-                if (registrantHandler != null) {
-                    registrantHandler.sendMessage(message);
-                }
-                break;
+    private final Handler mHandler = new Handler(this);
 
-            default:
-                Logger.d("unknown data");
-                break;
-            }
+    @Override
+    public boolean handleMessage(Message msg) {
+        Logger.d("handleMessage(" + msg.what + ")");
+        switch (msg.what) {
+        case EVENT_STRING_RECEIVED:
+            analyzeResponse((String) msg.obj);
+            return true;
 
+        default:
+            Logger.d("unknown data");
+            return false;
         }
-    };
+    }
 
     public static enum Configuration {
         DEFAULT, LOW_POWER, HIGH_POWER
     };
 
-    public class ReaderException extends Exception {
-        private final String string;
-
-        public ReaderException(String string) {
-            super(string);
-            this.string = string;
-        }
-
-        public String getString() {
-            return string;
-        }
-
-        private static final long serialVersionUID = 1L;
-    }
+    public static enum ReaderStatus {
+        PLL_FAIL, OSC_FAIL, ALL_ZEROS, ALL_FFS, SOMETHING_ELSE, UNINTIALZED, ALL_GOOD
+    };
 
     /**
      * Constructor opens serial port and performs handshake
@@ -88,36 +83,38 @@ public class Reader /* extends Service */{
      * @throws InterruptedException
      * @throws ReaderException
      */
-    public Reader(Handler handler) {
-        this.registrantHandler = handler;
+    public Reader(ReaderClient readerClient) {
+        this.readerClient = readerClient;
         txChannel = CommunicationManager.getTxChannel();
         stringPublisher = CommunicationManager.getStringPublisher();
         stringPublisher.register(mHandler, EVENT_STRING_RECEIVED);
-        txChannel.sendString("preved");
+        shakeHands();
     }
 
-    public void initialize(Configuration configuration) throws IOException {
+    public void shakeHands() {
+        txChannel.sendString("preved\n");
+    }
+
+    public void initialize(Configuration configuration) {
         // TODO choose configuration from enum
         switch (configuration) {
         case LOW_POWER:
-            break;
         case HIGH_POWER:
-            break;
         case DEFAULT:
         default:
             // FIXME what's "a"?
-            txChannel.sendString("a");
+            txChannel.sendString("rdr init\n");
         }
 
     }
 
     public void performRound() {
         // Tell reader MCU to start inventory round
-        txChannel.sendString("rdr get tags");
+        txChannel.sendString("rdr get tags\n");
     }
 
-    public void displayRegisters() throws IOException {
-        txChannel.sendString("rdr get regs");
+    public void displayRegisters() {
+        txChannel.sendString("rdr get regs\n");
     }
 
     public int getAmountOfTags() {
@@ -134,42 +131,36 @@ public class Reader /* extends Service */{
      * @return message to be handled by a Handler.
      * @throws ReaderException
      */
-    private Message analyzeResponse(String response) {
-        Message msg = Message.obtain();
+    private void analyzeResponse(String response) {
         Logger.d("response = " + response);
-        List<String> strings = Arrays.asList(response.split(","));
+        try {
+
+            List<String> strings = breakDown(response, ",");
+
+            if (strings.size() > 1 && strings.get(1).contains("tags")) {
+                ArrayList<GenericTag> tags = analyzeTagsString(strings);
+                readerClient.onTagsReceived(tags);
+
+            } else if (strings.size() > 1 && strings.get(1).contains("regs")) {
+                Map<String, String> regs = analyzeRegsString(strings);
+                readerClient.onRegsReceived(regs);
+
+            } else if (strings.size() > 0 && strings.get(0).contains("error")) {
+                readerClient.onReaderStatus(ReaderStatus.SOMETHING_ELSE);
+
+            }
+        } catch (IndexOutOfBoundsException e) {
+            readerClient.onReaderStatus(ReaderStatus.SOMETHING_ELSE);
+        }
+
+    }
+
+    private List<String> breakDown(String what, String withWhat) {
+        List<String> strings = Arrays.asList(what.split(withWhat));
         if (strings.size() > 1) {
             strings = strings.subList(0, strings.size() - 1);
         }
-
-        Iterator<String> iterator = strings.iterator();
-        if (strings.get(0).contains("resp")) {
-            if (strings.get(1).contains("tags")) {
-                msg.what = RESPONSE_TAGS;
-                iterator.next();
-                iterator.next();
-                msg.obj = analyzeTagsString(iterator);
-            } else if (strings.get(1).contains("regs")) {
-                msg.what = RESPONSE_REGS;
-                iterator.next();
-                iterator.next();
-                msg.obj = analyzeRegsString(iterator);
-            }
-        } else if (strings.get(0).contains("evnt")) {
-            if (strings.get(1).contains("tags")) {
-                msg.what = EVENT_TAGS;
-                iterator.next();
-                iterator.next();
-                msg.obj = analyzeTagsString(iterator);
-            }
-        } else if (strings.get(0).contains("error")) {
-            msg.what = WARNING;
-            msg.obj = new ReaderException("Reader MCU reported error:" + response);
-        } else {
-            msg.what = WARNING;
-            msg.obj = new ReaderException("Unexpected data: " + response);
-        }
-        return msg;
+        return strings;
     }
 
     /**
@@ -177,7 +168,11 @@ public class Reader /* extends Service */{
      * 
      * @return tags - ArrayList of GenericTags
      */
-    private ArrayList<GenericTag> analyzeTagsString(Iterator<String> iterator) {
+    private ArrayList<GenericTag> analyzeTagsString(List<String> strings) {
+        Iterator<String> iterator = strings.iterator();
+        // skip two first words
+        iterator.next();
+        iterator.next();
         // TODO optimize arraylist creation with
         // ArrayList<GenericTag>(howmanytags)
         ArrayList<GenericTag> tags = new ArrayList<GenericTag>();
@@ -201,16 +196,34 @@ public class Reader /* extends Service */{
      * 
      * @return
      */
-    private ArrayList<String> analyzeRegsString(Iterator<String> iterator) {
-        // TODO optimize arraylist creation with
-        // ArrayList<GenericTag>(howmanytags)
-        // Skip third member - amount of regs
-        iterator.next();
-        ArrayList<String> regs = new ArrayList<String>();
-        // TODO implement analyzeRegsString
-        while (iterator.hasNext()) {
-            regs.add(iterator.next());
+    private Map<String, String> analyzeRegsString(List<String> strings) {
+        // string has a format like this:
+        // resp,regs,0:4, 1:6, 2:70, 3:60, 4:35, 5:5, 6:0, 7:7, 8:7, 9:41, a:5,
+        // b:2,
+        // c:0, d:37, e:1, f:0, 10:0, 11:0,
+        // 0,0,0,38,4fd840,46181,f39f0,03f20,000,
+        // and we get a list of comma separated values
+        // we have to build a map
+        Map<String, String> regs = new HashMap<String, String>();
+        // first fill in first 17 regs
+        List<String> first17registers = strings.subList(2, 19);
+        for (String string : first17registers) {
+            List<String> keyValue = Arrays.asList(string.split(":"));
+            regs.put(keyValue.get(0).trim(), keyValue.get(1).trim());
         }
+
+        for (Entry<String, String> entry : regs.entrySet()) {
+            Logger.d(entry.getKey() + " - " + entry.getValue());
+        }
+
+        if ("6".equals(regs.get("1"))) {
+            readerClient.onReaderStatus(ReaderStatus.ALL_GOOD);
+        } else if ("0".equals(regs.get("1"))) {
+            readerClient.onReaderStatus(ReaderStatus.ALL_ZEROS);
+        } else if ("ff".equals(regs.get("1"))) {
+            readerClient.onReaderStatus(ReaderStatus.ALL_FFS);
+        }
+
         return regs;
     }
 }
