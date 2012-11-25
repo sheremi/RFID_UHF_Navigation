@@ -32,7 +32,22 @@ public class Emulation implements ITxChannel, IStringPublisher {
         responses.add(10, "resp,tags,1,BE1,30,\n");
         iterator = responses.iterator();
         this.isSimplified = isSimplified;
+        mHandler.sendEmptyMessageDelayed(1, 1700);
+        response = iterator.next();
     }
+
+    private String response;
+
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (!iterator.hasNext()) {
+                iterator = responses.iterator();
+            }
+            response = iterator.next();
+            sendEmptyMessageDelayed(1, 1700);
+        };
+    };
 
     @Override
     public void register(Handler handler, int what) {
@@ -60,10 +75,7 @@ public class Emulation implements ITxChannel, IStringPublisher {
                     receivedString = responses.get(0);
                 } else {
                     log.d("isSimplified == false");
-                    if (!iterator.hasNext()) {
-                        iterator = responses.iterator();
-                    }
-                    receivedString = iterator.next();
+                    receivedString = response;
                 }
             } else if (stringToSend.contains("rdr get regs")) {
                 // TODO insert correct strings!
