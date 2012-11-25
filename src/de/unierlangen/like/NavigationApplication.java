@@ -7,6 +7,7 @@ import com.better.wakelock.LogcatLogWriter;
 import com.better.wakelock.Logger;
 import com.better.wakelock.Logger.LogLevel;
 
+import de.unierlangen.like.customviews.MapView;
 import de.unierlangen.like.navigation.DijkstraRouter;
 import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.FileReader;
@@ -64,6 +65,8 @@ public class NavigationApplication extends Application {
         logger.setLogLevel(TagsDatabase.class, LogLevel.WARN);
         logger.setLogLevel(ReaderService.class, LogLevel.WARN);
 
+        logger.setLogLevel(MapView.class, LogLevel.WARN);
+
         logger.setLogLevel(Bluetooth.class, LogLevel.WARN);
         logger.setLogLevel(BluetoothStateMachine.class, LogLevel.WARN);
         logger.setLogLevel(CommunicationManager.class, LogLevel.WARN);
@@ -78,7 +81,7 @@ public class NavigationApplication extends Application {
         logger.setLogLevel(ConsoleActivity.class, LogLevel.WARN);
         logger.setLogLevel(FindRoomActivity.class, LogLevel.DEBUG);
         logger.setLogLevel(HelpActivity.class, LogLevel.WARN);
-        logger.setLogLevel(MainYourLocationActivity.class, LogLevel.WARN);
+        logger.setLogLevel(MainYourLocationActivity.class, LogLevel.DEBUG);
         logger.setLogLevel(OptionsMenuActivity.class, LogLevel.WARN);
         logger.setLogLevel(ReaderPreferences.class, LogLevel.WARN);
 
