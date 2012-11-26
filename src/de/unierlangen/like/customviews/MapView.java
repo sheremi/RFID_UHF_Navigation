@@ -264,7 +264,7 @@ public class MapView extends View {
             Logger.w("Background not created");
         } else {
             // canvas.drawBitmap(background, 0, 0, backgroundPaint);
-            canvas.drawBitmap(background, null, new RectF(0.f, -40.0f, 80.0f, 70.0f),
+            canvas.drawBitmap(background, null, new RectF(-1.f, -23.0f, 72.0f, 35.5f),
                     backgroundPaint);
         }
     }
