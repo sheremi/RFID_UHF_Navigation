@@ -13,6 +13,8 @@ import android.content.IntentFilter;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -53,6 +55,8 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     private final TagsDatabase tagsDatabase = new TagsDatabase();
     private PointF roomCoordinates;
 
+    private WakeLock wakeLock;
+
     private final BroadcastReceiver readerReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -89,6 +93,9 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(
+                PowerManager.FULL_WAKE_LOCK, TAG);
+
         setContentView(R.layout.main_your_location);
         mapView = (MapView) findViewById(R.id.mapView);
 
@@ -143,6 +150,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         Logger.d("onResume() in MainYourLocationActivity called");
         IntentFilter filter = new IntentFilter(ReaderIntents.ACTION_TAGS);
         registerReceiver(readerReceiver, filter);
+        wakeLock.acquire();
 
     }
 
@@ -150,6 +158,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     protected void onPause() {
         super.onPause();
         unregisterReceiver(readerReceiver);
+        wakeLock.release();
         Logger.d("onPause() in MainYourLocationActivity called");
     }
 
