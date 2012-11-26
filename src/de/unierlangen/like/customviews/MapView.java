@@ -366,7 +366,7 @@ public class MapView extends View {
         /** Calculate drawing area, using counted tags' position. */
         prepareDrawingArea(canvas);
         /** Draw debug rectangle */
-        canvas.drawRect(rectFTags, debugRectPaint);
+        // canvas.drawRect(rectFTags, debugRectPaint);
         /** Draw zones around tags */
         if (!zones.isEmpty()) {
             for (Zone zone : zones) {
