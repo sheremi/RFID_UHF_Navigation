@@ -156,7 +156,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Comparison of two floats (checking if resultCode == RESULT_OK)
-        if (Math.abs(resultCode) - Math.abs(Activity.RESULT_OK) < 0.00001f) {
+        if (resultCode == Activity.RESULT_OK) {
             String roomName = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
             RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
             roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
