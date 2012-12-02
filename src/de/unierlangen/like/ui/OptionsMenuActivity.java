@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import de.unierlangen.like.R;
+import de.unierlangen.like.preferences.PreferenceWithHeaders;
 
 public class OptionsMenuActivity extends Activity {
 
@@ -26,9 +27,6 @@ public class OptionsMenuActivity extends Activity {
         case R.id.your_location:
             startActivity(new Intent(OptionsMenuActivity.this, MainYourLocationActivity.class));
             break;
-        case R.id.test_mode:
-            startActivity(new Intent(OptionsMenuActivity.this, TestModeActivity.class));
-            break;
         case R.id.about_submenu:
             startActivity(new Intent(OptionsMenuActivity.this, AboutActivity.class));
             break;
@@ -36,7 +34,7 @@ public class OptionsMenuActivity extends Activity {
             startActivity(new Intent(OptionsMenuActivity.this, HelpActivity.class));
             break;
         case R.id.prefs:
-            startActivity(new Intent(OptionsMenuActivity.this, CommunicationPreferences.class));
+            startActivity(new Intent(OptionsMenuActivity.this, PreferenceWithHeaders.class));
             break;
         default:
             UserMessages.showMsg((String) item.getTitle(), this);

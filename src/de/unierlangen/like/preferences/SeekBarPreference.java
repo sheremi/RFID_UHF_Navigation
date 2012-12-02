@@ -1,4 +1,4 @@
-package de.unierlangen.like.ui;
+package de.unierlangen.like.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;

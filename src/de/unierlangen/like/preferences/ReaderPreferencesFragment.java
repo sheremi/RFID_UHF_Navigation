@@ -1,19 +1,15 @@
-package de.unierlangen.like.ui;
+package de.unierlangen.like.preferences;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Toast;
 import de.unierlangen.like.R;
 
-public class ReaderPreferences extends PreferenceActivity /*
-                                                           * implements
-                                                           * OnSharedPreferenceChangeListener
-                                                           */{
+public class ReaderPreferencesFragment extends PreferenceFragment /*
+                                                                   * implements
+                                                                   * OnSharedPreferenceChangeListener
+                                                                   */{
 
     // public static final String KEY_LIST_PREFERENCE = "listPref";
 
@@ -37,7 +33,7 @@ public class ReaderPreferences extends PreferenceActivity /*
      * customPref = mySharedPreferences.getString("myCusomPref", ""); }
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.reader_preferences);
@@ -191,35 +187,6 @@ public class ReaderPreferences extends PreferenceActivity /*
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_reader_prefs, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-        case R.id.reader_registers:
-            startActivity(new Intent(this, ReaderRegistersListActivity.class));
-            break;
-        /*
-         * TODO case R.id.help: startActivity(new Intent(this, .class)); break;
-         */
-        case R.id.your_location:
-            startActivity(new Intent(this, MainYourLocationActivity.class));
-            break;
-        default:
-            this.showMsg((String) item.getTitle());
-
-        }
-        // return super.onOptionsItemSelected(item);
-        return false;
-    }
-
     /**
      * Show toast message
      * 
@@ -227,7 +194,7 @@ public class ReaderPreferences extends PreferenceActivity /*
      *            message
      */
     private void showMsg(String message) {
-        Toast msg = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        Toast msg = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
         msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);
         msg.show();
     }

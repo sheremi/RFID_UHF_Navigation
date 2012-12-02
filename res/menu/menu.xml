@@ -5,11 +5,6 @@
 		android:icon="@drawable/your_location"
 		android:showAsAction="always" />
 	<item 
-		android:title = "Test mode"
-		android:id = "@+id/test_mode"
-		android:icon="@drawable/test_mode"
-		android:showAsAction="ifRoom" />
-	<item 
 		android:title = "Info"
 		android:id = "@+id/info"
 		android:icon="@drawable/info"

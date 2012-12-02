@@ -19,6 +19,7 @@ import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.TagsDatabase;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.navigation.Zone;
+import de.unierlangen.like.preferences.ReaderPreferencesFragment;
 import de.unierlangen.like.rfid.GenericTag;
 import de.unierlangen.like.rfid.Reader;
 import de.unierlangen.like.rfid.ReaderIntents;
@@ -37,7 +38,6 @@ import de.unierlangen.like.ui.FindRoomActivity;
 import de.unierlangen.like.ui.HelpActivity;
 import de.unierlangen.like.ui.MainYourLocationActivity;
 import de.unierlangen.like.ui.OptionsMenuActivity;
-import de.unierlangen.like.ui.ReaderPreferences;
 
 public class NavigationApplication extends Application {
     @Override
@@ -83,7 +83,7 @@ public class NavigationApplication extends Application {
         logger.setLogLevel(HelpActivity.class, LogLevel.WARN);
         logger.setLogLevel(MainYourLocationActivity.class, LogLevel.DEBUG);
         logger.setLogLevel(OptionsMenuActivity.class, LogLevel.WARN);
-        logger.setLogLevel(ReaderPreferences.class, LogLevel.WARN);
+        logger.setLogLevel(ReaderPreferencesFragment.class, LogLevel.WARN);
 
         Intent intent = new Intent(this, ReaderService.class);
         intent.setAction(ReaderIntents.ACTION_READ_TAGS);

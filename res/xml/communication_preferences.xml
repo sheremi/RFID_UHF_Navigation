@@ -9,14 +9,4 @@
          android:persistent="true"
          android:title="@string/prefs_comm_type_title" >
      </ListPreference>
- 
-     <Preference
-         android:summary="@string/prefs_bluetooth_settings_summary"
-         android:title="@string/prefs_bluetooth_settings_title" >
-         <intent
-             android:action="android.intent.action.MAIN"
-             android:targetClass="com.android.settings.bluetooth.BluetoothSettings"
-             android:targetPackage="com.android.settings" />
-     </Preference>
-
 </PreferenceScreen>

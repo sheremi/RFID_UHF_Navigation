@@ -1,18 +1,14 @@
-package de.unierlangen.like.ui;
+package de.unierlangen.like.preferences;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.preference.PreferenceFragment;
 import de.unierlangen.like.R;
 
-public class CommunicationPreferences extends PreferenceActivity implements
+public class CommunicationPreferencesFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {
 
     public static final String KEY_COMM_TYPE_PREFERENCE = "COMM_TYPE";
@@ -28,14 +24,14 @@ public class CommunicationPreferences extends PreferenceActivity implements
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.communication_preferences);
         commTypes = (ListPreference) findPreference("COMM_TYPE");
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         // Setup the initial values
         commTypes.setSummary(commTypes.getValue());
@@ -44,7 +40,7 @@ public class CommunicationPreferences extends PreferenceActivity implements
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         // Unregister the listener whenever a key changes
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(
@@ -57,28 +53,5 @@ public class CommunicationPreferences extends PreferenceActivity implements
         if (key.equals(KEY_COMM_TYPE_PREFERENCE)) {
             commTypes.setSummary(commTypes.getValue());
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_comm_prefs, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.your_location:
-            startActivity(new Intent(CommunicationPreferences.this, MainYourLocationActivity.class));
-            break;
-        case R.id.console:
-            startActivity(new Intent(CommunicationPreferences.this, ConsoleActivity.class));
-            break;
-        default:
-            UserMessages.showMsg((String) item.getTitle(), this);
-        }
-        return false;
     }
 }
