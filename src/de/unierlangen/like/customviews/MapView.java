@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BlurMaskFilter;
+import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
 import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
@@ -118,12 +120,14 @@ public class MapView extends View {
         zonePaintFilled.setColor(0x3f1E90FF);
         zonePaintFilled.setStrokeWidth(0.05f);
         zonePaintFilled.setAntiAlias(true);
+        zonePaintFilled.setMaskFilter(new BlurMaskFilter(0.25f, Blur.NORMAL));
 
         zonePaintBounder = new Paint();
         zonePaintBounder.setStyle(Paint.Style.STROKE);
         zonePaintBounder.setColor(0x8f1E90FF);
         zonePaintBounder.setStrokeWidth(0.05f);
         zonePaintBounder.setAntiAlias(true);
+        zonePaintBounder.setMaskFilter(new BlurMaskFilter(0.25f, Blur.NORMAL));
 
         wallsPaint = new Paint();
         wallsPaint.setStyle(Paint.Style.STROKE);
@@ -148,6 +152,7 @@ public class MapView extends View {
         routePaint.setColor(0xdfEE0000);
         routePaint.setStrokeWidth(0.18f);
         routePaint.setAntiAlias(true);
+        routePaint.setMaskFilter(new BlurMaskFilter(0.015f, Blur.NORMAL));
 
         readerPositionPaint = new Paint();
         readerPositionPaint.setStyle(Paint.Style.FILL);
@@ -366,12 +371,12 @@ public class MapView extends View {
         /** Calculate drawing area, using counted tags' position. */
         prepareDrawingArea(canvas);
         /** Draw debug rectangle */
-        canvas.drawRect(rectFTags, debugRectPaint);
+        // canvas.drawRect(rectFTags, debugRectPaint);
         /** Draw zones around tags */
         if (!zones.isEmpty()) {
             for (Zone zone : zones) {
                 drawZone(canvas, zonePaintFilled, zone);
-                drawZone(canvas, zonePaintBounder, zone);
+                // drawZone(canvas, zonePaintBounder, zone);
             }
         }
         /** Draw map */
