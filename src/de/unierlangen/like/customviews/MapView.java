@@ -385,10 +385,11 @@ public class MapView extends View {
         for (Tag tag : tags) {
             drawTag(canvas, tagPaint, tag);
         }
-        /** Draw current reader's position */
-        drawPosition(canvas);
+
         /** Draw route */
         drawRoute(canvas, routePaint, routingPath);
+        /** Draw current reader's position */
+        drawPosition(canvas);
         /** Restore canvas state */
         canvas.restore();
     }
