@@ -66,9 +66,11 @@ public class DijkstraRouter {
         // lines)
         // because of the drawing from the currentPosition, but not from a
         // vertex)
-        Path path = convertRouteToPath(route);
-        path.setLastPoint(currentPosition.x, currentPosition.y);
-        return path;
+        ArrayList<PointF> routeAsPoints = convertRouteToPoints(route);
+
+        routeAsPoints.set(routeAsPoints.size() - 1, currentPosition);
+
+        return convertPointsToPath(routeAsPoints);
     }
 
     private Vertex findClosestVertexTo(PointF point) {
@@ -197,15 +199,24 @@ public class DijkstraRouter {
         }
     }
 
-    private Path convertRouteToPath(ArrayList<Vertex> route) {
+    private ArrayList<PointF> convertRouteToPoints(ArrayList<Vertex> route) {
+        ArrayList<PointF> points = new ArrayList<PointF>(route.size() + 3);
+        for (Vertex vertex : route) {
+            PointF pointF = (PointF) vertex.getProperty(KEY_COORDINATES);
+            points.add(pointF);
+        }
+        return points;
+    }
+
+    private Path convertPointsToPath(ArrayList<PointF> route) {
         Path path = new Path();
-        Iterator<Vertex> iterator = route.iterator();
+        Iterator<PointF> iterator = route.iterator();
         if (iterator.hasNext()) {
-            PointF startingPoint = (PointF) iterator.next().getProperty(KEY_COORDINATES);
+            PointF startingPoint = iterator.next();
             path.setLastPoint(startingPoint.x, startingPoint.y);
         }
         while (iterator.hasNext()) {
-            PointF pointF = (PointF) iterator.next().getProperty(KEY_COORDINATES);
+            PointF pointF = iterator.next();
             path.lineTo(pointF.x, pointF.y);
         }
         return path;
