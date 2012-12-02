@@ -46,5 +46,8 @@
     <header
         android:fragment="de.unierlangen.like.preferences.ReaderRegistersListFragment"
         android:title="Registers" />
+    <header
+        android:fragment="de.unierlangen.like.preferences.LoggingPreferencesFragment"
+        android:title="Logging" />
 
 </preference-headers>
