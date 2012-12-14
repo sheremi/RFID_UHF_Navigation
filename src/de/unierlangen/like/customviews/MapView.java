@@ -240,6 +240,7 @@ public class MapView extends View {
     }
 
     private void prepareDrawingArea(Canvas canvas) {
+        // TODO anpassen bitte
         float minX = rectFTags.left - padding;
         float minY = rectFTags.top - padding;
         float maxX = rectFTags.right + padding;
