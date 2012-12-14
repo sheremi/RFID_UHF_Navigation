@@ -215,20 +215,8 @@ public class MapView extends View {
     }
 
     public void setRectFTags(RectF rectFTags) {
-        float diffLeft = rectFTags.left - this.rectFTags.left;
-        float diffTop = rectFTags.top - this.rectFTags.top;
-        float diffRight = rectFTags.right - this.rectFTags.right;
-        float diffBottom = rectFTags.bottom - this.rectFTags.bottom;
-        // TODO Here we can optimize the speed of translate
-        for (int i = 1; i <= SMOOTH_TRANSLATION_FRAMES; i++) {
-            RectF rectF = new RectF(this.rectFTags);
-            rectF.left += diffLeft / SMOOTH_TRANSLATION_FRAMES * i;
-            rectF.top += diffTop / SMOOTH_TRANSLATION_FRAMES * i;
-            rectF.right += diffRight / SMOOTH_TRANSLATION_FRAMES * i;
-            rectF.bottom += diffBottom / SMOOTH_TRANSLATION_FRAMES * i;
-            Message msg = Message.obtain(handler, REQUEST_TRANSLATE, rectF);
-            handler.sendMessageDelayed(msg, 50 * i);
-        }
+        this.rectFTags = rectFTags;
+        invalidate();
     }
 
     public void setRoute(Path routingPath) {
