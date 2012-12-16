@@ -60,6 +60,11 @@ public class TagsDatabase {
         newTag.addEPC("305fb63ac1f3841ec88467");
         tagsOnTheWall.add(newTag);
 
+        // tags from Andreas
+        newTag = new TagOnTheWall(32.00f, 4.25f, "4");
+        newTag.addEPC("30833b2ddd96400000");
+        tagsOnTheWall.add(newTag);
+
         // Emulation tags
         tagsOnTheWall.add(new TagOnTheWall("BE1", 24.68f, 5.67f, ""));
         tagsOnTheWall.add(new TagOnTheWall("BE2", 30.00f, 7.25f, ""));
