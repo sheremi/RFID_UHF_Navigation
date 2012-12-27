@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 /**
  * Used to control Freerunner's USB

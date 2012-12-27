@@ -21,7 +21,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.R;
 import de.unierlangen.like.navigation.Door;

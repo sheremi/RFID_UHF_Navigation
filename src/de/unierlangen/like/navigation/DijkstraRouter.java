@@ -11,7 +11,7 @@ import java.util.PriorityQueue;
 import android.graphics.Path;
 import android.graphics.PointF;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 import com.tinkerpop.blueprints.pgm.Edge;
 import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.impls.tg.TinkerGraph;

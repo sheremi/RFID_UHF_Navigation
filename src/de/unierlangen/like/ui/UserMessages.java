@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 public class UserMessages {
     private static final String TAG = "UserMessages";

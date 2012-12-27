@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import android.graphics.PointF;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 public class Zone {
     private static final String TAG = "Zone";

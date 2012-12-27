@@ -22,7 +22,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.R;
 

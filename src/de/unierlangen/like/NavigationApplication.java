@@ -7,9 +7,9 @@ import android.app.Application;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 
-import com.better.wakelock.LogcatLogWriter;
-import com.better.wakelock.Logger;
-import com.better.wakelock.Logger.LogLevel;
+import com.github.androidutils.logger.LogcatLogWriter;
+import com.github.androidutils.logger.Logger;
+import com.github.androidutils.logger.Logger.LogLevel;
 
 import de.unierlangen.like.rfid.ReaderIntents;
 import de.unierlangen.like.rfid.ReaderService;

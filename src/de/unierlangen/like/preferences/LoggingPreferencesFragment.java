@@ -6,8 +6,8 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
-import com.better.wakelock.Logger;
-import com.better.wakelock.Logger.LogLevel;
+import com.github.androidutils.logger.Logger;
+import com.github.androidutils.logger.Logger.LogLevel;
 
 import de.unierlangen.like.R;
 

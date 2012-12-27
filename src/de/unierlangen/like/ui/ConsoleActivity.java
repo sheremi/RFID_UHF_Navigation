@@ -27,7 +27,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.R;
 import de.unierlangen.like.serialport.CommunicationManager;

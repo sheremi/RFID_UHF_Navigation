@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 public class MapBuilder {
     private ArrayList<Wall> walls;

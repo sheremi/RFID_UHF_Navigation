@@ -21,7 +21,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.R;
 import de.unierlangen.like.customviews.MapView;

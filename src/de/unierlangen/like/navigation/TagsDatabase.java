@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.rfid.GenericTag;
 

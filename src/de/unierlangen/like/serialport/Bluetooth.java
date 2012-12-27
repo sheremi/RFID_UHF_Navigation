@@ -13,7 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 public class Bluetooth implements ITxChannel, IStringPublisher {
     private BluetoothSocket mSocket;

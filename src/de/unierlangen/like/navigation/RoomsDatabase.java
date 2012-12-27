@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import android.graphics.PointF;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 public class RoomsDatabase {
 

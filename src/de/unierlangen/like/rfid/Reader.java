@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 import android.os.Handler;
 import android.os.Message;
 
-import com.better.wakelock.Logger;
+import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.IStringPublisher;
