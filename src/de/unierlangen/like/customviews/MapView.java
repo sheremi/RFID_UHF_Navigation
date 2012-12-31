@@ -40,6 +40,7 @@ public class MapView extends View {
     private static final int SMOOTH_TRANSLATION_FRAMES = 30;
     private static final String TAG = MapView.class.getSimpleName();
     public static final int REQUEST_TRANSLATE = 1;
+    private final Logger log = Logger.getDefaultLogger();
 
     // Drawing tools
     private Paint debugRectPaint;
@@ -188,7 +189,7 @@ public class MapView extends View {
     }
 
     public void setWalls(ArrayList<Wall> walls) {
-        Logger.d("Received " + walls.size() + " walls.");
+        log.d("Received " + walls.size() + " walls.");
         this.walls = walls;
         invalidate();
     }
@@ -284,7 +285,7 @@ public class MapView extends View {
         path.close();
         path.setFillType(FillType.WINDING);
         canvas.drawPath(path, paint);
-        // Logger.d("drawZone","zone has been drawn");
+        // log.d("drawZone","zone has been drawn");
     }
 
     private void drawRoute(Canvas canvas, Paint paint, Path routingPath) {
@@ -347,8 +348,8 @@ public class MapView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         viewWidth = widthMeasureSpec;
         viewHeight = heightMeasureSpec;
-        Logger.d("Width spec: " + MeasureSpec.toString(viewWidth));
-        Logger.d("Height spec: " + MeasureSpec.toString(viewHeight));
+        log.d("Width spec: " + MeasureSpec.toString(viewWidth));
+        log.d("Height spec: " + MeasureSpec.toString(viewHeight));
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         // if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED)
         // {widthSize=200;}

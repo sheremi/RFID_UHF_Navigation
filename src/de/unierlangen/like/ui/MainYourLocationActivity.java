@@ -43,6 +43,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
                                                                    * ,
                                                                    * OnLongClickListener
                                                                    */{
+    private final Logger log = Logger.getDefaultLogger();
     private static final String TAG = "MainYourLocationActivity";
     private static final float ZONE_RADIUS = 4.0f;
     private static final int REQUEST_ROOM = 1;
@@ -60,7 +61,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     private final BroadcastReceiver readerReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Logger.d(intent.getAction());
+            log.d(intent.getAction());
             if (ReaderIntents.ACTION_TAGS.equals(intent.getAction())) {
                 // since now we know that Intent action is ACTION_TAGS, we know
                 // that
@@ -133,7 +134,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
             Toast.makeText(this, "Sorry, current file is not readable or not found",
                     Toast.LENGTH_SHORT).show();
             mapBuilder = new MapBuilder("1,1,2,2;2,2,3,3;", true);
-            Logger.e("oops", e);
+            log.e("oops", e);
         }
 
         ArrayList<Wall> walls = mapBuilder.getWalls();
@@ -147,7 +148,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     @Override
     protected void onResume() {
         super.onResume();
-        Logger.d("onResume() in MainYourLocationActivity called");
+        log.d("onResume() in MainYourLocationActivity called");
         IntentFilter filter = new IntentFilter(ReaderIntents.ACTION_TAGS);
         registerReceiver(readerReceiver, filter);
         wakeLock.acquire();
@@ -159,7 +160,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         super.onPause();
         unregisterReceiver(readerReceiver);
         wakeLock.release();
-        Logger.d("onPause() in MainYourLocationActivity called");
+        log.d("onPause() in MainYourLocationActivity called");
     }
 
     @Override
@@ -172,7 +173,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
             StringBuilder sb = new StringBuilder()
                     .append("Activity.RESULT_OK; room's name and coordinates: ");
             sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
-            Logger.d(sb.toString());
+            log.d(sb.toString());
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -184,13 +185,13 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
      * mGestureDetector.onTouchEvent(event); // MotionEvent object holds XY
      * values if (event.getAction() == MotionEvent.ACTION_MOVE) { String text =
      * "You clicked at x = " + event.getRawX() + " and y = " + event.getRawY();
-     * Logger.d(text); Toast.makeText(this, text, Toast.LENGTH_SHORT).show(); }
+     * log.d(text); Toast.makeText(this, text, Toast.LENGTH_SHORT).show(); }
      * return super.onTouchEvent(event); }
      */
 
     /*
      * @Override public void onShowPress(MotionEvent e) { String text =
-     * "You click at x = " + e.getX() + " and y = " + e.getY(); Logger.d(TAG,
+     * "You click at x = " + e.getX() + " and y = " + e.getY(); log.d(TAG,
      * text); Toast.makeText(this, text, Toast.LENGTH_LONG).show();
      * 
      * }

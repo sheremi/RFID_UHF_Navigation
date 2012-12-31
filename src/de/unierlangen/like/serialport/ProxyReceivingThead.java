@@ -66,7 +66,7 @@ public class ProxyReceivingThead implements IStringPublisher {
      * public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
      * if (key.equals(COMM_TYPE)) { String activePublisherName =
      * sp.getString(COMM_TYPE, "emulation"); activeStringPublisher =
-     * publishers.get(activePublisherName); Logger.d("ProxyReceivingThead",
+     * publishers.get(activePublisherName); log.d("ProxyReceivingThead",
      * "activePublisherName = " + activePublisherName); } }
      */
 }

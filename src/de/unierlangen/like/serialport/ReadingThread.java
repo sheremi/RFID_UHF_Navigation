@@ -8,7 +8,7 @@ import android.os.Message;
 import com.github.androidutils.logger.Logger;
 
 public class ReadingThread extends Thread implements IStringPublisher {
-    private static final String TAG = "ReceivingThread";
+    private final Logger log = Logger.getDefaultLogger();
 
     private final IRxChannel rxChannel;
     private Handler recipientHandler;
@@ -42,7 +42,7 @@ public class ReadingThread extends Thread implements IStringPublisher {
                 receivedString = receivedString.concat(receivedStringSymbol);
                 if (receivedString.contains("\n")) {
                     {
-                        Logger.d("Received string: " + receivedString);
+                        log.d("Received string: " + receivedString);
                     }
                     Message msg;
                     if (recipientHandler != null) {
@@ -52,16 +52,16 @@ public class ReadingThread extends Thread implements IStringPublisher {
                         recipientHandler.sendMessage(msg);
                     } else {
                         {
-                            Logger.d("recipientHandler is null");
+                            log.d("recipientHandler is null");
                         }
                     }
                     receivedString = "";
                 }
             }
         } catch (IOException e) {
-            Logger.e("IOException in ReadingThread - " + e.getMessage());
+            log.e("IOException in ReadingThread - " + e.getMessage());
         }
-        Logger.e("ReadingThread is finished");
+        log.e("ReadingThread is finished");
         if (finishedHandler != null) {
             finishedHandler.sendEmptyMessage(msgWhatFinished);
         }
@@ -74,7 +74,7 @@ public class ReadingThread extends Thread implements IStringPublisher {
         this.msgWhat = what;
         if (!isAlive()) {
             {
-                Logger.d("start");
+                log.d("start");
             }
             start();
         }

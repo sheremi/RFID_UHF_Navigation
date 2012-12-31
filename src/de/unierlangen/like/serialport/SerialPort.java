@@ -29,6 +29,7 @@ import com.github.androidutils.logger.Logger;
 
 /** Describes serial port */
 public class SerialPort implements IRxChannel, ITxChannel {
+    private final Logger log = Logger.getDefaultLogger();
 
     private static final String TAG = "SerialPort";
     // Serial port parameters
@@ -76,7 +77,7 @@ public class SerialPort implements IRxChannel, ITxChannel {
      * @throws IOException
      */
     private SerialPort(String path, int baudrate) {
-        Logger.d("SerialPort(" + path + ", " + baudrate + ")");
+        log.d("SerialPort(" + path + ", " + baudrate + ")");
         buffer = ByteBuffer.allocate(64);
         openPort(path, baudrate);
     }
@@ -121,7 +122,7 @@ public class SerialPort implements IRxChannel, ITxChannel {
         try {
             serialOutputChannel.write(ByteBuffer.wrap(stringToSend.getBytes()));
         } catch (IOException e) {
-            Logger.e("Was not able to write", e);
+            log.e("Was not able to write", e);
         }
     }
 }

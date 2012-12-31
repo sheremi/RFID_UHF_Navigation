@@ -9,6 +9,7 @@ import com.github.androidutils.logger.Logger;
 import de.unierlangen.like.rfid.GenericTag;
 
 public class TagsDatabase {
+    private final Logger log = Logger.getDefaultLogger();
     HashMap<String, TagOnTheWall> hashMap = new HashMap<String, TagOnTheWall>();
 
     private class TagOnTheWall {
@@ -87,10 +88,10 @@ public class TagsDatabase {
         for (GenericTag genericTag : genericTags) {
             TagOnTheWall tagOnTheWall = hashMap.get(genericTag.getEpc());
             if (tagOnTheWall != null) {
-                Logger.d("found " + tagOnTheWall.label + " by epc " + genericTag.getEpc());
+                log.d("found " + tagOnTheWall.label + " by epc " + genericTag.getEpc());
                 arrayOfTags.add(new Tag(genericTag, tagOnTheWall.x, tagOnTheWall.y));
             } else {
-                Logger.w("tag with EPC = " + genericTag.getEpc() + " is not in the DB!");
+                log.w("tag with EPC = " + genericTag.getEpc() + " is not in the DB!");
             }
         }
         return arrayOfTags;

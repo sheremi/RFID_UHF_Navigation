@@ -41,6 +41,7 @@ import de.unierlangen.like.serialport.ITxChannel;
  */
 public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActionListener,
         OnLongClickListener {
+    private final Logger log = Logger.getDefaultLogger();
 
     private static final String TAG = "ConsoleActivity";
     private static final int EVENT_STRING_RECEIVED = 1;
@@ -58,14 +59,14 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Logger.d("handleMessage(" + msg.what + ")");
+            log.d("handleMessage(" + msg.what + ")");
             switch (msg.what) {
             case EVENT_STRING_RECEIVED:
                 textViewReception.append((String) msg.obj);
                 break;
 
             default:
-                Logger.d("unknown data");
+                log.d("unknown data");
                 break;
             }
         }

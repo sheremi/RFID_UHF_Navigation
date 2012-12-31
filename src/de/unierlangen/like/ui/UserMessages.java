@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.github.androidutils.logger.Logger;
 
 public class UserMessages {
-    private static final String TAG = "UserMessages";
+    private static final Logger log = Logger.getDefaultLogger();
 
     /**
      * Displays simple Alert Dialog and send message with what=-1 to handler
@@ -21,7 +21,7 @@ public class UserMessages {
      */
     public static void displayErrorAndSendErrorMessage(int resourceId, Context context,
             final Handler handler) {
-        Logger.d("displayError() called");
+        log.d("displayError() called");
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Error");
         builder.setMessage(resourceId);
@@ -42,7 +42,7 @@ public class UserMessages {
      * @param context
      */
     public static void displayAlertDialog(int resourceId, Context context) {
-        Logger.d("displayError() called");
+        log.d("displayError() called");
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Alert");
         builder.setMessage(resourceId);

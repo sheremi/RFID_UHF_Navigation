@@ -32,6 +32,8 @@ import de.unierlangen.like.R;
  */
 
 public class PreferenceWithHeaders extends PreferenceActivity {
+    private final Logger log = Logger.getDefaultLogger();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,7 @@ public class PreferenceWithHeaders extends PreferenceActivity {
             return true;
         else {
             DisplayMetrics metrics = getApplicationContext().getResources().getDisplayMetrics();
-            Logger.d("We have " + metrics.widthPixels + " pixels");
+            log.d("We have " + metrics.widthPixels + " pixels");
             // HACK for nexus 7. If we have more than 700 pixels, go headers!
             return metrics.widthPixels > 1000;
         }

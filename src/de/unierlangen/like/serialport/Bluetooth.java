@@ -16,6 +16,7 @@ import android.os.Handler;
 import com.github.androidutils.logger.Logger;
 
 public class Bluetooth implements ITxChannel, IStringPublisher {
+    private final Logger log = Logger.getDefaultLogger();
     private BluetoothSocket mSocket;
 
     private final Context mContext;
@@ -44,7 +45,7 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
                 break;
 
             case 3333:
-                Logger.d("Reading thread exited");
+                log.d("Reading thread exited");
                 stateMachine.onSocketFailed();
                 break;
 
@@ -69,7 +70,7 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
             try {
                 inputStreamReader = new InputStreamReader(mSocket.getInputStream());
             } catch (IOException e) {
-                Logger.d("Was not able to create InputStreamReader! - " + e.getMessage());
+                log.d("Was not able to create InputStreamReader! - " + e.getMessage());
             }
         }
 
@@ -88,7 +89,7 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Logger.d("action = " + action);
+            log.d("action = " + action);
             // TODO handle disconnects gracefully
 
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
@@ -123,20 +124,20 @@ public class Bluetooth implements ITxChannel, IStringPublisher {
         if (mSocket != null) {
             try {
                 mSocket.getOutputStream().write(stringToSend.getBytes());
-                Logger.d("String " + stringToSend + " was sent to BT socket");
+                log.d("String " + stringToSend + " was sent to BT socket");
             } catch (IOException e) {
-                Logger.d("Was not able to write! " + e.getMessage());
+                log.d("Was not able to write! " + e.getMessage());
                 stateMachine.onSocketFailed();
                 mSocket = null;
             }
         } else {
-            Logger.d("No socket is present!");
+            log.d("No socket is present!");
         }
     }
 
     @Override
     public void register(Handler handler, int what) {
-        Logger.d("Registering " + handler);
+        log.d("Registering " + handler);
         // Register handler in our active reading thread.
         // Store the Handler for future use in case we have to start a new
         // reading thread, e.g. when BT is disconnected and connected again

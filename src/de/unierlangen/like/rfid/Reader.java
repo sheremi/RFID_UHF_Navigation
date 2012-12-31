@@ -20,6 +20,7 @@ import de.unierlangen.like.serialport.IStringPublisher;
 import de.unierlangen.like.serialport.ITxChannel;
 
 public class Reader implements Handler.Callback {
+    private final Logger log = Logger.getDefaultLogger();
 
     public interface ReaderClient {
         public void onTagsReceived(ArrayList<GenericTag> readTagsFromReader);
@@ -53,14 +54,14 @@ public class Reader implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message msg) {
-        Logger.d("handleMessage(" + msg.what + ")");
+        log.d("handleMessage(" + msg.what + ")");
         switch (msg.what) {
         case EVENT_STRING_RECEIVED:
             analyzeResponse((String) msg.obj);
             return true;
 
         default:
-            Logger.d("unknown data");
+            log.d("unknown data");
             return false;
         }
     }
@@ -132,7 +133,7 @@ public class Reader implements Handler.Callback {
      * @throws ReaderException
      */
     private void analyzeResponse(String response) {
-        Logger.d("response = " + response);
+        log.d("response = " + response);
         try {
 
             List<String> strings = breakDown(response, ",");
@@ -187,7 +188,7 @@ public class Reader implements Handler.Callback {
         }
         // TODO use amountOfTags where it should be used
         amountOfTags = tags.size();
-        Logger.d("amountOfTags = " + amountOfTags);
+        log.d("amountOfTags = " + amountOfTags);
         return tags;
     }
 
@@ -213,7 +214,7 @@ public class Reader implements Handler.Callback {
         }
 
         for (Entry<String, String> entry : regs.entrySet()) {
-            Logger.d(entry.getKey() + " - " + entry.getValue());
+            log.d(entry.getKey() + " - " + entry.getValue());
         }
 
         if ("6".equals(regs.get("1"))) {

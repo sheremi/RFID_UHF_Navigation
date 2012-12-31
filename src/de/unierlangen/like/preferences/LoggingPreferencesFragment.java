@@ -12,6 +12,7 @@ import com.github.androidutils.logger.Logger.LogLevel;
 import de.unierlangen.like.R;
 
 public class LoggingPreferencesFragment extends PreferenceFragment {
+    private final Logger log = Logger.getDefaultLogger();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,9 +24,9 @@ public class LoggingPreferencesFragment extends PreferenceFragment {
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (preference.getKey().contains("log_")) {
             String className = preference.getKey().split("_")[1];
-            boolean log = ((CheckBoxPreference) preference).isChecked();
-            Logger.getDefaultLogger().setLogLevel(className, log ? LogLevel.DEBUG : LogLevel.WARN);
-            Logger.d((log ? "enabled" : "disabled") + " logging for " + className);
+            boolean shouldLog = ((CheckBoxPreference) preference).isChecked();
+            log.setLogLevel(className, shouldLog ? LogLevel.DEBUG : LogLevel.WARN);
+            log.d((shouldLog ? "enabled" : "disabled") + " logging for " + className);
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }

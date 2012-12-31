@@ -17,6 +17,8 @@ import com.github.androidutils.logger.Logger;
  * @author kulikov
  */
 public class FreerunnerUSB {
+    private static final Logger log = Logger.getDefaultLogger();
+
     /**
      * Sets USB state to "host" if isHost is true and to "device" if isHost is
      * false
@@ -49,9 +51,9 @@ public class FreerunnerUSB {
             powerDriverOutputChannel.close();
 
         } catch (FileNotFoundException e) {
-            Logger.e("Catched: ", e);
+            log.e("Catched: ", e);
         } catch (IOException e) {
-            Logger.e("Catched: ", e);
+            log.e("Catched: ", e);
             throw e;
         }
 

@@ -16,6 +16,7 @@ import com.github.androidutils.logger.Logger;
  * 
  */
 public class ProxyTxChannel implements ITxChannel, OnSharedPreferenceChangeListener {
+    private final Logger log = Logger.getDefaultLogger();
 
     private static final String COMM_TYPE = "COMM_TYPE";
     private ITxChannel activeTxChannel;
@@ -47,7 +48,7 @@ public class ProxyTxChannel implements ITxChannel, OnSharedPreferenceChangeListe
         if (key.equals(COMM_TYPE)) {
             String activeTxChannelName = sp.getString(COMM_TYPE, "emulation");
             activeTxChannel = txChannels.get(activeTxChannelName);
-            Logger.d("activeTxChannelName = " + activeTxChannel);
+            log.d("activeTxChannelName = " + activeTxChannel);
         }
 
     }

@@ -23,6 +23,7 @@ public class DijkstraRouter {
     private static final String KEY_STATUS = "status";
     private static final String KEY_DISTANCE = "dist";
     private final FileReader fileReader = new FileReader();
+    private final Logger log = Logger.getDefaultLogger();
 
     private TinkerGraph graph;
     private PriorityQueue<Vertex> queue;
@@ -110,7 +111,7 @@ public class DijkstraRouter {
         Vertex closestVertex = graph.getVertex("1");
         float shortestDist = Float.MAX_VALUE;
         {
-            Logger.d("Search of the closest vertex to the point " + "{" + point.x + "; " + point.y
+            log.d("Search of the closest vertex to the point " + "{" + point.x + "; " + point.y
                     + "} " + "was initiated.");
         }
         for (Vertex vertex : graph.getVertices()) {
@@ -125,7 +126,7 @@ public class DijkstraRouter {
                     + Math.pow(vertexCoordinates.y - point.y, 2));
             {
                 sb.append(" distToPoint: " + distToPoint);
-                Logger.d(sb.toString());
+                log.d(sb.toString());
             }
             if (distToPoint < shortestDist) {
                 shortestDist = distToPoint;
@@ -135,7 +136,7 @@ public class DijkstraRouter {
         {
             StringBuilder sb1 = new StringBuilder().append("ShortestDist: " + shortestDist + "; "
                     + "closestVertex: " + closestVertex.getId());
-            Logger.d(sb1.toString());
+            log.d(sb1.toString());
         }
         return closestVertex;
     }
@@ -158,7 +159,7 @@ public class DijkstraRouter {
             for (Vertex vertex : route) {
                 sb.append(vertex.getId()).append(" ");
             }
-            Logger.d(sb.toString());
+            log.d(sb.toString());
         }
         return route;
     }
@@ -181,7 +182,7 @@ public class DijkstraRouter {
                     StringBuilder sb = new StringBuilder()
                             .append("to the route was added vertex: ");
                     sb.append(edge.getOutVertex().getId()).append(" ");
-                    Logger.d(sb.toString());
+                    log.d(sb.toString());
                 }
                 if (calculatedOutVertexDist > 0.0001f) {
                     addNextVertexToRoute(edge.getOutVertex(), route);
@@ -259,18 +260,18 @@ public class DijkstraRouter {
 	 * 
 	 */
     private void dumpGraph(boolean verbose) {
-        Logger.d("Graph: ");
+        log.d("Graph: ");
         for (Vertex vertex : graph.getVertices()) {
             StringBuilder sb = new StringBuilder();
             sb.append(" Vertex ").append(vertex.getId()).append("; ");
             sb.append(" status: ").append(vertex.getProperty(KEY_STATUS).toString()).append("; ");
             PointF vCoord = (PointF) vertex.getProperty(KEY_COORDINATES);
             sb.append(" coordinates: ").append("{" + vCoord.x + "; " + vCoord.y + "}");
-            Logger.d(sb.toString());
+            log.d(sb.toString());
             if (verbose) {
-                Logger.d("  InEdges: ");
+                log.d("  InEdges: ");
                 dumpEdges(vertex.getInEdges(new String[0]));
-                Logger.d("  OutEdges: ");
+                log.d("  OutEdges: ");
                 dumpEdges(vertex.getOutEdges(new String[0]));
             }
         }
@@ -288,7 +289,7 @@ public class DijkstraRouter {
             for (String key : edge.getPropertyKeys()) {
                 sbEdge.append(key).append(" ").append(edge.getProperty(key).toString());
             }
-            Logger.d(sbEdge.toString());
+            log.d(sbEdge.toString());
         }
     }
 
@@ -307,7 +308,7 @@ public class DijkstraRouter {
                 }
             }
         } catch (IOException e) {
-            Logger.e("file with vertices vertices.txt is not found", e);
+            log.e("file with vertices vertices.txt is not found", e);
         }
     }
 
@@ -330,19 +331,19 @@ public class DijkstraRouter {
                         graph.addEdge(edgeNumber + "a", edgeOutVertex, edgeInVertex,
                                 edgeNumber + "a").setProperty(KEY_DISTANCE, edgeLength);
                     } catch (NullPointerException e) {
-                        Logger.d("edgeNumber " + edgeNumber + " failed to get vertex");
+                        log.d("edgeNumber " + edgeNumber + " failed to get vertex");
                         if (edgeInVertex == null) {
-                            Logger.d("edgeInVertex == null");
+                            log.d("edgeInVertex == null");
                         }
                         if (edgeOutVertex == null) {
-                            Logger.d("edgeOutVertex == null");
+                            log.d("edgeOutVertex == null");
                         }
                         e.printStackTrace();
                     }
                 }
             }
         } catch (IOException e) {
-            Logger.e("file with edges edges.txt is not found", e);
+            log.e("file with edges edges.txt is not found", e);
         }
     }
 

@@ -8,7 +8,7 @@ import android.graphics.RectF;
 import com.github.androidutils.logger.Logger;
 
 public class Navigation {
-
+    private final Logger log = Logger.getDefaultLogger();
     // Fields
     private final ArrayList<Wall> mWalls;
     private final ArrayList<Door> mDoors;
@@ -77,7 +77,7 @@ public class Navigation {
         PointF readerPosition = new PointF();
         /* TODO modify */
         if (this.arrayOfTags.size() == 0) {
-            Logger.d("There are no any tags in the reading area or they weren't found");
+            log.d("There are no any tags in the reading area or they weren't found");
         }
         if (this.arrayOfTags.size() == 1) {
             readerPosition.x = arrayOfTags.get(0).x;

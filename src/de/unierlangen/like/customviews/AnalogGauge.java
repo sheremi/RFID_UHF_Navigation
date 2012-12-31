@@ -52,6 +52,8 @@ public final class AnalogGauge extends View {
     private Paint backgroundPaint;
     // end drawing tools
 
+    private final Logger log = Logger.getDefaultLogger();
+
     private Bitmap background; // holds the cached static part
 
     // default scale configuration, use configureScale to change values
@@ -313,7 +315,7 @@ public final class AnalogGauge extends View {
 
     private void drawBackground(Canvas canvas) {
         if (background == null) {
-            Logger.w("Background not created");
+            log.w("Background not created");
         } else {
             canvas.drawBitmap(background, 0, 0, backgroundPaint);
         }
@@ -369,8 +371,8 @@ public final class AnalogGauge extends View {
     // Override View's methods
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Logger.d("Width spec: " + MeasureSpec.toString(widthMeasureSpec));
-        Logger.d("Height spec: " + MeasureSpec.toString(heightMeasureSpec));
+        log.d("Width spec: " + MeasureSpec.toString(widthMeasureSpec));
+        log.d("Height spec: " + MeasureSpec.toString(heightMeasureSpec));
 
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {
@@ -407,7 +409,7 @@ public final class AnalogGauge extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        Logger.d("Size changed to " + w + "x" + h);
+        log.d("Size changed to " + w + "x" + h);
         // redraw all constant graphics
         // free the old bitmap
         if (background != null) {

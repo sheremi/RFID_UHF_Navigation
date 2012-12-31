@@ -9,6 +9,7 @@ import android.os.Message;
 import com.github.androidutils.logger.Logger;
 
 public class Emulation implements ITxChannel, IStringPublisher {
+    private final Logger log = Logger.getDefaultLogger();
 
     private Handler recipientHandler;
     private int msgWhat;
@@ -55,10 +56,10 @@ public class Emulation implements ITxChannel, IStringPublisher {
                 receivedString = "medved";
             } else if (stringToSend.contains("rdr get tags")) {
                 if (isSimplified == true) {
-                    Logger.d("isSimplified == true");
+                    log.d("isSimplified == true");
                     receivedString = responses.get(0);
                 } else {
-                    Logger.d("isSimplified == false");
+                    log.d("isSimplified == false");
                     if (!iterator.hasNext()) {
                         iterator = responses.iterator();
                     }

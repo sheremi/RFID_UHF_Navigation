@@ -10,7 +10,7 @@ import android.graphics.PointF;
 import com.github.androidutils.logger.Logger;
 
 public class RoomsDatabase {
-
+    private final Logger log = Logger.getDefaultLogger();
     private static RoomsDatabase instance;
     HashMap<String, PointF> hashMap = new HashMap<String, PointF>();
 
@@ -35,7 +35,7 @@ public class RoomsDatabase {
                 hashMap.put(roomName, new PointF(x, y));
             }
         } catch (IOException e) {
-            Logger.e("file with rooms is not found", e);
+            log.e("file with rooms is not found", e);
         }
 
     }

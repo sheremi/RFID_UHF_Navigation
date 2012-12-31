@@ -59,7 +59,7 @@ public class ReaderService extends IntentService {
 
         @Override
         public boolean handleMessage(Message msg) {
-            // Logger.d ("handleMessage(" + msg.what + ")");
+            // log.d ("handleMessage(" + msg.what + ")");
             switch (msg.what) {
             case THREAD_EVENT_READ_TAGS:
                 reader.performRound();
