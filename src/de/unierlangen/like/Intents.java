@@ -1,8 +1,10 @@
-package de.unierlangen.like.rfid;
+package de.unierlangen.like;
 
 import java.util.ArrayList;
 
-public class ReaderIntents {
+import de.unierlangen.like.rfid.GenericTag;
+
+public class Intents {
     public static final String ACTION_READ_TAGS = "de.unierlangen.like.rfid.ReaderIntents.ACTION_READ_TAGS";
     /**
      * {@link ArrayList} of {@link GenericTag} is attached to the intent as an

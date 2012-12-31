@@ -11,7 +11,6 @@ import com.github.androidutils.logger.LogcatLogWriter;
 import com.github.androidutils.logger.Logger;
 import com.github.androidutils.logger.Logger.LogLevel;
 
-import de.unierlangen.like.rfid.ReaderIntents;
 import de.unierlangen.like.rfid.ReaderService;
 import de.unierlangen.like.serialport.CommunicationManager;
 
@@ -39,7 +38,7 @@ public class NavigationApplication extends Application {
         }
 
         Intent intent = new Intent(this, ReaderService.class);
-        intent.setAction(ReaderIntents.ACTION_READ_TAGS);
+        intent.setAction(Intents.ACTION_READ_TAGS);
         startService(intent);
     }
 }

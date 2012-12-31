@@ -24,6 +24,7 @@ import android.widget.ZoomControls;
 import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.R;
+import de.unierlangen.like.Intents;
 import de.unierlangen.like.customviews.MapView;
 import de.unierlangen.like.navigation.DijkstraRouter;
 import de.unierlangen.like.navigation.Door;
@@ -34,7 +35,6 @@ import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.TagsDatabase;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.rfid.GenericTag;
-import de.unierlangen.like.rfid.ReaderIntents;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*
                                                                    * OnGestureListener
@@ -62,13 +62,13 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         @Override
         public void onReceive(Context context, Intent intent) {
             log.d(intent.getAction());
-            if (ReaderIntents.ACTION_TAGS.equals(intent.getAction())) {
+            if (Intents.ACTION_TAGS.equals(intent.getAction())) {
                 // since now we know that Intent action is ACTION_TAGS, we know
                 // that
                 // array of tags is attached to the intent as an extra with key
                 // EXTRA_TAGS
                 ArrayList<GenericTag> readTagsFromReader = intent
-                        .getParcelableArrayListExtra(ReaderIntents.EXTRA_TAGS);
+                        .getParcelableArrayListExtra(Intents.EXTRA_TAGS);
 
                 ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
                 arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
@@ -149,7 +149,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     protected void onResume() {
         super.onResume();
         log.d("onResume() in MainYourLocationActivity called");
-        IntentFilter filter = new IntentFilter(ReaderIntents.ACTION_TAGS);
+        IntentFilter filter = new IntentFilter(Intents.ACTION_TAGS);
         registerReceiver(readerReceiver, filter);
         wakeLock.acquire();
 

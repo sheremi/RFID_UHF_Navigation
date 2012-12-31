@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import de.unierlangen.like.R;
+import de.unierlangen.like.Intents;
 import de.unierlangen.like.rfid.Reader.Configuration;
 import de.unierlangen.like.rfid.Reader.ReaderClient;
 import de.unierlangen.like.rfid.Reader.ReaderStatus;
@@ -43,7 +44,7 @@ public class ReaderService extends IntentService {
     // work
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (ReaderIntents.ACTION_READ_TAGS.equals(intent.getAction())) {
+        if (Intents.ACTION_READ_TAGS.equals(intent.getAction())) {
             // TODO
         }
     }
@@ -86,8 +87,8 @@ public class ReaderService extends IntentService {
         @Override
         public void onTagsReceived(ArrayList<GenericTag> readTagsFromReader) {
             if (!readTagsFromReader.isEmpty()) {
-                Intent intent = new Intent(ReaderIntents.ACTION_TAGS);
-                intent.putParcelableArrayListExtra(ReaderIntents.EXTRA_TAGS, readTagsFromReader);
+                Intent intent = new Intent(Intents.ACTION_TAGS);
+                intent.putParcelableArrayListExtra(Intents.EXTRA_TAGS, readTagsFromReader);
                 sendBroadcast(intent);
             }
         }
