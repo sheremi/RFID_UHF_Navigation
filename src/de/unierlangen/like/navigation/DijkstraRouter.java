@@ -10,6 +10,7 @@ import java.util.PriorityQueue;
 
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.os.SystemClock;
 
 import com.github.androidutils.logger.Logger;
 import com.tinkerpop.blueprints.pgm.Edge;
@@ -61,12 +62,25 @@ public class DijkstraRouter {
     }
 
     public ArrayList<PointF> findRoute(PointF currentPosition, PointF destination) {
+        startBenchmark();
         Vertex positionVertex = findClosestVertexTo(currentPosition);
-        Vertex destinationVertex = findClosestVertexTo(destination);
-        ArrayList<Vertex> route = findRouteInGraph(positionVertex, destinationVertex);
-        ArrayList<PointF> routeAsPoints = convertRouteToPoints(route);
+        log.d("findClosestVertexTo took " + elapsedTime() + " ms");
 
+        startBenchmark();
+        Vertex destinationVertex = findClosestVertexTo(destination);
+        log.d("findClosestVertexTo took " + elapsedTime() + " ms");
+
+        startBenchmark();
+        ArrayList<Vertex> route = findRouteInGraph(positionVertex, destinationVertex);
+        log.d("findRouteInGraph took " + elapsedTime() + " ms");
+
+        startBenchmark();
+        ArrayList<PointF> routeAsPoints = convertRouteToPoints(route);
+        log.d("convertRouteToPoints took " + elapsedTime() + " ms");
+
+        startBenchmark();
         connectRouteToDestination(currentPosition, routeAsPoints);
+        log.d("connectRouteToDestination took " + elapsedTime() + " ms");
 
         return routeAsPoints;
     }
@@ -111,34 +125,19 @@ public class DijkstraRouter {
     private Vertex findClosestVertexTo(PointF point) {
         Vertex closestVertex = graph.getVertex("1");
         float shortestDist = Float.MAX_VALUE;
-        {
-            log.d("Search of the closest vertex to the point " + "{" + point.x + "; " + point.y
-                    + "} " + "was initiated.");
-        }
         for (Vertex vertex : graph.getVertices()) {
             PointF vertexCoordinates = (PointF) vertex.getProperty(KEY_COORDINATES);
-            StringBuilder sb = new StringBuilder();
-            {
-                sb.append("Vertex " + vertex.getId() + "; ");
-                sb.append("vertexCoordinates: " + vertexCoordinates.x + "; " + vertexCoordinates.y
-                        + "; ");
-            }
             float distToPoint = (float) Math.sqrt(Math.pow(vertexCoordinates.x - point.x, 2)
                     + Math.pow(vertexCoordinates.y - point.y, 2));
-            {
-                sb.append(" distToPoint: " + distToPoint);
-                log.d(sb.toString());
-            }
             if (distToPoint < shortestDist) {
                 shortestDist = distToPoint;
                 closestVertex = vertex;
             }
         }
-        {
-            StringBuilder sb1 = new StringBuilder().append("ShortestDist: " + shortestDist + "; "
-                    + "closestVertex: " + closestVertex.getId());
-            log.d(sb1.toString());
-        }
+
+        log.d("closest to {" + point.x + ";" + point.y + "} is the vertex " + closestVertex.getId()
+                + " " + shortestDist + " away");
+
         return closestVertex;
     }
 
@@ -352,5 +351,15 @@ public class DijkstraRouter {
         Float dist = (float) Math.sqrt(Math.pow(point2.x - point1.x, 2)
                 + Math.pow(point2.y - point1.y, 2));
         return dist;
+    }
+
+    long startTimeInMillis;
+
+    private void startBenchmark() {
+        startTimeInMillis = SystemClock.elapsedRealtime();
+    }
+
+    private long elapsedTime() {
+        return SystemClock.elapsedRealtime() - startTimeInMillis;
     }
 }
