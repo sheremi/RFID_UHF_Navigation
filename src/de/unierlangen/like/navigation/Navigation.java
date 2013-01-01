@@ -3,7 +3,6 @@ package de.unierlangen.like.navigation;
 import java.util.ArrayList;
 
 import android.graphics.PointF;
-import android.graphics.RectF;
 
 import com.github.androidutils.logger.Logger;
 
@@ -14,11 +13,6 @@ public class Navigation {
     private final ArrayList<Door> mDoors;
     // Tools for navigation
     private ArrayList<Tag> arrayOfTags;
-    // Geometry parameters
-    private float areaWithTagsX2;
-    private float areaWithTagsY2;
-    private float areaWithTagsX1;
-    private float areaWithTagsY1;
 
     // Constructor
     public Navigation(ArrayList<Wall> walls, ArrayList<Door> doors) {
@@ -29,21 +23,7 @@ public class Navigation {
 
     public void setTags(ArrayList<Tag> arrayOfTags) {
         this.arrayOfTags = arrayOfTags;
-        areaWithTagsX2 = Float.MIN_VALUE;
-        areaWithTagsY2 = Float.MIN_VALUE;
-        areaWithTagsX1 = Float.MAX_VALUE;
-        areaWithTagsY1 = Float.MAX_VALUE;
-        for (Tag tag : this.arrayOfTags) {
-            areaWithTagsX1 = Math.min(areaWithTagsX1, tag.getX());
-            areaWithTagsY1 = Math.min(areaWithTagsY1, tag.getY());
-            areaWithTagsX2 = Math.max(areaWithTagsX2, tag.getX());
-            areaWithTagsY2 = Math.max(areaWithTagsY2, tag.getY());
-        }
-    }
 
-    // Methods
-    public RectF getAreaWithTags() {
-        return new RectF(areaWithTagsX1, areaWithTagsY1, areaWithTagsX2, areaWithTagsY2);
     }
 
     /**

@@ -47,6 +47,10 @@
             android:defaultValue="false"
             android:key="log_Zone"
             android:title="Zone" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="log_NavigationService"
+            android:title="NavigationService" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Reader" >
         <CheckBoxPreference

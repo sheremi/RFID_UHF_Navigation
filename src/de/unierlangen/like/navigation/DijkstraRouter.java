@@ -10,6 +10,7 @@ import java.util.PriorityQueue;
 
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.os.SystemClock;
 
 import com.github.androidutils.logger.Logger;
 import com.tinkerpop.blueprints.pgm.Edge;
@@ -17,6 +18,7 @@ import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.impls.tg.TinkerGraph;
 
 public class DijkstraRouter {
+    private static final boolean DEEP_DEBUG = false;
     private static final String STATUS_VISITED = "visited";
     private static final String STATUS_UNVISITED = "unvisited";
     private static final String KEY_COORDINATES = "coordinates";
@@ -53,21 +55,34 @@ public class DijkstraRouter {
 
         fillGraphWithEdges();
 
-        {
+        if (DEEP_DEBUG) {
             dumpGraph(true);
         }
 
     }
 
-    public Path findRoute(PointF currentPosition, PointF destination) {
+    public ArrayList<PointF> findRoute(PointF currentPosition, PointF destination) {
+        startBenchmark();
         Vertex positionVertex = findClosestVertexTo(currentPosition);
+        log.d("findClosestVertexTo took " + elapsedTime() + " ms");
+
+        startBenchmark();
         Vertex destinationVertex = findClosestVertexTo(destination);
+        log.d("findClosestVertexTo took " + elapsedTime() + " ms");
+
+        startBenchmark();
         ArrayList<Vertex> route = findRouteInGraph(positionVertex, destinationVertex);
+        log.d("findRouteInGraph took " + elapsedTime() + " ms");
+
+        startBenchmark();
         ArrayList<PointF> routeAsPoints = convertRouteToPoints(route);
+        log.d("convertRouteToPoints took " + elapsedTime() + " ms");
 
+        startBenchmark();
         connectRouteToDestination(currentPosition, routeAsPoints);
+        log.d("connectRouteToDestination took " + elapsedTime() + " ms");
 
-        return convertPointsToPath(routeAsPoints);
+        return routeAsPoints;
     }
 
     private void connectRouteToDestination(PointF currentPosition, ArrayList<PointF> routeAsPoints) {
@@ -110,34 +125,19 @@ public class DijkstraRouter {
     private Vertex findClosestVertexTo(PointF point) {
         Vertex closestVertex = graph.getVertex("1");
         float shortestDist = Float.MAX_VALUE;
-        {
-            log.d("Search of the closest vertex to the point " + "{" + point.x + "; " + point.y
-                    + "} " + "was initiated.");
-        }
         for (Vertex vertex : graph.getVertices()) {
             PointF vertexCoordinates = (PointF) vertex.getProperty(KEY_COORDINATES);
-            StringBuilder sb = new StringBuilder();
-            {
-                sb.append("Vertex " + vertex.getId() + "; ");
-                sb.append("vertexCoordinates: " + vertexCoordinates.x + "; " + vertexCoordinates.y
-                        + "; ");
-            }
             float distToPoint = (float) Math.sqrt(Math.pow(vertexCoordinates.x - point.x, 2)
                     + Math.pow(vertexCoordinates.y - point.y, 2));
-            {
-                sb.append(" distToPoint: " + distToPoint);
-                log.d(sb.toString());
-            }
             if (distToPoint < shortestDist) {
                 shortestDist = distToPoint;
                 closestVertex = vertex;
             }
         }
-        {
-            StringBuilder sb1 = new StringBuilder().append("ShortestDist: " + shortestDist + "; "
-                    + "closestVertex: " + closestVertex.getId());
-            log.d(sb1.toString());
-        }
+
+        log.d("closest to {" + point.x + ";" + point.y + "} is the vertex " + closestVertex.getId()
+                + " " + shortestDist + " away");
+
         return closestVertex;
     }
 
@@ -209,7 +209,7 @@ public class DijkstraRouter {
             Vertex nextVertexToVisit = queue.poll();
             addAdjacentVerticesToQueue(nextVertexToVisit);
             nextVertexToVisit.setProperty(KEY_STATUS, STATUS_VISITED);
-            {
+            if (DEEP_DEBUG) {
                 dumpGraph(false);
             }
         }
@@ -242,7 +242,7 @@ public class DijkstraRouter {
         return points;
     }
 
-    private Path convertPointsToPath(ArrayList<PointF> route) {
+    public static Path convertPointsToPath(ArrayList<PointF> route) {
         Path path = new Path();
         Iterator<PointF> iterator = route.iterator();
         if (iterator.hasNext()) {
@@ -351,5 +351,15 @@ public class DijkstraRouter {
         Float dist = (float) Math.sqrt(Math.pow(point2.x - point1.x, 2)
                 + Math.pow(point2.y - point1.y, 2));
         return dist;
+    }
+
+    long startTimeInMillis;
+
+    private void startBenchmark() {
+        startTimeInMillis = SystemClock.elapsedRealtime();
+    }
+
+    private long elapsedTime() {
+        return SystemClock.elapsedRealtime() - startTimeInMillis;
     }
 }

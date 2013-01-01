@@ -28,5 +28,16 @@
 			android:label="@string/help_title" android:theme="@android:style/Theme.Dialog">
 		</activity>
 		<service android:name=".rfid.ReaderService" />
+		<service android:name=".navigation.NavigationService">
+			<intent-filter>
+				<action android:name="de.unierlangen.like.Intents.ACTION_SET_DESTINATION" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="de.unierlangen.like.Intents.ACTION_TAGS" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="de.unierlangen.like.Intents.ACTION_START_NAVIGATION" />
+			</intent-filter>
+		</service>
 	</application>
 </manifest>

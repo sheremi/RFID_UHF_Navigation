@@ -10,8 +10,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Path;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -23,18 +23,16 @@ import android.widget.ZoomControls;
 
 import com.github.androidutils.logger.Logger;
 
+import de.unierlangen.like.Intents;
 import de.unierlangen.like.R;
 import de.unierlangen.like.customviews.MapView;
 import de.unierlangen.like.navigation.DijkstraRouter;
 import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.MapBuilder;
-import de.unierlangen.like.navigation.Navigation;
 import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
-import de.unierlangen.like.navigation.TagsDatabase;
 import de.unierlangen.like.navigation.Wall;
-import de.unierlangen.like.rfid.GenericTag;
-import de.unierlangen.like.rfid.ReaderIntents;
+import de.unierlangen.like.navigation.Zone;
 
 public class MainYourLocationActivity extends OptionsMenuActivity /*
                                                                    * OnGestureListener
@@ -45,49 +43,61 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
                                                                    */{
     private final Logger log = Logger.getDefaultLogger();
     private static final String TAG = "MainYourLocationActivity";
-    private static final float ZONE_RADIUS = 4.0f;
     private static final int REQUEST_ROOM = 1;
     private MapView mapView;
-    private Navigation navigation;
-    private DijkstraRouter dijkstraRouter;
-    private MapBuilder mapBuilder;
     private ZoomControls zoomControls;
-
-    private final TagsDatabase tagsDatabase = new TagsDatabase();
-    private PointF roomCoordinates;
-
     private WakeLock wakeLock;
 
+    private MapBuilder mapBuilder;
+
     private final BroadcastReceiver readerReceiver = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             log.d(intent.getAction());
-            if (ReaderIntents.ACTION_TAGS.equals(intent.getAction())) {
-                // since now we know that Intent action is ACTION_TAGS, we know
-                // that
-                // array of tags is attached to the intent as an extra with key
-                // EXTRA_TAGS
-                ArrayList<GenericTag> readTagsFromReader = intent
-                        .getParcelableArrayListExtra(ReaderIntents.EXTRA_TAGS);
+            if (Intents.ACTION_TAGS_ON_WALLS.equals(intent.getAction())) {
+                ArrayList<Tag> arrayOfTags = intent
+                        .getParcelableArrayListExtra(Intents.EXTRA_TAGS_ON_WALLS);
+                log.d(arrayOfTags.toString());
+                mapView.setRectFTags(getAreaWithTags(arrayOfTags));
+                mapView.setTags(arrayOfTags);
 
-                ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
-                arrayOfTags.addAll(tagsDatabase.getTags(readTagsFromReader));
-                if (!arrayOfTags.isEmpty()) {
-                    navigation.setTags(arrayOfTags);
-                    mapView.setRectFTags(navigation.getAreaWithTags());
-                    mapView.setTags(arrayOfTags);
-                    mapView.setZones(navigation.getZones(ZONE_RADIUS));
-                    PointF readerPosition = navigation.getReaderPosition();
-                    mapView.setReaderPosition(readerPosition);
-                    if (roomCoordinates != null) {
-                        Path routingPath = dijkstraRouter
-                                .findRoute(readerPosition, roomCoordinates);
-                        mapView.setRoute(routingPath);
-                    }
-                }
+            } else if (Intents.ACTION_LOCATION_FOUND.equals(intent.getAction())) {
+                PointF readerPosition = intent.getParcelableExtra(Intents.EXTRA_POSITION);
+                mapView.setReaderPosition(readerPosition);
+
+            } else if (Intents.ACTION_ROUTE_FOUND.equals(intent.getAction())) {
+                ArrayList<PointF> routingPath = intent
+                        .getParcelableArrayListExtra(Intents.EXTRA_ROUTE);
+                log.d(routingPath.toString());
+                mapView.setRoute(DijkstraRouter.convertPointsToPath(routingPath));
+
+            } else if (Intents.ACTION_ZONES.equals(intent.getAction())) {
+                ArrayList<Zone> zones = intent.getParcelableArrayListExtra(Intents.EXTRA_ZONES);
+                mapView.setZones(zones);
             }
         }
     };
+
+    // Methods
+    public static RectF getAreaWithTags(ArrayList<Tag> arrayOfTags) {
+        // Geometry parameters
+        float areaWithTagsX2;
+        float areaWithTagsY2;
+        float areaWithTagsX1;
+        float areaWithTagsY1;
+        areaWithTagsX2 = Float.MIN_VALUE;
+        areaWithTagsY2 = Float.MIN_VALUE;
+        areaWithTagsX1 = Float.MAX_VALUE;
+        areaWithTagsY1 = Float.MAX_VALUE;
+        for (Tag tag : arrayOfTags) {
+            areaWithTagsX1 = Math.min(areaWithTagsX1, tag.getX());
+            areaWithTagsY1 = Math.min(areaWithTagsY1, tag.getY());
+            areaWithTagsX2 = Math.max(areaWithTagsX2, tag.getX());
+            areaWithTagsY2 = Math.max(areaWithTagsY2, tag.getY());
+        }
+        return new RectF(areaWithTagsX1, areaWithTagsY1, areaWithTagsX2, areaWithTagsY2);
+    }
 
     // ** Called when the activity is first created. *//
     @SuppressLint("NewApi")
@@ -141,15 +151,16 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         ArrayList<Door> doors = mapBuilder.getDoors();
         mapView.setWalls(walls);
         mapView.setDoors(doors);
-        navigation = new Navigation(walls, doors);
-        dijkstraRouter = new DijkstraRouter();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         log.d("onResume() in MainYourLocationActivity called");
-        IntentFilter filter = new IntentFilter(ReaderIntents.ACTION_TAGS);
+        IntentFilter filter = new IntentFilter(Intents.ACTION_TAGS_ON_WALLS);
+        filter.addAction(Intents.ACTION_LOCATION_FOUND);
+        filter.addAction(Intents.ACTION_ROUTE_FOUND);
+        filter.addAction(Intents.ACTION_ZONES);
         registerReceiver(readerReceiver, filter);
         wakeLock.acquire();
 
@@ -167,13 +178,14 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Comparison of two floats (checking if resultCode == RESULT_OK)
         if (resultCode == Activity.RESULT_OK) {
-            String roomName = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
+            String dest = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
             RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
-            roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);
-            StringBuilder sb = new StringBuilder()
-                    .append("Activity.RESULT_OK; room's name and coordinates: ");
-            sb.append(roomName + ", " + "{" + roomCoordinates.x + ";" + roomCoordinates.y + "}");
-            log.d(sb.toString());
+            PointF roomCoordinates = roomsDatabase.getRoomCoordinates(dest);
+            log.d("Destination: " + dest + " at {" + roomCoordinates.x + ";" + roomCoordinates.y
+                    + "}");
+            Intent intent = new Intent(Intents.ACTION_SET_DESTINATION);
+            intent.putExtra(Intents.EXTRA_DESTINATION, roomCoordinates);
+            startService(intent);
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
