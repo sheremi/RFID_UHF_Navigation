@@ -17,6 +17,7 @@ import com.tinkerpop.blueprints.pgm.Vertex;
 import com.tinkerpop.blueprints.pgm.impls.tg.TinkerGraph;
 
 public class DijkstraRouter {
+    private static final boolean DEEP_DEBUG = false;
     private static final String STATUS_VISITED = "visited";
     private static final String STATUS_UNVISITED = "unvisited";
     private static final String KEY_COORDINATES = "coordinates";
@@ -53,7 +54,7 @@ public class DijkstraRouter {
 
         fillGraphWithEdges();
 
-        {
+        if (DEEP_DEBUG) {
             dumpGraph(true);
         }
 
@@ -209,7 +210,7 @@ public class DijkstraRouter {
             Vertex nextVertexToVisit = queue.poll();
             addAdjacentVerticesToQueue(nextVertexToVisit);
             nextVertexToVisit.setProperty(KEY_STATUS, STATUS_VISITED);
-            {
+            if (DEEP_DEBUG) {
                 dumpGraph(false);
             }
         }
