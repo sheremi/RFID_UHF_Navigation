@@ -59,7 +59,7 @@ public class DijkstraRouter {
 
     }
 
-    public Path findRoute(PointF currentPosition, PointF destination) {
+    public ArrayList<PointF> findRoute(PointF currentPosition, PointF destination) {
         Vertex positionVertex = findClosestVertexTo(currentPosition);
         Vertex destinationVertex = findClosestVertexTo(destination);
         ArrayList<Vertex> route = findRouteInGraph(positionVertex, destinationVertex);
@@ -67,7 +67,7 @@ public class DijkstraRouter {
 
         connectRouteToDestination(currentPosition, routeAsPoints);
 
-        return convertPointsToPath(routeAsPoints);
+        return routeAsPoints;
     }
 
     private void connectRouteToDestination(PointF currentPosition, ArrayList<PointF> routeAsPoints) {
@@ -242,7 +242,7 @@ public class DijkstraRouter {
         return points;
     }
 
-    private Path convertPointsToPath(ArrayList<PointF> route) {
+    public static Path convertPointsToPath(ArrayList<PointF> route) {
         Path path = new Path();
         Iterator<PointF> iterator = route.iterator();
         if (iterator.hasNext()) {

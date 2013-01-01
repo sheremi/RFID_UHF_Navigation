@@ -4,11 +4,13 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import android.graphics.PointF;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.github.androidutils.logger.Logger;
 
-public class Zone {
-    private final Logger log = Logger.getDefaultLogger();
+public class Zone implements Parcelable {
+    private Logger log = Logger.getDefaultLogger();
 
     private static final int AMOUNT_OF_POINTS_PER_ZONE = 72;
     private ArrayList<PointF> points;
@@ -58,4 +60,37 @@ public class Zone {
     public ArrayList<PointF> getPoints() {
         return points;
     }
+
+    // ----------------- Parcelable API ------------------
+
+    public static final Parcelable.Creator<Zone> CREATOR = new Parcelable.Creator<Zone>() {
+        @Override
+        public Zone createFromParcel(Parcel in) {
+            return new Zone(in);
+        }
+
+        @Override
+        public Zone[] newArray(int size) {
+            return new Zone[size];
+        }
+    };
+
+    public Zone(Parcel in) {
+        log = Logger.getDefaultLogger();
+        points = new ArrayList<PointF>(AMOUNT_OF_POINTS_PER_ZONE);
+        in.readTypedList(points, PointF.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(points);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    // ----------------- END of Parcelable API ------------------
+
 }

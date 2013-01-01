@@ -12,10 +12,10 @@ import android.os.Parcelable;
  */
 public class GenericTag extends Object implements Parcelable {
 
-    private final String epc;
-    private final int rssi;
+    protected final String epc;
+    protected final int rssi;
     /** Describes whether tag was or was not read(in range) */
-    private final boolean isRead;
+    protected final boolean isRead;
 
     /**
      * Debug constructor used to create tags with certain RSSI value and

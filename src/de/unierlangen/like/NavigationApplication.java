@@ -40,5 +40,6 @@ public class NavigationApplication extends Application {
         Intent intent = new Intent(this, ReaderService.class);
         intent.setAction(Intents.ACTION_READ_TAGS);
         startService(intent);
+        startService(new Intent(Intents.ACTION_START_NAVIGATION));
     }
 }
