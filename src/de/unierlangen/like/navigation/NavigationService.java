@@ -104,7 +104,10 @@ public class NavigationService extends Service implements Handler.Callback {
                 broadcastValues(Intents.ACTION_TAGS_ON_WALLS, Intents.EXTRA_TAGS_ON_WALLS, newTags);
                 broadcastValues(Intents.ACTION_ZONES, Intents.EXTRA_ZONES,
                         navigation.getZones(ZONE_RADIUS));
-                broadcast(Intents.ACTION_LOCATION_FOUND, Intents.EXTRA_POSITION, currentPosition);
+                if (!mHandler.hasMessages(FIND_ROUTE)) {
+                    broadcast(Intents.ACTION_LOCATION_FOUND, Intents.EXTRA_POSITION,
+                            currentPosition);
+                }
             }
         } else if (Intents.ACTION_START_NAVIGATION.equals(intent.getAction())) {
             log.d("Navigation start was requested");
@@ -118,6 +121,7 @@ public class NavigationService extends Service implements Handler.Callback {
         case FIND_ROUTE:
             ArrayList<PointF> routingPath = dijkstraRouter.findRoute(currentPosition, destination);
             broadcastValues(Intents.ACTION_ROUTE_FOUND, Intents.EXTRA_ROUTE, routingPath);
+            broadcast(Intents.ACTION_LOCATION_FOUND, Intents.EXTRA_POSITION, currentPosition);
             break;
 
         default:
