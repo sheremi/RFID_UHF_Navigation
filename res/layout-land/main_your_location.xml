@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" 
-	android:background="#003838"
+	android:background="#E6F0DB"
 	android:gravity="center">
 	
 	<de.unierlangen.like.customviews.MapView 
