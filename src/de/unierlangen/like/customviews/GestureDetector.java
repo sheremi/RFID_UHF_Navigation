@@ -8,6 +8,8 @@ import android.view.View;
 
 public class GestureDetector {
     private static final int INVALID_POINTER_ID = -1;
+    private static final float MAX_SCALE_FACTOR = 70.0f;
+    private static final float MIN_SCALE_FACTOR = 6f;
     // The ‘active pointer’ is the one currently moving our object.
     private int mActivePointerId = INVALID_POINTER_ID;
     private float mPosX;
@@ -17,7 +19,11 @@ public class GestureDetector {
     private float mLastFocusX;
     private float mLastFocusY;
     private final ScaleGestureDetector mScaleDetector;
-    private float mScaleFactor = 1.f;
+    private float mScaleFactor = MIN_SCALE_FACTOR;
+
+    private float baseScaleFactor = 1.0f;
+    private float baseX;
+    private float baseY;
 
     private final View mView;
 
@@ -31,11 +37,33 @@ public class GestureDetector {
         mView = view;
         // Create our ScaleGestureDetector
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        mScaleFactor *= mScaleDetector.getScaleFactor();
     }
 
     public void applyTransitions(Canvas canvas) {
         canvas.scale(mScaleFactor, mScaleFactor);
         canvas.translate(mPosX / mScaleFactor, mPosY / mScaleFactor);
+    }
+
+    public void setBaseScaleFactor(float baseScaleFactor) {
+        // remove old
+        mScaleFactor /= this.baseScaleFactor;
+        // apply new
+        mScaleFactor *= baseScaleFactor;
+        this.baseScaleFactor = baseScaleFactor;
+    }
+
+    public void setBaseTranslation(float positionX, float positionY) {
+        // remove old base translation
+        mPosX -= this.baseX;
+        mPosY -= this.baseY;
+        // apply new base translation
+        mPosX += positionX;
+        mPosY += positionY;
+
+        this.baseX = positionX;
+        this.baseY = positionY;
+
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
@@ -116,7 +144,8 @@ public class GestureDetector {
             mScaleFactor *= detector.getScaleFactor();
 
             // Don't let the object get too small or too large.
-            mScaleFactor = Math.max(1f, Math.min(mScaleFactor, 20.0f));
+            // TODO make this configurable
+            mScaleFactor = Math.max(MIN_SCALE_FACTOR, Math.min(mScaleFactor, MAX_SCALE_FACTOR));
 
             mView.invalidate();
             return true;
@@ -128,5 +157,9 @@ public class GestureDetector {
             mLastFocusY = detector.getFocusY();
             return true;
         }
+    }
+
+    public float getScaleFactor() {
+        return mScaleFactor;
     }
 }

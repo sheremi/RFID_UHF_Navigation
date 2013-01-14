@@ -38,6 +38,7 @@ import de.unierlangen.like.navigation.Zone;
  * 
  */
 public class MapView extends View {
+    private static final float INITIAL_SCALE_FACTOR = 8.0f;
     private static final int SMOOTH_TRANSLATION_FRAMES = 30;
     private static final String TAG = MapView.class.getSimpleName();
     public static final int REQUEST_TRANSLATE = 1;
@@ -397,6 +398,11 @@ public class MapView extends View {
         // if (MeasureSpec.getMode(heightMeasureSpec) ==
         // MeasureSpec.UNSPECIFIED) {heightSize=300;}
         setMeasuredDimension(widthSize, heightSize);
+
+        // set initial position somewhere near to center
+        // TODO set it when first position arrives
+        gestureDetector.setBaseTranslation(widthSize / 2, heightSize / 2);
+        gestureDetector.setBaseScaleFactor(INITIAL_SCALE_FACTOR);
         //
         /*
          * preDrawnMap = new Picture(); Canvas mapCanvas =
