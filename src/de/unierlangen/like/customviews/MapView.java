@@ -19,6 +19,7 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.github.androidutils.logger.Logger;
@@ -70,6 +71,7 @@ public class MapView extends View {
     private PointF readerPosition;
     // Items to translate and scale
     private float padding = 10.0f;
+    private GestureDetector gestureDetector;
 
     // Constructors
     public MapView(Context context) {
@@ -181,6 +183,8 @@ public class MapView extends View {
         textPaint.setStrokeWidth(0.05f);
         textPaint.setAntiAlias(true);
         textPaint.setTextSize(1.0f);
+
+        gestureDetector = new GestureDetector(getContext(), this);
     }
 
     public float getPadding() {
@@ -253,22 +257,23 @@ public class MapView extends View {
 
     private void prepareDrawingArea(Canvas canvas) {
         // TODO anpassen bitte
-        float minX = rectFTags.left - padding;
-        float minY = rectFTags.top - padding;
-        float maxX = rectFTags.right + padding;
-        float maxY = rectFTags.bottom + padding;
-        float scaleFactor;
-        float positionX = -minX;
-        float positionY = -minY;
-        if ((maxX - minX) / (maxY - minY) > getWidth() / getHeight()) {
-            scaleFactor = getWidth() / (maxX - minX);
-            positionY += getHeight() / scaleFactor / 2 - (maxY - minY) / 2;
-        } else {
-            scaleFactor = getHeight() / (maxY - minY);
-            positionX += getWidth() / scaleFactor / 2 - (maxX - minX) / 2;
+        if (false) {
+            float minX = rectFTags.left - padding;
+            float minY = rectFTags.top - padding;
+            float maxX = rectFTags.right + padding;
+            float maxY = rectFTags.bottom + padding;
+            float scaleFactor;
+            float positionX = -minX;
+            float positionY = -minY;
+            if ((maxX - minX) / (maxY - minY) > getWidth() / getHeight()) {
+                scaleFactor = getWidth() / (maxX - minX);
+                positionY += getHeight() / scaleFactor / 2 - (maxY - minY) / 2;
+            } else {
+                scaleFactor = getHeight() / (maxY - minY);
+                positionX += getWidth() / scaleFactor / 2 - (maxX - minX) / 2;
+            }
         }
-        canvas.scale(scaleFactor, scaleFactor);
-        canvas.translate(positionX, positionY);
+        gestureDetector.applyTransitions(canvas);
     }
 
     private void drawBackground(Canvas canvas) {
@@ -403,7 +408,7 @@ public class MapView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.save();
 
         /** Calculate drawing area, using counted tags' position. */
         prepareDrawingArea(canvas);
@@ -435,6 +440,11 @@ public class MapView extends View {
         drawPosition(canvas);
         /** Restore canvas state */
         canvas.restore();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return gestureDetector.onTouchEvent(ev);
     }
 
     public int getViewWidth() {
