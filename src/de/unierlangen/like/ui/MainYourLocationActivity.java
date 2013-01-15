@@ -10,11 +10,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -50,6 +53,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
 
     private MapBuilder mapBuilder;
 
+    private DrawMapOverlayPreferenceChangeListener drawMapOverlayPreferenceChangeListener;
     private final BroadcastReceiver readerReceiver = new BroadcastReceiver() {
 
         @Override
@@ -151,6 +155,11 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         ArrayList<Door> doors = mapBuilder.getDoors();
         mapView.setWalls(walls);
         mapView.setDoors(doors);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        drawMapOverlayPreferenceChangeListener = new DrawMapOverlayPreferenceChangeListener();
+        sp.registerOnSharedPreferenceChangeListener(drawMapOverlayPreferenceChangeListener);
+        mapView.setDrawMapOverlay(sp.getBoolean("draw_map_overlay", false));
     }
 
     @Override
@@ -187,6 +196,16 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
             intent.putExtra(Intents.EXTRA_DESTINATION, roomCoordinates);
             startService(intent);
             super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private final class DrawMapOverlayPreferenceChangeListener implements
+            OnSharedPreferenceChangeListener {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if ("draw_map_overlay".equals(key)) {
+                mapView.setDrawMapOverlay(sharedPreferences.getBoolean("draw_map_overlay", false));
+            }
         }
     }
 

@@ -41,6 +41,7 @@ public class MapView extends View {
     private static final String TAG = MapView.class.getSimpleName();
     public static final int REQUEST_TRANSLATE = 1;
     private final Logger log = Logger.getDefaultLogger();
+    private boolean drawMapOverlay;
 
     // Drawing tools
     private Paint backgroundPaint;
@@ -240,6 +241,16 @@ public class MapView extends View {
         invalidate();
     }
 
+    /**
+     * If set to true, View will draw map overlay.
+     * 
+     * @param drawMapOverlay
+     */
+    public void setDrawMapOverlay(boolean drawMapOverlay) {
+        this.drawMapOverlay = drawMapOverlay;
+        invalidate();
+    }
+
     private void prepareDrawingArea(Canvas canvas) {
         float minX = rectFTags.left - padding;
         float minY = rectFTags.top - padding;
@@ -407,8 +418,10 @@ public class MapView extends View {
             }
         }
         /** Draw map */
-        drawMap(canvas);
-        // canvas.drawPicture(preDrawnMap);
+        if (drawMapOverlay) {
+            drawMap(canvas);
+            // canvas.drawPicture(preDrawnMap);
+        }
 
         /** Draw tags */
         for (Tag tag : tags) {
