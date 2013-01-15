@@ -48,6 +48,6 @@
         android:title="Registers" />
     <header
         android:fragment="de.unierlangen.like.preferences.LoggingPreferencesFragment"
-        android:title="Logging" />
+        android:title="Supress logging" />
 
 </preference-headers>

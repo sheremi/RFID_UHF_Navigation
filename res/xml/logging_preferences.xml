@@ -1,142 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Preferences" >
+    android:title="Supress logging" >
 
     <PreferenceCategory android:title="Navigation" >
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_DijkstraRouter"
             android:title="DijkstraRouter" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_Door"
             android:title="Door" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_FileReader"
             android:title="FileReader" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_MapBuilder"
             android:title="MapBuilder" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_Navigation"
             android:title="Navigation" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_Obstacle"
             android:title="Obstacle" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_RoomsDatabase"
             android:title="RoomsDatabase" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_Tag"
             android:title="Tag" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_Wall"
             android:title="Wall" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_TagsDatabase"
             android:title="TagsDatabase" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_Zone"
             android:title="Zone" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_NavigationService"
             android:title="NavigationService" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Reader" >
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_GenericTag"
             android:title="GenericTag" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_Reader"
             android:title="Reader" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_TagsDatabase"
             android:title="TagsDatabase" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_ReaderService"
             android:title="ReaderService" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Communication" >
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_Bluetooth"
             android:title="Bluetooth" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_BluetoothStateMachine"
             android:title="BluetoothStateMachine" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_CommunicationManager"
             android:title="CommunicationManager" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_Emulation"
             android:title="Emulation" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_ProxyReceivingThead"
             android:title="ProxyReceivingThead" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_ProxyTxChannel"
             android:title="ProxyTxChannel" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_ReadingThread"
             android:title="ReadingThread" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_SerialPort"
             android:title="SerialPort" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Views" >
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_MapView"
             android:title="MapView" />
     </PreferenceCategory>
     <PreferenceCategory android:title="GUI" >
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_AboutActivity"
             android:title="AboutActivity" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_ConsoleActivity"
             android:title="ConsoleActivity" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_FindRoomActivity"
             android:title="FindRoomActivity" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_HelpActivity"
             android:title="HelpActivity" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_MainYourLocationActivity"
             android:title="MainYourLocationActivity" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_OptionsMenuActivity"
             android:title="OptionsMenuActivity" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="log_ReaderPreferencesFragment"
             android:title="ReaderPreferencesFragment" />
     </PreferenceCategory>

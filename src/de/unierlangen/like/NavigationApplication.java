@@ -24,16 +24,21 @@ public class NavigationApplication extends Application {
         Logger logger = Logger.getDefaultLogger();
         logger.addLogWriter(new LogcatLogWriter());
 
+        // make sure we set default preferences on startup
+        // because of the bug in Android
+        // http://code.google.com/p/android/issues/detail?id=6641
+        // we have to change defaults to true and meaning to "Supress Warnings"
         PreferenceManager.setDefaultValues(this, R.xml.logging_preferences, false);
 
+        // configure logger based on settings
         Map<String, ?> preferences = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext()).getAll();
 
         for (Entry<String, ?> entry : preferences.entrySet()) {
             if (entry.getKey().contains("log_")) {
                 String className = entry.getKey().split("_")[1];
-                boolean log = ((Boolean) entry.getValue()).booleanValue();
-                logger.setLogLevel(className, log ? LogLevel.DEBUG : LogLevel.WARN);
+                boolean supressLog = ((Boolean) entry.getValue()).booleanValue();
+                logger.setLogLevel(className, supressLog ? LogLevel.WARN : LogLevel.DEBUG);
             }
         }
 
