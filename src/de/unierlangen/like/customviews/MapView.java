@@ -41,8 +41,15 @@ public class MapView extends View {
     private static final String TAG = MapView.class.getSimpleName();
     public static final int REQUEST_TRANSLATE = 1;
     private final Logger log = Logger.getDefaultLogger();
+    private boolean drawMapOverlay;
 
     // Drawing tools
+    private Paint backgroundPaint;
+    private Bitmap background;
+    private Matrix backgroundMatrix;
+    /*
+     * private Matrix backgroundMatrix; private float backgroundScale;
+     */
     private Paint debugRectPaint;
     private Paint tagPaint;
     private Paint wallsPaint;
@@ -62,7 +69,7 @@ public class MapView extends View {
     private Path routingPath;
     private PointF readerPosition;
     // Items to translate and scale
-    private float padding = 3.0f;
+    private float padding = 10.0f;
 
     // Constructors
     public MapView(Context context) {
@@ -102,6 +109,14 @@ public class MapView extends View {
     // Methods
     private void init() {
         // initialize all fields as empty
+        backgroundPaint = new Paint();
+        backgroundPaint.setFilterBitmap(true);
+        // background =
+        // BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().getPath()
+        // + "/like/map_small.jpg");
+        background = BitmapFactory
+                .decodeResource(getContext().getResources(), R.drawable.map_small);
+
         walls = new ArrayList<Wall>();
         doors = new ArrayList<Door>();
         tags = new ArrayList<Tag>();
@@ -226,6 +241,16 @@ public class MapView extends View {
         invalidate();
     }
 
+    /**
+     * If set to true, View will draw map overlay.
+     * 
+     * @param drawMapOverlay
+     */
+    public void setDrawMapOverlay(boolean drawMapOverlay) {
+        this.drawMapOverlay = drawMapOverlay;
+        invalidate();
+    }
+
     private void prepareDrawingArea(Canvas canvas) {
         float minX = rectFTags.left - padding;
         float minY = rectFTags.top - padding;
@@ -245,8 +270,17 @@ public class MapView extends View {
         canvas.translate(positionX, positionY);
     }
 
-    private void drawTag(Canvas canvas, Paint paint, Tag tag) {
+    private void drawBackground(Canvas canvas) {
+        if (background == null) {
+            log.w("Background not created");
+        } else {
+            // canvas.drawBitmap(background, 0, 0, backgroundPaint);
+            canvas.drawBitmap(background, null, new RectF(-1.f, -23.0f, 72.0f, 35.5f),
+                    backgroundPaint);
+        }
+    }
 
+    private void drawTag(Canvas canvas, Paint paint, Tag tag) {
         int filterColor = 0;
         /** Calculates value relative to range */
         float position;
@@ -358,10 +392,11 @@ public class MapView extends View {
         // MeasureSpec.UNSPECIFIED) {heightSize=300;}
         setMeasuredDimension(widthSize, heightSize);
         //
-        preDrawnMap = new Picture();
-        Canvas mapCanvas = preDrawnMap.beginRecording(widthSize, heightSize);
-        drawMap(mapCanvas);
-        preDrawnMap.endRecording();
+        /*
+         * preDrawnMap = new Picture(); Canvas mapCanvas =
+         * preDrawnMap.beginRecording(widthSize, heightSize);
+         * drawMap(mapCanvas); preDrawnMap.endRecording();
+         */
     }
 
     @Override
@@ -371,6 +406,8 @@ public class MapView extends View {
 
         /** Calculate drawing area, using counted tags' position. */
         prepareDrawingArea(canvas);
+
+        drawBackground(canvas);
         /** Draw debug rectangle */
         // canvas.drawRect(rectFTags, debugRectPaint);
         /** Draw zones around tags */
@@ -381,7 +418,11 @@ public class MapView extends View {
             }
         }
         /** Draw map */
-        canvas.drawPicture(preDrawnMap);
+        if (drawMapOverlay) {
+            drawMap(canvas);
+            // canvas.drawPicture(preDrawnMap);
+        }
+
         /** Draw tags */
         for (Tag tag : tags) {
             drawTag(canvas, tagPaint, tag);

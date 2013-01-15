@@ -49,5 +49,7 @@
     <header
         android:fragment="de.unierlangen.like.preferences.LoggingPreferencesFragment"
         android:title="Supress logging" />
-
+    <header
+        android:fragment="de.unierlangen.like.preferences.DebugPreferencesFragment"
+        android:title="Debug" />
 </preference-headers>
