@@ -1,6 +1,7 @@
 package de.unierlangen.like.navigation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PointF;
+import android.nfc.NfcAdapter;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -46,6 +48,7 @@ public class NavigationService extends Service implements Handler.Callback {
         tagsDatabase = new TagsDatabase();
 
         IntentFilter filter = new IntentFilter(Intents.ACTION_TAGS);
+        filter.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
         registerReceiver(readerReceiver, filter);
         HandlerThread thread = new HandlerThread("NavigationServiceThread");
         thread.start();
@@ -86,24 +89,35 @@ public class NavigationService extends Service implements Handler.Callback {
             ArrayList<Tag> newTags = new ArrayList<Tag>();
             newTags.addAll(tagsDatabase.getTags(readTagsFromReader));
 
-            if (!newTags.isEmpty()) {
-                navigation.setTags(newTags);
-                currentPosition = navigation.getReaderPosition();
-                if (destination != null) {
-                    findRouteInBackGround();
-                }
-                broadcastValues(Intents.ACTION_TAGS_ON_WALLS, Intents.EXTRA_TAGS_ON_WALLS, newTags);
-                broadcastValues(Intents.ACTION_ZONES, Intents.EXTRA_ZONES,
-                        navigation.getZones(ZONE_RADIUS));
-                if (!mHandler.hasMessages(FIND_ROUTE)) {
-                    broadcast(Intents.ACTION_LOCATION_FOUND, Intents.EXTRA_POSITION,
-                            currentPosition);
-                }
-            }
+            handleTags(newTags);
+
         } else if (Intents.ACTION_START_NAVIGATION.equals(intent.getAction())) {
             log.d("Navigation start was requested");
+
+        } else {
+            android.nfc.Tag nfcTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            ArrayList<GenericTag> readTagsFromReader = new ArrayList<GenericTag>();
+            readTagsFromReader.add(new GenericTag(Arrays.toString(nfcTag.getId()), 0, true));
+            handleTags(tagsDatabase.getTags(readTagsFromReader));
+
         }
         return START_STICKY;
+    }
+
+    private void handleTags(ArrayList<Tag> newTags) {
+        if (!newTags.isEmpty()) {
+            navigation.setTags(newTags);
+            currentPosition = navigation.getReaderPosition();
+            if (destination != null) {
+                findRouteInBackGround();
+            }
+            broadcastValues(Intents.ACTION_TAGS_ON_WALLS, Intents.EXTRA_TAGS_ON_WALLS, newTags);
+            broadcastValues(Intents.ACTION_ZONES, Intents.EXTRA_ZONES,
+                    navigation.getZones(ZONE_RADIUS));
+            if (!mHandler.hasMessages(FIND_ROUTE)) {
+                broadcast(Intents.ACTION_LOCATION_FOUND, Intents.EXTRA_POSITION, currentPosition);
+            }
+        }
     }
 
     @Override

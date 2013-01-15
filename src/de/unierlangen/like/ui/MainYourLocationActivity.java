@@ -5,14 +5,19 @@ import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentFilter.MalformedMimeTypeException;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.nfc.NfcAdapter;
+import android.nfc.tech.IsoDep;
+import android.nfc.tech.MifareClassic;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -29,6 +34,7 @@ import de.unierlangen.like.customviews.MapView;
 import de.unierlangen.like.navigation.DijkstraRouter;
 import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.MapBuilder;
+import de.unierlangen.like.navigation.NavigationService;
 import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.Wall;
@@ -51,6 +57,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
     private MapBuilder mapBuilder;
 
     private DrawMapOverlayPreferenceChangeListener drawMapOverlayPreferenceChangeListener;
+
     private final BroadcastReceiver readerReceiver = new BroadcastReceiver() {
 
         @Override
@@ -147,11 +154,44 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         registerReceiver(readerReceiver, filter);
         wakeLock.acquire();
 
+        enableForegroundNfcDispatch();
+    }
+
+    private void enableForegroundNfcDispatch() {
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
+                getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
+        try {
+            ndef.addDataType("*/*"); /*
+                                      * Handles all MIME based dispatches. You
+                                      * should specify only the ones that you
+                                      * need.
+                                      */
+        } catch (MalformedMimeTypeException e) {
+            throw new RuntimeException("fail", e);
+        }
+        IntentFilter[] intentFiltersArray = new IntentFilter[] { ndef, };
+        String[][] techListsArray = new String[][] {
+                new String[] { MifareClassic.class.getName() },
+                new String[] { IsoDep.class.getName() } };
+
+        NfcAdapter.getDefaultAdapter(getApplicationContext()).enableForegroundDispatch(this,
+                pendingIntent, intentFiltersArray, techListsArray);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        // intents from NFC are not broadcasted during foreground detection
+        // they are delivered directly to activity
+        // we have to send them to NavigationService
+        intent.setClass(this, NavigationService.class);
+        startService(intent);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        NfcAdapter.getDefaultAdapter(this).disableForegroundDispatch(this);
         unregisterReceiver(readerReceiver);
         wakeLock.release();
         log.d("onPause() in MainYourLocationActivity called");

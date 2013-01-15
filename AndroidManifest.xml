@@ -4,6 +4,11 @@
 	android:versionName="1.0">
 	<uses-sdk android:minSdkVersion="11"
 		android:targetSdkVersion="11" />
+	
+	
+	
+	<uses-permission android:name="android.permission.NFC" />
+<uses-feature android:name="android.hardware.nfc" android:required="true" />	
 	<uses-permission android:name="android.permission.BLUETOOTH" />
 	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -40,6 +45,18 @@
 			<intent-filter>
 				<action android:name="de.unierlangen.like.Intents.ACTION_START_NAVIGATION" />
 			</intent-filter>
+			<!-- NFC -->
+			<intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- Add a technology filter -->
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/filter_nfc" />
 		</service>
 	</application>
 </manifest>
