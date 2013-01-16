@@ -4,39 +4,48 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import android.content.Context;
+
 import com.github.androidutils.logger.Logger;
 
 public class MapBuilder {
-    private ArrayList<Wall> walls;
-    private ArrayList<Door> doors;
+    private static MapBuilder sInstance;
+    private final ArrayList<Wall> walls;
+    private final ArrayList<Door> doors;
     private float wallX1;
     private float wallY1;
     private float wallX2;
     private float wallY2;
     private double alpha;
-    private final FileReader fileReader = new FileReader();
+
     private final Logger log = Logger.getDefaultLogger();
 
-    public MapBuilder(String path) throws IOException {
-        /** Create input channel and read from the file */
-        recognizeString(fileReader.getDataFromFile(path), false);
-    }
-
     /**
-     * Debug constructor, use only for debug
+     * TODO Make loading not lazy
      * 
-     * @param content
-     * @param debug
+     * @return
      */
-    public MapBuilder(String content, boolean debug) {
-        recognizeString(content, debug);
+    public synchronized static MapBuilder getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new MapBuilder(context);
+        }
+        return sInstance;
     }
 
-    private void recognizeString(String content, boolean debug) {
+    private MapBuilder(Context context) {
+        /** Create input channel and read from the file */
+        ArrayList<String> dataFromFile;
+        try {
+            dataFromFile = FileReader.getStringsFromAsset(context, "map.txt");
+        } catch (IOException e) {
+            dataFromFile = new ArrayList<String>();
+            log.e("Something wrong " + e.getMessage());
+        }
+
         walls = new ArrayList<Wall>();
         doors = new ArrayList<Door>();
         Pattern oneNumber = Pattern.compile(",");
-        for (String entry : fileReader.splitStringContent(content)) {
+        for (String entry : dataFromFile) {
             String[] singlenumber = oneNumber.split(entry);
             if (singlenumber[0].equals("w")) {
                 wallX1 = Float.parseFloat(singlenumber[1]);

@@ -1,10 +1,12 @@
 package de.unierlangen.like.navigation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import android.content.Context;
 import android.graphics.PointF;
 
 import com.github.androidutils.logger.Logger;
@@ -14,20 +16,19 @@ public class RoomsDatabase {
     private static RoomsDatabase instance;
     HashMap<String, PointF> hashMap = new HashMap<String, PointF>();
 
-    public static RoomsDatabase getRoomsDatabase() {
+    public static RoomsDatabase getRoomsDatabase(Context context) {
         if (instance == null) {
-            instance = new RoomsDatabase();
+            instance = new RoomsDatabase(context);
         }
         return instance;
     }
 
-    private RoomsDatabase() {
+    private RoomsDatabase(Context context) {
         try {
             /** Create input channel and read from the file */
-            FileReader fileReader = new FileReader();
-            String content = fileReader.getDataFromFile("/sdcard/like/rooms.txt");
+            ArrayList<String> lines = FileReader.getStringsFromAsset(context, "rooms.txt");
             Pattern oneElement = Pattern.compile(",");
-            for (String entry : fileReader.splitStringContent(content)) {
+            for (String entry : lines) {
                 String[] singleElement = oneElement.split(entry);
                 String roomName = singleElement[0];
                 float x = Float.parseFloat(singleElement[1]);

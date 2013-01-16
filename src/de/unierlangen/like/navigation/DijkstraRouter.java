@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import android.content.Context;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.os.SystemClock;
@@ -29,11 +30,13 @@ public class DijkstraRouter {
 
     private TinkerGraph graph;
     private PriorityQueue<Vertex> queue;
+    private Context mContext;
 
     /**
      * Just for testing
      */
-    public DijkstraRouter() {
+    public DijkstraRouter(Context context) {
+        mContext = context;
         graph = new TinkerGraph();
         queue = new PriorityQueue<Vertex>(10, new Comparator<Vertex>() {
             @Override
@@ -295,8 +298,8 @@ public class DijkstraRouter {
 
     private void fillGraphWithVertices() {
         try {
-            String content = fileReader.getDataFromFile("/sdcard/like/vertices.txt");
-            for (String entry : fileReader.splitStringContent(content)) {
+            ArrayList<String> lines = FileReader.getStringsFromAsset(mContext, "vertices.txt");
+            for (String entry : lines) {
                 List<String> strings = Arrays.asList(entry.split(","));
                 Iterator<String> iterator = strings.iterator();
                 while (iterator.hasNext()) {
@@ -314,8 +317,8 @@ public class DijkstraRouter {
 
     private void fillGraphWithEdges() {
         try {
-            String content = fileReader.getDataFromFile("/sdcard/like/edges.txt");
-            for (String entry : fileReader.splitStringContent(content)) {
+            ArrayList<String> lines = FileReader.getStringsFromAsset(mContext, "edges.txt");
+            for (String entry : lines) {
                 List<String> strings = Arrays.asList(entry.split(","));
                 Iterator<String> iterator = strings.iterator();
                 while (iterator.hasNext()) {

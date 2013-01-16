@@ -351,7 +351,7 @@ public class MapView extends View {
      * @param canvas
      */
     private void drawRoomName(Canvas canvas) {
-        RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
+        RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase(getContext());
         for (String roomName : roomsDatabase.getRoomsNamesArray()) {
             if (roomName.contains("3")) {
                 PointF roomCoordinates = roomsDatabase.getRoomCoordinates(roomName);

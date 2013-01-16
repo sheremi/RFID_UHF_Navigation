@@ -1,6 +1,5 @@
 package de.unierlangen.like.navigation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Service;
@@ -15,7 +14,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import com.github.androidutils.logger.Logger;
 
@@ -41,17 +39,10 @@ public class NavigationService extends Service implements Handler.Callback {
     public void onCreate() {
         super.onCreate();
         log.d("starting navigation service");
-        try {
-            mapBuilder = new MapBuilder("/sdcard/like/map.txt");
-        } catch (IOException e) {
-            Toast.makeText(this, "Sorry, current file is not readable or not found",
-                    Toast.LENGTH_SHORT).show();
-            mapBuilder = new MapBuilder("1,1,2,2;2,2,3,3;", true);
-            log.e("oops", e);
-        }
+        mapBuilder = MapBuilder.getInstance(this);
 
         navigation = new Navigation(mapBuilder.getWalls(), mapBuilder.getDoors());
-        dijkstraRouter = new DijkstraRouter();
+        dijkstraRouter = new DijkstraRouter(this);
         tagsDatabase = new TagsDatabase();
 
         IntentFilter filter = new IntentFilter(Intents.ACTION_TAGS);

@@ -1,6 +1,5 @@
 package de.unierlangen.like.ui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
@@ -20,7 +19,6 @@ import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnLongClickListener;
-import android.widget.Toast;
 import android.widget.ZoomControls;
 
 import com.github.androidutils.logger.Logger;
@@ -125,14 +123,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
             }
         });
 
-        try {
-            mapBuilder = new MapBuilder("/sdcard/like/map.txt");
-        } catch (IOException e) {
-            Toast.makeText(this, "Sorry, current file is not readable or not found",
-                    Toast.LENGTH_SHORT).show();
-            mapBuilder = new MapBuilder("1,1,2,2;2,2,3,3;", true);
-            log.e("oops", e);
-        }
+        mapBuilder = MapBuilder.getInstance(this);
 
         ArrayList<Wall> walls = mapBuilder.getWalls();
         ArrayList<Door> doors = mapBuilder.getDoors();
@@ -171,7 +162,7 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         // Comparison of two floats (checking if resultCode == RESULT_OK)
         if (resultCode == Activity.RESULT_OK) {
             String dest = (String) data.getExtras().get(FindRoomActivity.ROOM_NAME_EXTRA);
-            RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
+            RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase(this);
             PointF roomCoordinates = roomsDatabase.getRoomCoordinates(dest);
             log.d("Destination: " + dest + " at {" + roomCoordinates.x + ";" + roomCoordinates.y
                     + "}");

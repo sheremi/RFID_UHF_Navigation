@@ -15,7 +15,7 @@ public class FindRoomActivity extends Activity {
 
     public static final String ROOM_NAME_EXTRA = "ROOM_NAME";
 
-    private final RoomsDatabase roomsDatabase = RoomsDatabase.getRoomsDatabase();
+    private RoomsDatabase roomsDatabase;
     private Button buttonClear;
     private Button buttonOK;
     private AutoCompleteTextView textView;
@@ -24,6 +24,7 @@ public class FindRoomActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.find_room);
+        roomsDatabase = RoomsDatabase.getRoomsDatabase(this);
         buttonClear = (Button) findViewById(R.id.buttonClear);
         buttonOK = (Button) findViewById(R.id.buttonOK);
         textView = (AutoCompleteTextView) findViewById(R.id.listOfDestinations);
