@@ -12,6 +12,7 @@
 		android:icon="@drawable/icon" android:label="@string/app_name"
 		android:uiOptions="splitActionBarWhenNarrow">
 		<activity android:name=".ui.MainYourLocationActivity"
+			android:theme="@style/MainYourLocationActivityStyle"
 			android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
