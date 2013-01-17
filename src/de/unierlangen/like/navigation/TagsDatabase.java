@@ -102,6 +102,23 @@ public class TagsDatabase {
         newTag.addEPC("a9b933b2ddd96400000");
         tagsOnTheWall.add(newTag);
 
+        // NFC tags
+        newTag = new TagOnTheWall(49.50f, 5.77f, "Visa");
+        newTag.addEPC("[104, -33, 84, 20]");
+        tagsOnTheWall.add(newTag);
+
+        newTag = new TagOnTheWall(33.34f, 22.0f, "lab");
+        newTag.addEPC("[-36, 112, -119, 42]");
+        tagsOnTheWall.add(newTag);
+
+        newTag = new TagOnTheWall(41.05f, -5.44f, "NivesBerner");
+        newTag.addEPC("[28, 8, 72, 5]");
+        tagsOnTheWall.add(newTag);
+
+        newTag = new TagOnTheWall(41.05f, -12.70f, "AndreasL");
+        newTag.addEPC("[-116, -95, -119, 42]");
+        tagsOnTheWall.add(newTag);
+
         // Emulation tags
         tagsOnTheWall.add(new TagOnTheWall("BE1", 24.68f, 5.67f, ""));
         tagsOnTheWall.add(new TagOnTheWall("BE2", 30.00f, 7.25f, ""));
