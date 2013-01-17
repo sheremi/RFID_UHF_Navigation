@@ -257,24 +257,8 @@ public class MapView extends View {
     }
 
     private void prepareDrawingArea(Canvas canvas) {
-        // TODO anpassen bitte
-        if (false) {
-            float minX = rectFTags.left - padding;
-            float minY = rectFTags.top - padding;
-            float maxX = rectFTags.right + padding;
-            float maxY = rectFTags.bottom + padding;
-            float scaleFactor;
-            float positionX = -minX;
-            float positionY = -minY;
-            if ((maxX - minX) / (maxY - minY) > getWidth() / getHeight()) {
-                scaleFactor = getWidth() / (maxX - minX);
-                positionY += getHeight() / scaleFactor / 2 - (maxY - minY) / 2;
-            } else {
-                scaleFactor = getHeight() / (maxY - minY);
-                positionX += getWidth() / scaleFactor / 2 - (maxX - minX) / 2;
-            }
-        }
         gestureDetector.applyTransitions(canvas);
+        canvas.translate(-readerPosition.x, -readerPosition.y);
     }
 
     private void drawBackground(Canvas canvas) {
