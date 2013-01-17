@@ -9,8 +9,6 @@ import de.unierlangen.like.R;
 
 public class AboutActivity extends Activity {
 
-    Button ok;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
