@@ -38,8 +38,11 @@ import de.unierlangen.like.navigation.Zone;
  * 
  */
 public class MapView extends View {
+    private static final int TRANSLATION_TIME = 700;
+    private static final int TRANSLATION_FPS = 25;
+    private static final int TRANSLATION_FRAME_TIME = TRANSLATION_FPS * 1000 / TRANSLATION_TIME;
+    private static final int SMOOTH_TRANSLATION_FRAMES = TRANSLATION_TIME / TRANSLATION_FRAME_TIME;
     private static final float INITIAL_SCALE_FACTOR = 8.0f;
-    private static final int SMOOTH_TRANSLATION_FRAMES = 30;
     private static final String TAG = MapView.class.getSimpleName();
     public static final int REQUEST_TRANSLATE = 1;
     private final Logger log = Logger.getDefaultLogger();
@@ -98,7 +101,7 @@ public class MapView extends View {
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case REQUEST_TRANSLATE:
-                rectFTags = (RectF) msg.obj;
+                readerPosition = (PointF) msg.obj;
                 invalidate();
                 break;
             default:
@@ -220,20 +223,8 @@ public class MapView extends View {
     }
 
     public void setRectFTags(RectF rectFTags) {
-        float diffLeft = rectFTags.left - this.rectFTags.left;
-        float diffTop = rectFTags.top - this.rectFTags.top;
-        float diffRight = rectFTags.right - this.rectFTags.right;
-        float diffBottom = rectFTags.bottom - this.rectFTags.bottom;
-        // TODO Here we can optimize the speed of translate
-        for (int i = 1; i <= SMOOTH_TRANSLATION_FRAMES; i++) {
-            RectF rectF = new RectF(this.rectFTags);
-            rectF.left += diffLeft / SMOOTH_TRANSLATION_FRAMES * i;
-            rectF.top += diffTop / SMOOTH_TRANSLATION_FRAMES * i;
-            rectF.right += diffRight / SMOOTH_TRANSLATION_FRAMES * i;
-            rectF.bottom += diffBottom / SMOOTH_TRANSLATION_FRAMES * i;
-            Message msg = Message.obtain(handler, REQUEST_TRANSLATE, rectF);
-            handler.sendMessageDelayed(msg, 50 * i);
-        }
+        this.rectFTags = rectFTags;
+        invalidate();
     }
 
     public void setRoute(Path routingPath) {
@@ -242,8 +233,18 @@ public class MapView extends View {
     }
 
     public void setReaderPosition(PointF readerPosition) {
-        this.readerPosition = readerPosition;
-        invalidate();
+        // we don't jump to the new position, we slide to it
+        float dx = this.readerPosition.x - readerPosition.x;
+        float dy = this.readerPosition.y - readerPosition.y;
+
+        for (int i = 1; i <= SMOOTH_TRANSLATION_FRAMES; i++) {
+            PointF point = new PointF();
+            point.set(this.readerPosition);
+            point.offset(-dx / SMOOTH_TRANSLATION_FRAMES * i, -dy / SMOOTH_TRANSLATION_FRAMES * i);
+            Message msg = Message.obtain(handler, REQUEST_TRANSLATE, point);
+            handler.sendMessageDelayed(msg, TRANSLATION_FRAME_TIME * i);
+        }
+        // invalidate();
     }
 
     /**
