@@ -10,8 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import de.unierlangen.like.R;
 import de.unierlangen.like.Intents;
+import de.unierlangen.like.R;
 import de.unierlangen.like.rfid.Reader.Configuration;
 import de.unierlangen.like.rfid.Reader.ReaderClient;
 import de.unierlangen.like.rfid.Reader.ReaderStatus;
@@ -106,7 +106,7 @@ public class ReaderService extends IntentService {
                 notification = new Notification.Builder(getApplicationContext())
                         .setContentTitle("All FFs on SPI")
                         .setContentText("Cable appears to be connected the wrong way")
-                        .setTicker("All FFs on SPI").setSmallIcon(R.drawable.info)
+                        .setTicker("All FFs on SPI").setSmallIcon(R.drawable.info1)
                         // .setLargeIcon(aBitmap)
                         .getNotification();
                 break;
@@ -114,7 +114,7 @@ public class ReaderService extends IntentService {
                 notification = new Notification.Builder(getApplicationContext())
                         .setContentTitle("All zeros on SPI")
                         .setContentText("Cable appears to not connected or not properly connected")
-                        .setTicker("All zeros on SPI").setSmallIcon(R.drawable.info)
+                        .setTicker("All zeros on SPI").setSmallIcon(R.drawable.info1)
                         // .setLargeIcon(aBitmap)
                         .getNotification();
                 break;
@@ -122,7 +122,7 @@ public class ReaderService extends IntentService {
                 notification = new Notification.Builder(getApplicationContext())
                         .setContentTitle("Oscillator failed")
                         .setContentText("Check voltage and configuration")
-                        .setTicker("Oscillator failed").setSmallIcon(R.drawable.info)
+                        .setTicker("Oscillator failed").setSmallIcon(R.drawable.info1)
                         // .setLargeIcon(aBitmap)
                         .getNotification();
                 break;
@@ -130,7 +130,7 @@ public class ReaderService extends IntentService {
                 notification = new Notification.Builder(getApplicationContext())
                         .setContentTitle("PLL failed")
                         .setContentText("Check voltage and configuration").setTicker("PLL failed")
-                        .setSmallIcon(R.drawable.info)
+                        .setSmallIcon(R.drawable.info1)
                         // .setLargeIcon(aBitmap)
                         .getNotification();
                 reader.initialize(Configuration.DEFAULT);
@@ -138,7 +138,7 @@ public class ReaderService extends IntentService {
             case SOMETHING_ELSE:
                 notification = new Notification.Builder(getApplicationContext())
                         .setContentTitle("Reader failed").setContentText("Something is wrong")
-                        .setTicker("Reader failed").setSmallIcon(R.drawable.info)
+                        .setTicker("Reader failed").setSmallIcon(R.drawable.info1)
                         // .setLargeIcon(aBitmap)
                         .getNotification();
                 break;

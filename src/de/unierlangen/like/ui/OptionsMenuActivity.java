@@ -24,13 +24,13 @@ public class OptionsMenuActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.your_location:
+        case R.id.find_room:
             startActivity(new Intent(OptionsMenuActivity.this, MainYourLocationActivity.class));
             break;
-        case R.id.about_submenu:
+        case R.id.about:
             startActivity(new Intent(OptionsMenuActivity.this, AboutActivity.class));
             break;
-        case R.id.help_submenu:
+        case R.id.help:
             startActivity(new Intent(OptionsMenuActivity.this, HelpActivity.class));
             break;
         case R.id.prefs:

@@ -1,29 +1,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item 
-		android:title = "Where am I?"
-		android:id = "@+id/your_location"
-		android:icon="@drawable/your_location"
+		android:title = "Find room"
+		android:id = "@+id/find_room"
+		android:icon="@drawable/find_room"
 		android:showAsAction="always" />
+
 	<item 
-		android:title = "Info"
-		android:id = "@+id/info"
+		android:title = "About"
+		android:id = "@+id/about" 
 		android:icon="@drawable/info"
-		android:showAsAction="ifRoom" >
-		
-		<menu>
-			<item 
-				android:title = "About this application"
-				android:id = "@+id/about_submenu" />
-			<item 
-				android:title = "How to use the application"
-				android:id = "@+id/help_submenu" />
-		</menu>
-	
-	</item>
+		android:showAsAction="always" />
+
 	<item 
-		android:title="Preferences"
+		android:title = "Help"
+		android:id = "@+id/help"
+		android:icon="@drawable/help"
+		android:showAsAction="always" />
+
+	<item 
+		android:title="Settings"
 		android:id = "@+id/prefs" 
 		android:icon="@drawable/prefs"
-		android:showAsAction="always" >
-	</item>
+		android:showAsAction="always" />
+
 </menu>
