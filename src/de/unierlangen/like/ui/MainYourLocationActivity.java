@@ -215,7 +215,7 @@ public class MainYourLocationActivity extends Activity /*
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.find_room:
-            startActivity(new Intent(this, FindRoomActivity.class));
+            startActivityForResult(new Intent(this, FindRoomActivity.class), REQUEST_ROOM);
             break;
         case R.id.about:
             startActivity(new Intent(this, AboutActivity.class));
