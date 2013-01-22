@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	
-	<string name="about_msg">Here will be the information about this application</string>
+	<string name="about_msg">This app was created for the project of Indoor positioning system, based on the UHF RFID technology. The system was developed at the University of Erlangen-Nuremberg, Technical Faculty, Chair of Information Technology. The app provides localization and navigation capabilities using information about found tags and the surrounding environment of the building. For more detailed description of the features please refer to the Guide.</string>
 	<string name="help_msg">Here will be the information about proper using of this application</string>
 	<string name="about_title"><b>About this application</b></string>
 	<string name="help_title"><b>How to use this application</b></string>
