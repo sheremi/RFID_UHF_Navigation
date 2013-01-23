@@ -27,7 +27,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnLongClickListener;
-import android.widget.ZoomControls;
 
 import com.github.androidutils.logger.Logger;
 
@@ -54,7 +53,6 @@ public class MainYourLocationActivity extends Activity /*
     private static final String TAG = "MainYourLocationActivity";
     private static final int REQUEST_ROOM = 1;
     private MapView mapView;
-    private ZoomControls zoomControls;
     private WakeLock wakeLock;
 
     private MapBuilder mapBuilder;
