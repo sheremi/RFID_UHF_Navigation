@@ -143,7 +143,7 @@ public class ConsoleActivity extends Activity implements OnEditorActionListener,
             startActivity(new Intent(this, PreferenceWithHeaders.class));
             break;
         default:
-            UserMessages.showMsg((String) item.getTitle(), this);
+            log.w("unexpected item " + item.getTitle());
         }
         // return super.onOptionsItemSelected(item);
         return false;

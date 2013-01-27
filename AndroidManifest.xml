@@ -29,7 +29,7 @@
 		<activity android:name=".LoopbackActivity"></activity>
 		<activity android:name=".ui.FindRoomActivity"></activity>
 		<activity android:name=".ui.AboutActivity" android:label="@string/about_title"
-			android:theme="@android:style/Theme.Dialog">
+			android:theme="@android:style/Theme.Holo.Dialog">
 		</activity>
 		<activity android:name="de.unierlangen.like.ui.HelpActivity"
 			android:label="@string/help_title" android:theme="@android:style/Theme.Dialog">

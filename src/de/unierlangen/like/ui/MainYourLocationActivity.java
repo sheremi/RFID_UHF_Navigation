@@ -227,7 +227,7 @@ public class MainYourLocationActivity extends Activity /*
             startActivity(new Intent(this, PreferenceWithHeaders.class));
             break;
         default:
-            UserMessages.showMsg((String) item.getTitle(), this);
+            log.w("unexpected item " + item.getTitle());
         }
         // return super.onOptionsItemSelected(item);
         return false;
