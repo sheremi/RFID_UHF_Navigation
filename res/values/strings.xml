@@ -8,7 +8,7 @@
 	<string name="error_configuration">Please configure your serial port first.</string>
 	<string name="error_security">You do not have read/write permission to the serial port.</string>
 	<string name="error_unknown">The serial port can not be opened for an unknown reason.</string>
-	<string name="app_name"><b>RFID-UHF for Neo OpenMoko</b></string>
+	<string name="app_name"><b>RFID and NFC indoor positioning</b></string>
 	<string name="menu_titel"><b>Menu</b></string>
 	<string name="testmode_titel">Test Mode</string>
 	<string name="reader_titel">Reader Registers List</string>

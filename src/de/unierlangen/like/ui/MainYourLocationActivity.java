@@ -22,6 +22,9 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.ZoomControls;
@@ -39,14 +42,14 @@ import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.navigation.Zone;
+import de.unierlangen.like.preferences.PreferenceWithHeaders;
 
-public class MainYourLocationActivity extends OptionsMenuActivity /*
-                                                                   * OnGestureListener
-                                                                   * implements
-                                                                   * OnClickListener
-                                                                   * ,
-                                                                   * OnLongClickListener
-                                                                   */{
+public class MainYourLocationActivity extends Activity /*
+                                                        * OnGestureListener
+                                                        * implements
+                                                        * OnClickListener ,
+                                                        * OnLongClickListener
+                                                        */{
     private final Logger log = Logger.getDefaultLogger();
     private static final String TAG = "MainYourLocationActivity";
     private static final int REQUEST_ROOM = 1;
@@ -195,6 +198,39 @@ public class MainYourLocationActivity extends OptionsMenuActivity /*
         unregisterReceiver(readerReceiver);
         wakeLock.release();
         log.d("onPause() in MainYourLocationActivity called");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    /**
+     * override onOptions ItemSelected here
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.find_room:
+            startActivityForResult(new Intent(this, FindRoomActivity.class), REQUEST_ROOM);
+            break;
+        case R.id.about:
+            startActivity(new Intent(this, AboutActivity.class));
+            break;
+        case R.id.help:
+            startActivity(new Intent(this, HelpActivity.class));
+            break;
+        case R.id.prefs:
+            startActivity(new Intent(this, PreferenceWithHeaders.class));
+            break;
+        default:
+            UserMessages.showMsg((String) item.getTitle(), this);
+        }
+        // return super.onOptionsItemSelected(item);
+        return false;
     }
 
     @Override

@@ -17,10 +17,15 @@
 
 package de.unierlangen.like.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.EditText;
@@ -30,6 +35,7 @@ import android.widget.TextView.OnEditorActionListener;
 import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.R;
+import de.unierlangen.like.preferences.PreferenceWithHeaders;
 import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.IStringPublisher;
 import de.unierlangen.like.serialport.ITxChannel;
@@ -39,7 +45,7 @@ import de.unierlangen.like.serialport.ITxChannel;
  * @author Ekaterina Lyavinskova and Yuriy Kulikov
  * 
  */
-public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActionListener,
+public class ConsoleActivity extends Activity implements OnEditorActionListener,
         OnLongClickListener {
     private final Logger log = Logger.getDefaultLogger();
 
@@ -110,5 +116,36 @@ public class ConsoleActivity extends OptionsMenuActivity implements OnEditorActi
     protected void onPause() {
         super.onPause();
         stringPublisher.unregister(handler);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        menu.removeItem(R.id.find_room);
+        return true;
+    }
+
+    /**
+     * override onOptions ItemSelected here
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.about:
+            startActivity(new Intent(this, AboutActivity.class));
+            break;
+        case R.id.help:
+            startActivity(new Intent(this, HelpActivity.class));
+            break;
+        case R.id.prefs:
+            startActivity(new Intent(this, PreferenceWithHeaders.class));
+            break;
+        default:
+            UserMessages.showMsg((String) item.getTitle(), this);
+        }
+        // return super.onOptionsItemSelected(item);
+        return false;
     }
 }
