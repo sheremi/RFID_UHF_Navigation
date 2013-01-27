@@ -34,7 +34,6 @@ import com.github.androidutils.logger.Logger;
 import de.unierlangen.like.Intents;
 import de.unierlangen.like.R;
 import de.unierlangen.like.customviews.MapView;
-import de.unierlangen.like.navigation.DijkstraRouter;
 import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.MapBuilder;
 import de.unierlangen.like.navigation.NavigationService;
@@ -81,7 +80,7 @@ public class MainYourLocationActivity extends Activity /*
                 ArrayList<PointF> routingPath = intent
                         .getParcelableArrayListExtra(Intents.EXTRA_ROUTE);
                 log.d(routingPath.toString());
-                mapView.setRoute(DijkstraRouter.convertPointsToPath(routingPath));
+                mapView.setRoute(routingPath);
 
             } else if (Intents.ACTION_ZONES.equals(intent.getAction())) {
                 ArrayList<Zone> zones = intent.getParcelableArrayListExtra(Intents.EXTRA_ZONES);

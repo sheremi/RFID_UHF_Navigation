@@ -81,14 +81,16 @@ public class DijkstraRouter {
         ArrayList<PointF> routeAsPoints = convertRouteToPoints(route);
         log.d("convertRouteToPoints took " + elapsedTime() + " ms");
 
-        startBenchmark();
-        connectRouteToDestination(currentPosition, routeAsPoints);
-        log.d("connectRouteToDestination took " + elapsedTime() + " ms");
+        // startBenchmark();
+        // connectRouteToDestination(currentPosition, routeAsPoints);
+        // log.d("connectRouteToDestination took " + elapsedTime() + " ms");
 
         return routeAsPoints;
     }
 
-    private void connectRouteToDestination(PointF currentPosition, ArrayList<PointF> routeAsPoints) {
+    public static ArrayList<PointF> connectRouteToDestination(PointF currentPosition,
+            ArrayList<PointF> waypointPoints) {
+        ArrayList<PointF> routeAsPoints = new ArrayList<PointF>(waypointPoints);
         // We replace the last segment of the route with two lines
         // First line is a perpendicular from current position on the last
         // segment of the route
@@ -120,9 +122,12 @@ public class DijkstraRouter {
         }
 
         // remove last point
+        // TODO not everything is nice!
         routeAsPoints.remove(routeAsPoints.size() - 1);
         routeAsPoints.add(crossing);
         routeAsPoints.add(currentPosition);
+
+        return routeAsPoints;
     }
 
     private Vertex findClosestVertexTo(PointF point) {

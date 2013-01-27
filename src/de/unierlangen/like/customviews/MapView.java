@@ -25,6 +25,7 @@ import android.view.View;
 import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.R;
+import de.unierlangen.like.navigation.DijkstraRouter;
 import de.unierlangen.like.navigation.Door;
 import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
@@ -71,6 +72,7 @@ public class MapView extends View {
     private ArrayList<Tag> tags;
     private RectF rectFTags;
     private ArrayList<Zone> zones;
+    private ArrayList<PointF> routingPoints;
     private Path routingPath;
     private PointF readerPosition;
     // Items to translate and scale
@@ -102,6 +104,7 @@ public class MapView extends View {
             switch (msg.what) {
             case REQUEST_TRANSLATE:
                 readerPosition = (PointF) msg.obj;
+                connectPositionAndRoute();
                 invalidate();
                 break;
             default:
@@ -128,6 +131,7 @@ public class MapView extends View {
         tags = new ArrayList<Tag>();
         rectFTags = new RectF();
         zones = new ArrayList<Zone>();
+        routingPoints = new ArrayList<PointF>();
         routingPath = new Path();
         readerPosition = new PointF();
 
@@ -227,8 +231,9 @@ public class MapView extends View {
         invalidate();
     }
 
-    public void setRoute(Path routingPath) {
-        this.routingPath = routingPath;
+    public void setRoute(ArrayList<PointF> routingPoints) {
+        this.routingPoints = routingPoints;
+        connectPositionAndRoute();
         invalidate();
     }
 
@@ -444,6 +449,16 @@ public class MapView extends View {
 
     public int getViewHeight() {
         return viewHeight;
+    }
+
+    private void connectPositionAndRoute() {
+        if (!routingPoints.isEmpty()) {
+            ArrayList<PointF> points = DijkstraRouter.connectRouteToDestination(readerPosition,
+                    routingPoints);
+            routingPath = DijkstraRouter.convertPointsToPath(points);
+        } else {
+            routingPath = new Path();
+        }
     }
 
 }
