@@ -32,7 +32,7 @@
 			android:theme="@android:style/Theme.Holo.Dialog">
 		</activity>
 		<activity android:name="de.unierlangen.like.ui.HelpActivity"
-			android:label="@string/help_title" android:theme="@android:style/Theme.Dialog">
+			android:label="@string/help_title" android:theme="@android:style/Theme.Holo">
 		</activity>
 		<service android:name=".rfid.ReaderService" />
 		<service android:name=".navigation.NavigationService">
