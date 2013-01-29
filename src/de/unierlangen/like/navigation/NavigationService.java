@@ -79,11 +79,8 @@ public class NavigationService extends Service implements Handler.Callback {
 
         } else if (Intents.ACTION_TAGS.equals(intent.getAction())) {
             // since now we know that Intent action is ACTION_TAGS, we
-            // know
-            // that
-            // array of tags is attached to the intent as an extra with
-            // key
-            // EXTRA_TAGS
+            // know that array of tags is attached to the intent as an extra
+            // with key EXTRA_TAGS
             ArrayList<GenericTag> readTagsFromReader = intent
                     .getParcelableArrayListExtra(Intents.EXTRA_TAGS);
             ArrayList<Tag> newTags = new ArrayList<Tag>();
