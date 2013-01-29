@@ -119,6 +119,7 @@ public class HelpActivity extends Activity implements TabListener {
                 // TODO that is how we can give fragment some data
                 Bundle args = new Bundle();
                 args.putParcelable("intent", getIntent());
+                args.putInt("picture_id", R.drawable.android);
                 fragment2.setArguments(args);
                 return fragment2;
 
