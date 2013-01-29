@@ -9,13 +9,13 @@
 		android:title = "About"
 		android:id = "@+id/about" 
 		android:icon="@drawable/info"
-		android:showAsAction="always" />
+		android:showAsAction="ifRoom" />
 
 	<item 
-		android:title = "Guide"
+		android:title = "Help"
 		android:id = "@+id/help"
 		android:icon="@drawable/help"
-		android:showAsAction="always" />
+		android:showAsAction="never" />
 
 	<item 
 		android:title="Settings"
