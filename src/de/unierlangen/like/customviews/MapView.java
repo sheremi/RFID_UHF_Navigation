@@ -171,10 +171,10 @@ public class MapView extends View {
 
         routePaint = new Paint();
         routePaint.setStyle(Paint.Style.STROKE);
-        routePaint.setColor(0x8f2E8B57);
-        routePaint.setStrokeWidth(0.18f);
+        routePaint.setColor(0x9f1E90FF);
+        routePaint.setStrokeWidth(0.2f);
         routePaint.setAntiAlias(true);
-        routePaint.setMaskFilter(new BlurMaskFilter(0.015f, Blur.NORMAL));
+        routePaint.setMaskFilter(new BlurMaskFilter(0.025f, Blur.SOLID));
 
         readerPositionPaint = new Paint();
         readerPositionPaint.setStyle(Paint.Style.FILL);
