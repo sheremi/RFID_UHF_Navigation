@@ -7,7 +7,8 @@ import android.app.Application;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 
-import com.github.androidutils.logger.LogcatLogWriter;
+import com.github.androidutils.logger.FileLogWriter;
+import com.github.androidutils.logger.LogcatLogWriterWithLines;
 import com.github.androidutils.logger.Logger;
 import com.github.androidutils.logger.Logger.LogLevel;
 
@@ -22,7 +23,8 @@ public class NavigationApplication extends Application {
         CommunicationManager.init(getApplicationContext());
 
         Logger logger = Logger.getDefaultLogger();
-        logger.addLogWriter(new LogcatLogWriter());
+        logger.addLogWriter(new LogcatLogWriterWithLines());
+        logger.addLogWriter(new FileLogWriter("RFID"));
 
         // make sure we set default preferences on startup
         // because of the bug in Android
