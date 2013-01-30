@@ -25,9 +25,10 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
-import android.widget.ZoomControls;
+import android.view.View.OnTouchListener;
+import android.widget.Toast;
 
 import com.github.androidutils.logger.Logger;
 
@@ -44,17 +45,11 @@ import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.navigation.Zone;
 import de.unierlangen.like.preferences.PreferenceWithHeaders;
 
-public class MainYourLocationActivity extends Activity /*
-                                                        * OnGestureListener
-                                                        * implements
-                                                        * OnClickListener ,
-                                                        * OnLongClickListener
-                                                        */{
+public class MainYourLocationActivity extends Activity implements OnTouchListener {
     private final Logger log = Logger.getDefaultLogger();
     private static final String TAG = "MainYourLocationActivity";
     private static final int REQUEST_ROOM = 1;
     private MapView mapView;
-    private ZoomControls zoomControls;
     private WakeLock wakeLock;
 
     private MapBuilder mapBuilder;
@@ -124,14 +119,7 @@ public class MainYourLocationActivity extends Activity /*
         final ActionBar bar = getActionBar();
         bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
-        mapView.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Intent intent = new Intent(MainYourLocationActivity.this, FindRoomActivity.class);
-                startActivityForResult(intent, REQUEST_ROOM);
-                return false;
-            }
-        });
+        mapView.setOnTouchListener(this);
 
         mapBuilder = MapBuilder.getInstance(this);
 
@@ -258,4 +246,18 @@ public class MainYourLocationActivity extends Activity /*
             }
         }
     }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            log.d("Touch coordinates : " + String.valueOf(event.getX()) + "x"
+                    + String.valueOf(event.getY()));
+            Toast.makeText(
+                    this,
+                    "Touch coordinates : " + String.valueOf(event.getX()) + "x"
+                            + String.valueOf(event.getY()), Toast.LENGTH_LONG).show();
+        }
+        return true;
+    }
+
 }
