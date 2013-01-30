@@ -33,6 +33,10 @@
 		<activity android:name="de.unierlangen.like.ui.HelpActivity"
 			android:label="@string/help_title">
 		</activity>
+		<activity android:name="de.unierlangen.like.ui.AddTagActivity"
+			android:label="Add tag"
+			android:theme="@android:style/Theme.Holo">
+		</activity>
 		<service android:name=".rfid.ReaderService" />
 		<service android:name=".navigation.NavigationService">
 			<intent-filter>

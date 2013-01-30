@@ -29,4 +29,10 @@
         android:icon="@drawable/prefs"
         android:showAsAction="never" />
 
+	<item 
+		android:title = "Add tags"
+		android:id = "@+id/main_add_tag"
+		android:icon="@android:drawable/ic_menu_save"
+		android:showAsAction="always" />
+
 </menu>
