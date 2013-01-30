@@ -331,7 +331,7 @@ public class MapView extends View {
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.android);
         Matrix logoMatrix = new Matrix();
         // Set correct size of the icon
-        float bitmapScale = 0.025f;
+        float bitmapScale = 0.015f;
         logoMatrix.setScale(bitmapScale, bitmapScale);
         // Calculate the offset of the icon's position
         float offset = -(icon.getHeight() + icon.getWidth()) * bitmapScale / 4;
