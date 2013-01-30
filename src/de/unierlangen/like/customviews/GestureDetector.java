@@ -162,4 +162,12 @@ public class GestureDetector {
     public float getScaleFactor() {
         return mScaleFactor;
     }
+
+    public float getXTranslation() {
+        return mPosX;
+    }
+
+    public float getYTranslation() {
+        return mPosY;
+    }
 }

@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <de.unierlangen.like.customviews.MapView
-        android:id="@+id/mapView"
+        android:id="@+id/add_tag_details_mapview"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"

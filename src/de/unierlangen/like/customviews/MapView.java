@@ -38,6 +38,9 @@ import de.unierlangen.like.navigation.Zone;
  * 
  */
 public class MapView extends View {
+    public static final int NAVIGATION = 0;
+    public static final int MARKER = 1;
+
     private static final int TRANSLATION_TIME = 700;
     private static final int TRANSLATION_FPS = 25;
     private static final int TRANSLATION_FRAME_TIME = TRANSLATION_FPS * 1000 / TRANSLATION_TIME;
@@ -73,9 +76,13 @@ public class MapView extends View {
     private ArrayList<Zone> zones;
     private Path routingPath;
     private PointF readerPosition;
+    private PointF marker;
     // Items to translate and scale
     private float padding = 10.0f;
     private GestureDetector gestureDetector;
+
+    /** View mode. Behaviour depends on this */
+    private int mode = NAVIGATION;
 
     // Constructors
     public MapView(Context context) {
@@ -189,6 +196,7 @@ public class MapView extends View {
         textPaint.setTextSize(1.0f);
 
         gestureDetector = new GestureDetector(getContext(), this);
+        marker = new PointF();
     }
 
     public float getPadding() {
@@ -369,6 +377,21 @@ public class MapView extends View {
         drawRoomName(canvas);
     }
 
+    private void drawMarker(Canvas canvas) {
+        if (marker != null) {
+            canvas.drawCircle(marker.x, marker.y, 0.2f, tagPaint);
+        }
+    }
+
+    private void moveMarker() {
+        // okay translation is ok
+        // TODO fix scaling
+        // TODO set proper base
+        marker.x = 5 - gestureDetector.getXTranslation() / gestureDetector.getScaleFactor();
+        marker.y = 5 - gestureDetector.getYTranslation() / gestureDetector.getScaleFactor();
+        log.d("marker: " + marker.x + " " + marker.y);
+    }
+
     // Override view's methods
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -388,6 +411,8 @@ public class MapView extends View {
         // TODO set it when first position arrives
         gestureDetector.setBaseTranslation(widthSize / 2, heightSize / 2);
         gestureDetector.setBaseScaleFactor(INITIAL_SCALE_FACTOR);
+
+        moveMarker();
         //
         /*
          * preDrawnMap = new Picture(); Canvas mapCanvas =
@@ -424,18 +449,21 @@ public class MapView extends View {
         for (Tag tag : tags) {
             drawTag(canvas, tagPaint, tag);
         }
-
         /** Draw route */
         drawRoute(canvas, routePaint, routingPath);
         /** Draw current reader's position */
         drawPosition(canvas);
+        /** Draw marker */
+        drawMarker(canvas);
         /** Restore canvas state */
         canvas.restore();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return gestureDetector.onTouchEvent(ev);
+        boolean onTouchEvent = gestureDetector.onTouchEvent(ev);
+        moveMarker();
+        return onTouchEvent;
     }
 
     public int getViewWidth() {
@@ -446,4 +474,11 @@ public class MapView extends View {
         return viewHeight;
     }
 
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
+    public PointF getMarkerCoordinates() {
+        return new PointF(33, 33);
+    }
 }
