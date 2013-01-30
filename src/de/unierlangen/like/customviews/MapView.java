@@ -26,6 +26,8 @@ import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.R;
 import de.unierlangen.like.navigation.Door;
+import de.unierlangen.like.navigation.MapBuilder;
+import de.unierlangen.like.navigation.Navigation;
 import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.Wall;
@@ -383,13 +385,23 @@ public class MapView extends View {
         }
     }
 
+    Navigation navigation2 = new Navigation(MapBuilder.getInstance(getContext()).getWalls(),
+            MapBuilder.getInstance(getContext()).getDoors());
+
     private void moveMarker() {
-        // okay translation is ok
-        // TODO fix scaling
-        // TODO set proper base
-        marker.x = 5 - gestureDetector.getXTranslation() / gestureDetector.getScaleFactor();
-        marker.y = 5 - gestureDetector.getYTranslation() / gestureDetector.getScaleFactor();
-        log.d("marker: " + marker.x + " " + marker.y);
+        if (mode == MARKER) {
+
+            // okay translation is ok
+            // TODO fix scaling
+            // TODO set proper base
+            marker.x = 5 - gestureDetector.getXTranslation() / gestureDetector.getScaleFactor();
+            marker.y = 5 - gestureDetector.getYTranslation() / gestureDetector.getScaleFactor();
+            ArrayList<Tag> arrayOfTags = new ArrayList<Tag>();
+            arrayOfTags.add(new Tag("ww", 1, true, marker.x, marker.y));
+            navigation2.setTags(arrayOfTags);
+            zones = navigation2.getZones(2);
+            log.d("marker: " + marker.x + " " + marker.y);
+        }
     }
 
     // Override view's methods
