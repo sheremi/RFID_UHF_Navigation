@@ -171,7 +171,7 @@ public class MapView extends View {
 
         routePaint = new Paint();
         routePaint.setStyle(Paint.Style.STROKE);
-        routePaint.setColor(0xdfEE0000);
+        routePaint.setColor(0x8f2E8B57);
         routePaint.setStrokeWidth(0.18f);
         routePaint.setAntiAlias(true);
         routePaint.setMaskFilter(new BlurMaskFilter(0.015f, Blur.NORMAL));
@@ -182,10 +182,11 @@ public class MapView extends View {
         readerPositionPaint.setAntiAlias(true);
 
         textPaint = new Paint();
-        textPaint.setStyle(Paint.Style.STROKE);
-        textPaint.setColor(0xffFFD700);
+        textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        textPaint.setColor(0xff1E90FF);
         textPaint.setStrokeWidth(0.05f);
         textPaint.setAntiAlias(true);
+        textPaint.setMaskFilter(new BlurMaskFilter(0.15f, Blur.INNER));
         textPaint.setTextSize(1.0f);
 
         gestureDetector = new GestureDetector(getContext(), this);
