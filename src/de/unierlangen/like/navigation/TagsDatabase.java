@@ -119,6 +119,22 @@ public class TagsDatabase {
         newTag.addEPC("[-116, -95, -119, 42]");
         tagsOnTheWall.add(newTag);
 
+        newTag = new TagOnTheWall(33.40f, 5.77f, "Tag#1");
+        newTag.addEPC("[60, -84, -117, 42]");
+        tagsOnTheWall.add(newTag);
+
+        newTag = new TagOnTheWall(40.50f, 5.77f, "Tag#2");
+        newTag.addEPC("[124, -81, -120, 42]");
+        tagsOnTheWall.add(newTag);
+
+        newTag = new TagOnTheWall(42.20f, 4.27f, "Tag#3");
+        newTag.addEPC("[108, -94, -119, 42]");
+        tagsOnTheWall.add(newTag);
+
+        newTag = new TagOnTheWall(40.50f, -1.50f, "Tag#4");
+        newTag.addEPC("[12, 46, -116, 42]");
+        tagsOnTheWall.add(newTag);
+
         // Emulation tags
         tagsOnTheWall.add(new TagOnTheWall("BE1", 24.68f, 5.67f, ""));
         tagsOnTheWall.add(new TagOnTheWall("BE2", 30.00f, 7.25f, ""));
