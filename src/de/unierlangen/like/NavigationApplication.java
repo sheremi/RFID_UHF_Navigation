@@ -22,7 +22,7 @@ public class NavigationApplication extends Application {
         CommunicationManager.init(getApplicationContext());
 
         Logger logger = Logger.getDefaultLogger();
-        logger.addLogWriter(new LogcatLogWriter());
+        logger.addLogWriter(LogcatLogWriter.getInstance());
 
         // make sure we set default preferences on startup
         // because of the bug in Android
@@ -38,7 +38,7 @@ public class NavigationApplication extends Application {
             if (entry.getKey().contains("log_")) {
                 String className = entry.getKey().split("_")[1];
                 boolean supressLog = ((Boolean) entry.getValue()).booleanValue();
-                logger.setLogLevel(className, supressLog ? LogLevel.WARN : LogLevel.DEBUG);
+                logger.setLogLevel(className, supressLog ? LogLevel.WRN : LogLevel.DBG);
             }
         }
 

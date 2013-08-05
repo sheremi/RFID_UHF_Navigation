@@ -25,7 +25,7 @@ public class LoggingPreferencesFragment extends PreferenceFragment {
         if (preference.getKey().contains("log_")) {
             String className = preference.getKey().split("_")[1];
             boolean shouldLog = ((CheckBoxPreference) preference).isChecked();
-            log.setLogLevel(className, shouldLog ? LogLevel.DEBUG : LogLevel.WARN);
+            log.setLogLevel(className, shouldLog ? LogLevel.DBG : LogLevel.WRN);
             log.d((shouldLog ? "enabled" : "disabled") + " logging for " + className);
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
