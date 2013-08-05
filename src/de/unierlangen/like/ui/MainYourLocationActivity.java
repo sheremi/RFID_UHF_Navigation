@@ -30,6 +30,7 @@ import android.widget.ZoomControls;
 
 import com.github.androidutils.logger.Logger;
 
+import de.unierlangen.like.DynamicThemeHandler;
 import de.unierlangen.like.Intents;
 import de.unierlangen.like.R;
 import de.unierlangen.like.customviews.MapView;
@@ -112,6 +113,7 @@ public class MainYourLocationActivity extends Activity /*
     // ** Called when the activity is first created. *//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(DynamicThemeHandler.getInstance().getIdForName(this.getClass().getName()));
         super.onCreate(savedInstanceState);
         wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(
                 PowerManager.FULL_WAKE_LOCK, TAG);

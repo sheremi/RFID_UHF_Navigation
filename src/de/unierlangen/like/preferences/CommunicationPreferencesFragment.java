@@ -1,10 +1,14 @@
 package de.unierlangen.like.preferences;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import de.unierlangen.like.R;
 
@@ -28,6 +32,27 @@ public class CommunicationPreferencesFragment extends PreferenceFragment impleme
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.communication_preferences);
         commTypes = (ListPreference) findPreference("COMM_TYPE");
+
+        final Preference theme = findPreference("theme");
+        theme.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Context baseContext = getActivity()
+                                .getBaseContext();
+                        Intent i = baseContext
+                                .getPackageManager()
+                                .getLaunchIntentForPackage(
+                                        baseContext.getPackageName());
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                });
+                return true;
+            }
+        });
     }
 
     @Override

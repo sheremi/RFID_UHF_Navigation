@@ -14,25 +14,24 @@
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<application android:name="NavigationApplication"
 		android:largeHeap="true"
-		android:icon="@drawable/app_icon" android:label="@string/app_name"
-		android:uiOptions="splitActionBarWhenNarrow">
+        android:theme="@android:style/Theme.DeviceDefault.DialogWhenLarge"
+		android:icon="@drawable/app_icon" android:label="@string/app_name">
 		<activity android:name=".ui.MainYourLocationActivity"
-			android:theme="@style/MainYourLocationActivityStyle"
 			android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".preferences.PreferenceWithHeaders"></activity>
+		<activity android:name=".preferences.PreferenceWithHeaders">
+        </activity>
 		<activity android:name=".ui.ConsoleActivity"></activity>
 		<activity android:name=".LoopbackActivity"></activity>
 		<activity android:name=".ui.FindRoomActivity"></activity>
-		<activity android:name=".ui.AboutActivity" android:label="@string/about_title"
-			android:theme="@android:style/Theme.Holo.Dialog">
+		<activity android:name=".ui.AboutActivity" android:label="@string/about_title">
 		</activity>
 		<activity android:name="de.unierlangen.like.ui.HelpActivity"
-			android:label="@string/help_title" android:theme="@android:style/Theme.Dialog">
+			android:label="@string/help_title">
 		</activity>
 		<service android:name=".rfid.ReaderService" />
 		<service android:name=".navigation.NavigationService">

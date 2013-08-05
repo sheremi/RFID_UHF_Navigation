@@ -19,6 +19,9 @@ public class NavigationApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        DynamicThemeHandler.init(this);
+        setTheme(DynamicThemeHandler.getInstance().getIdForName(DynamicThemeHandler.DEFAULT));
+
         CommunicationManager.init(getApplicationContext());
 
         Logger logger = Logger.getDefaultLogger();
@@ -29,6 +32,9 @@ public class NavigationApplication extends Application {
         // http://code.google.com/p/android/issues/detail?id=6641
         // we have to change defaults to true and meaning to "Supress Warnings"
         PreferenceManager.setDefaultValues(this, R.xml.logging_preferences, false);
+
+        PreferenceManager.setDefaultValues(this, R.xml.reader_preferences, false);
+        PreferenceManager.setDefaultValues(this, R.xml.user_preferences, false);
 
         // configure logger based on settings
         Map<String, ?> preferences = PreferenceManager.getDefaultSharedPreferences(

@@ -24,6 +24,7 @@ import android.util.DisplayMetrics;
 
 import com.github.androidutils.logger.Logger;
 
+import de.unierlangen.like.DynamicThemeHandler;
 import de.unierlangen.like.R;
 
 /**
@@ -36,6 +37,7 @@ public class PreferenceWithHeaders extends PreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(DynamicThemeHandler.getInstance().getIdForName(this.getClass().getName()));
         super.onCreate(savedInstanceState);
     }
 

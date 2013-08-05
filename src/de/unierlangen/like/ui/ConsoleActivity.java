@@ -34,6 +34,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.github.androidutils.logger.Logger;
 
+import de.unierlangen.like.DynamicThemeHandler;
 import de.unierlangen.like.R;
 import de.unierlangen.like.preferences.PreferenceWithHeaders;
 import de.unierlangen.like.serialport.CommunicationManager;
@@ -94,6 +95,7 @@ public class ConsoleActivity extends Activity implements OnEditorActionListener,
     /* Override lifecycle methods */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(DynamicThemeHandler.getInstance().getIdForName(this.getClass().getName()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.console);
 

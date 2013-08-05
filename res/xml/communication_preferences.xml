@@ -9,4 +9,12 @@
          android:persistent="true"
          android:title="@string/prefs_comm_type_title" >
      </ListPreference>
+     
+         <ListPreference
+        android:key="theme"
+        android:title="@string/theme_title"
+        android:entries="@array/themes_entries"
+        android:entryValues="@array/themes_values"
+        android:defaultValue="light"
+        android:dialogTitle="@string/theme_title" />
 </PreferenceScreen>
