@@ -3,24 +3,30 @@
 		android:title = "Find room"
 		android:id = "@+id/find_room"
 		android:icon="@drawable/find_room"
-		android:showAsAction="always" />
+		android:showAsAction="ifRoom|withText" />
 
 	<item 
 		android:title = "About"
 		android:id = "@+id/about" 
 		android:icon="@drawable/info"
-		android:showAsAction="always" />
+		android:showAsAction="ifRoom|withText" />
 
 	<item 
 		android:title = "Help"
 		android:id = "@+id/help"
 		android:icon="@drawable/help"
-		android:showAsAction="always" />
+		android:showAsAction="always|withText" />
 
 	<item 
 		android:title="Settings"
 		android:id = "@+id/prefs" 
 		android:icon="@drawable/prefs"
-		android:showAsAction="always" />
+		android:showAsAction="never" />
+
+        <item 
+        android:title="Advanced"
+        android:id = "@+id/advanced" 
+        android:icon="@drawable/prefs"
+        android:showAsAction="never" />
 
 </menu>

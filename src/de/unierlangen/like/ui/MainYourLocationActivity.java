@@ -42,7 +42,8 @@ import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.navigation.Zone;
-import de.unierlangen.like.preferences.PreferenceWithHeaders;
+import de.unierlangen.like.preferences.PreferenceWithHeadersActivity;
+import de.unierlangen.like.preferences.SettingsActivity;
 
 public class MainYourLocationActivity extends Activity /*
                                                         * OnGestureListener
@@ -223,8 +224,11 @@ public class MainYourLocationActivity extends Activity /*
         case R.id.help:
             startActivity(new Intent(this, HelpActivity.class));
             break;
+        case R.id.advanced:
+            startActivity(new Intent(this, PreferenceWithHeadersActivity.class));
+            break;
         case R.id.prefs:
-            startActivity(new Intent(this, PreferenceWithHeaders.class));
+            startActivity(new Intent(this, SettingsActivity.class));
             break;
         default:
             log.w("unexpected item " + item.getTitle());

@@ -31,8 +31,7 @@ import de.unierlangen.like.R;
  * Demonstration of PreferenceActivity to make a top-level preference panel with
  * headers.
  */
-
-public class PreferenceWithHeaders extends PreferenceActivity {
+public class PreferenceWithHeadersActivity extends PreferenceActivity {
     private final Logger log = Logger.getDefaultLogger();
 
     @Override

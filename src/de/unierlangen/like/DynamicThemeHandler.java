@@ -6,7 +6,7 @@ import java.util.Map;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import de.unierlangen.like.preferences.PreferenceWithHeaders;
+import de.unierlangen.like.preferences.SettingsActivity;
 import de.unierlangen.like.ui.AboutActivity;
 
 public class DynamicThemeHandler {
@@ -54,15 +54,15 @@ public class DynamicThemeHandler {
         sp = PreferenceManager.getDefaultSharedPreferences(context);
 
         Map<String, Integer> darkThemes = new HashMapWithDefault(R.style.DefaultDarkTheme);
-        darkThemes.put(PreferenceWithHeaders.class.getName(), R.style.DarkDialogWhenLarge);
+        darkThemes.put(SettingsActivity.class.getName(), R.style.DarkDialogWhenLarge);
         darkThemes.put(AboutActivity.class.getName(), R.style.DarkDialogWhenLarge);
 
         Map<String, Integer> lightThemes = new HashMapWithDefault(R.style.DefaultLightTheme);
-        lightThemes.put(PreferenceWithHeaders.class.getName(), R.style.LightDialogWhenLarge);
+        lightThemes.put(SettingsActivity.class.getName(), R.style.LightDialogWhenLarge);
         lightThemes.put(AboutActivity.class.getName(), R.style.LightDialogWhenLarge);
 
         Map<String, Integer> greenThemes = new HashMapWithDefault(R.style.GreenTheme);
-        greenThemes.put(PreferenceWithHeaders.class.getName(), R.style.GreenDialogWhenLarge);
+        greenThemes.put(SettingsActivity.class.getName(), R.style.GreenDialogWhenLarge);
         greenThemes.put(AboutActivity.class.getName(), R.style.GreenDialogWhenLarge);
 
         themes = new HashMap<String, Map<String, Integer>>(3);

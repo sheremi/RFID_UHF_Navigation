@@ -12,7 +12,7 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import de.unierlangen.like.R;
 
-public class CommunicationPreferencesFragment extends PreferenceFragment implements
+public class SettingsFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {
 
     public static final String KEY_COMM_TYPE_PREFERENCE = "COMM_TYPE";
@@ -30,7 +30,7 @@ public class CommunicationPreferencesFragment extends PreferenceFragment impleme
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.communication_preferences);
+        addPreferencesFromResource(R.xml.preferences);
         commTypes = (ListPreference) findPreference("COMM_TYPE");
 
         final Preference theme = findPreference("theme");
