@@ -47,6 +47,9 @@ public class ActionBarHandler {
         case R.id.prefs:
             activity.startActivity(new Intent(activity, SettingsActivity.class));
             break;
+        case R.id.main_add_tag:
+            activity.startActivity(new Intent(activity, AddTagActivity.class));
+            break;
         default:
             log.w("unexpected item " + item.getTitle());
         }

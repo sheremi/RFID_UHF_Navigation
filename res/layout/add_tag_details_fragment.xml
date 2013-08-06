@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?android:attr/buttonBarButtonStyle"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="top"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="EPC" />
+
+    <TextView
+        android:id="@+id/add_tag_details_epc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="EPC"
+        android:clickable="false"
+        android:ems="10" >
+    </TextView>
+
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Label" />
+
+    <TextView
+        android:id="@+id/add_tag_details_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Label"
+        android:clickable="false"
+        android:ems="10" >
+    </TextView>
+    
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="X" />
+
+    <TextView
+        android:id="@+id/add_tag_details_x"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="X"
+        android:clickable="false"
+        android:ems="10" >
+    </TextView>
+    
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Y" />
+
+    <TextView
+        android:id="@+id/add_tag_details_y"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Y"
+        android:clickable="false"
+        android:ems="10" >
+    </TextView>
+</LinearLayout>

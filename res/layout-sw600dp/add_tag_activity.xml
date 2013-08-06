@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <fragment
+        android:id="@+id/add_tag_map"
+        android:name="de.unierlangen.like.ui.AddTagMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:baselineAligned="true" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="?android:attr/detailsElementBackground"
+        android:baselineAligned="true" >
+
+        <fragment
+            android:id="@+id/add_tag_details"
+            android:name="de.unierlangen.like.ui.AddTagDetailsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></fragment>
+
+    </FrameLayout>
+
+</RelativeLayout>

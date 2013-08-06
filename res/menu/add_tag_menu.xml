@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/add_tag_done"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:showAsAction="ifRoom|withText"
+        android:title="Done"/>
+    <item
+        android:id="@+id/add_tag_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:showAsAction="ifRoom|withText"
+        android:title="Add"/>
+    <item
+        android:id="@+id/add_tag_dump"
+        android:icon="@android:drawable/ic_menu_save"
+        android:showAsAction="ifRoom|withText"
+        android:title="Dump"/>
+    <item
+        android:id="@+id/add_tag_help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:showAsAction="ifRoom|withText"
+        android:title="Help"/>
+
+</menu>
