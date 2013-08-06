@@ -18,14 +18,18 @@ package de.unierlangen.like.preferences;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.github.androidutils.logger.Logger;
 
 import de.unierlangen.like.DynamicThemeHandler;
 import de.unierlangen.like.R;
+import de.unierlangen.like.ui.MainYourLocationActivity;
 
 /**
  * Demonstration of PreferenceActivity to make a top-level preference panel with
@@ -60,5 +64,31 @@ public class PreferenceWithHeadersActivity extends PreferenceActivity {
             return metrics.widthPixels > 1000;
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            goBack();
+            return true;
+        }
+        return false;
+    }
+
+    private void goBack() {
+        // This is called when the Home (Up) button is pressed
+        // in the Action Bar.
+        Intent parentActivityIntent = new Intent(this, MainYourLocationActivity.class);
+        parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(parentActivityIntent);
+        finish();
     }
 }
