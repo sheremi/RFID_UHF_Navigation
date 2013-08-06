@@ -86,4 +86,17 @@
 	<string name="prefs_bluetooth_settings_title">Bluetooth</string>
 	<string name="prefs_bluetooth_settings_summary">go to Bluetooth System Settings&#8230;</string>
 	<string name="prefs_comm_type_title">Communication type</string>
+
+    <string name="theme_title">Interface theme</string>
+    <string-array name="themes_entries">
+        <item>Holo dark</item>
+        <item>Classic light</item>
+        <item>Funny green</item>
+    </string-array>
+    <string-array name="themes_values">
+        <item>dark</item>
+        <item>light</item>
+        <item>green</item>
+    </string-array>
+
 </resources>

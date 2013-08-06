@@ -20,24 +20,12 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <header
-        android:fragment="de.unierlangen.like.preferences.CommunicationPreferencesFragment"
-        android:summary="with the reader"
-        android:title="Communication" />
-    <header
         android:fragment="de.unierlangen.like.preferences.TestModeFragment"
         android:summary="Test mode"
         android:title="Test some bitmap and rendering" >
         <extra
             android:name="exampleKey"
             android:value="exmapleValue" />
-    </header>
-    <header
-        android:summary="Pair devices here"
-        android:title="Bluetooth preferences" >
-        <intent
-            android:action="android.intent.action.MAIN"
-            android:targetClass="com.android.settings.bluetooth.BluetoothSettings"
-            android:targetPackage="com.android.settings" />
     </header>
     <header
         android:fragment="de.unierlangen.like.preferences.ReaderPreferencesFragment"

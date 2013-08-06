@@ -34,8 +34,9 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.github.androidutils.logger.Logger;
 
+import de.unierlangen.like.DynamicThemeHandler;
 import de.unierlangen.like.R;
-import de.unierlangen.like.preferences.PreferenceWithHeaders;
+import de.unierlangen.like.preferences.PreferenceWithHeadersActivity;
 import de.unierlangen.like.serialport.CommunicationManager;
 import de.unierlangen.like.serialport.IStringPublisher;
 import de.unierlangen.like.serialport.ITxChannel;
@@ -94,6 +95,7 @@ public class ConsoleActivity extends Activity implements OnEditorActionListener,
     /* Override lifecycle methods */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(DynamicThemeHandler.getInstance().getIdForName(this.getClass().getName()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.console);
 
@@ -140,7 +142,7 @@ public class ConsoleActivity extends Activity implements OnEditorActionListener,
             startActivity(new Intent(this, HelpActivity.class));
             break;
         case R.id.prefs:
-            startActivity(new Intent(this, PreferenceWithHeaders.class));
+            startActivity(new Intent(this, PreferenceWithHeadersActivity.class));
             break;
         default:
             log.w("unexpected item " + item.getTitle());

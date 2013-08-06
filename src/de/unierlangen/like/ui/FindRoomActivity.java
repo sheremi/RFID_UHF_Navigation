@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import de.unierlangen.like.DynamicThemeHandler;
 import de.unierlangen.like.R;
 import de.unierlangen.like.navigation.RoomsDatabase;
 
@@ -22,6 +23,7 @@ public class FindRoomActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(DynamicThemeHandler.getInstance().getIdForName(this.getClass().getName()));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.find_room);
         roomsDatabase = RoomsDatabase.getRoomsDatabase(this);
