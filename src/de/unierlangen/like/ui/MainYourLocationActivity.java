@@ -22,7 +22,6 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -42,8 +41,6 @@ import de.unierlangen.like.navigation.RoomsDatabase;
 import de.unierlangen.like.navigation.Tag;
 import de.unierlangen.like.navigation.Wall;
 import de.unierlangen.like.navigation.Zone;
-import de.unierlangen.like.preferences.PreferenceWithHeadersActivity;
-import de.unierlangen.like.preferences.SettingsActivity;
 
 public class MainYourLocationActivity extends Activity /*
                                                         * OnGestureListener
@@ -51,9 +48,9 @@ public class MainYourLocationActivity extends Activity /*
                                                         * OnClickListener ,
                                                         * OnLongClickListener
                                                         */{
+    private static final int REQUEST_ROOM = 1;
     private final Logger log = Logger.getDefaultLogger();
     private static final String TAG = "MainYourLocationActivity";
-    private static final int REQUEST_ROOM = 1;
     private MapView mapView;
     private ZoomControls zoomControls;
     private WakeLock wakeLock;
@@ -61,6 +58,8 @@ public class MainYourLocationActivity extends Activity /*
     private MapBuilder mapBuilder;
 
     private DrawMapOverlayPreferenceChangeListener drawMapOverlayPreferenceChangeListener;
+
+    private ActionBarHandler actionBarHandler;
 
     private final BroadcastReceiver readerReceiver = new BroadcastReceiver() {
 
@@ -204,8 +203,8 @@ public class MainYourLocationActivity extends Activity /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        actionBarHandler = new ActionBarHandler(this);
+        actionBarHandler.onCreateOptionsMenu(menu);
         return true;
     }
 
@@ -214,27 +213,7 @@ public class MainYourLocationActivity extends Activity /*
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.find_room:
-            startActivityForResult(new Intent(this, FindRoomActivity.class), REQUEST_ROOM);
-            break;
-        case R.id.about:
-            startActivity(new Intent(this, AboutActivity.class));
-            break;
-        case R.id.help:
-            startActivity(new Intent(this, HelpActivity.class));
-            break;
-        case R.id.advanced:
-            startActivity(new Intent(this, PreferenceWithHeadersActivity.class));
-            break;
-        case R.id.prefs:
-            startActivity(new Intent(this, SettingsActivity.class));
-            break;
-        default:
-            log.w("unexpected item " + item.getTitle());
-        }
-        // return super.onOptionsItemSelected(item);
-        return false;
+        return actionBarHandler.onOptionsItemSelected(item);
     }
 
     @Override
