@@ -216,8 +216,11 @@ public class ReaderService extends Service {
 
             handler.removeMessages(TAG_EXPIRED);
             // find next scheduled remove:
-            Long next = Collections.min(new ArrayList<Long>(tags.values()));
-            handler.sendEmptyMessageAtTime(TAG_EXPIRED, next);
+            ArrayList<Long> times = new ArrayList<Long>(tags.values());
+            if (!times.isEmpty()) {
+                Long next = Collections.min(times);
+                handler.sendEmptyMessageAtTime(TAG_EXPIRED, next);
+            }
         }
 
         private void remove() {
